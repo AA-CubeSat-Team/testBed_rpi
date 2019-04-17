@@ -10,4 +10,8 @@ time.sleep(1)
 gpio.output(18,gpio.HIGH)
 time.sleep(1)
 gpio.output(18,gpio.LOW) 
+time.sleep(1)
+gpio.output(18,gpio.HIGH)
+time.sleep(1)
+gpio.output(18,gpio.LOW)
 print "done"

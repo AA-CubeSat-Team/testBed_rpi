@@ -1,6 +1,6 @@
 import RPi.GPIO as gpio
 import time
-gpio.setmode(GPIO.BCM)
+gpio.setmode(gpio.BCM)
 gpio.setwarnings(False)
 gpio.setup(18,gpio.OUT)
 gpio.output(18,gpio.HIGH)

@@ -8,6 +8,6 @@ pwm.start(50)                   	 # Started PWM at 0% duty cycle, "off"
 sleep(3) 
 dc = int(input("Change duty cycle [0-100]: "))
 pwm.ChangeDutyCycle(dc)
-sleep(3) 
-pwm.stop()      # Stop the PWM
-GPIO.cleanup()  # Make all the output pins LOW
+while 1:
+	dc = int(input(" "))
+	pwm.ChangeDutyCycle(dc)

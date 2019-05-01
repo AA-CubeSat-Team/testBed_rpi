@@ -6,7 +6,8 @@ GPIO.setup(led_pin, GPIO.OUT)  	 # Declaring pin 21 as output pin
 pwm = GPIO.PWM(led_pin, 100)   	 # Created a PWM object
 pwm.start(50)                   	 # Started PWM at 0% duty cycle, "off"
 sleep(3) 
-pwm.ChangeDutyCycle(100)
+dc = int(input("Change duty cycle [0-100]: "))
+pwm.ChangeDutyCycle(dc)
 sleep(3) 
 pwm.stop()      # Stop the PWM
 GPIO.cleanup()  # Make all the output pins LOW

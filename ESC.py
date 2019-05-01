@@ -46,11 +46,6 @@ def calibrate():   #This is the auto calibration procedure of a normal ESC
         inp = raw_input()
         if inp == '':            
             pi.set_servo_pulsewidth(ESC, min_value)
-            print "Wierd eh! Special tone"
-            time.sleep(7)
-            print "Wait for it ...."
-            time.sleep (5)
-            print "Im working on it, DONT WORRY JUST WAIT....."
             pi.set_servo_pulsewidth(ESC, 0)
             time.sleep(2)
             print "Arming ESC now..."

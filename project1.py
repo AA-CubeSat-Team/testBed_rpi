@@ -9,7 +9,7 @@ low = "low"
 medium = "medium"
 high = "high"
 party = "party"								 # Created a PWM object
-pwm.start(50)                   	 # Started PWM at 0% duty cycle, "off"
+pwm.start(0)                   	 # Started PWM at 0% duty cycle, "off"
 sleep(3) 
 while 1:
 	dc = input("Change brightness [low medium high]: ")
@@ -32,6 +32,7 @@ while 1:
 		sleep(1)
 		pwm.ChangeDutyCycle(20)
 		sleep(1)
+		pwm.ChangeDutyCycle(0)
 	else: 
 		pwm.ChangeDutyCycle(0)
 

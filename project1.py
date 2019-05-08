@@ -8,19 +8,19 @@ pwm.start(50)                   	 # Started PWM at 0% duty cycle, "off"
 sleep(3) 
 while 1:
 	dc = input("Change brightness [LOW MEDIUM HIGH]: ")
-	if dc is LOW
+	if dc is LOW:
 		pwm.ChangeDutyCycle(20)
 		sleep(5)
 		pwm.ChangeDutyCycle(0)
-	elif dc is MEDIUM
+	elif dc is MEDIUM:
 		pwm.ChangeDutyCycle(50)
 		sleep(5)
 		pwm.ChangeDutyCycle(0)
-	elif dc is HIGH
+	elif dc is HIGH:
 		pwm.ChangeDutyCycle(100)
 		sleep(5)
 		pwm.ChangeDutyCycle(0)
-	elif dc is PARTY
+	elif dc is PARTY:
 		pwm.ChangeDutyCycle(100)
 		sleep(1)
 		pwm.ChangeDutyCycle(50)

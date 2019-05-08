@@ -7,7 +7,7 @@ pwm = GPIO.PWM(led_pin, 100)   	 # Created a PWM object
 pwm.start(50)                   	 # Started PWM at 0% duty cycle, "off"
 sleep(3) 
 while 1:
-	dc = input("Change brightness [LOW MEDIUM HIGH]: "))
+	dc = input("Change brightness [LOW MEDIUM HIGH]: ")
 	if dc = LOW
 		pwm.ChangeDutyCycle(20)
 		sleep(5)

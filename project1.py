@@ -27,6 +27,6 @@ while 1:
 		sleep(1)
 		pwm.ChangeDutyCycle(20)
 		sleep(1)
-	else 
+	else: 
 		pwm.ChangeDutyCycle(0)
 

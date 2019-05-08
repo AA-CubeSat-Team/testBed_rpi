@@ -9,8 +9,7 @@ low = "low"
 medium = "medium"
 high = "high"
 party = "party"								 # Created a PWM object
-pwm.start(0)                   	 # Started PWM at 0% duty cycle, "off"
-sleep(3) 
+pwm.start(0)                   	 # Started PWM at 0% duty cycle, "off" 
 while 1:
 	dc = input("Change brightness [low medium high]: ")
 	if low in dc:

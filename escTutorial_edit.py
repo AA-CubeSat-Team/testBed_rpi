@@ -63,25 +63,25 @@ def control():
         pi.set_servo_pulsewidth(ESC, speed)
         inp = input()
 
-        if inp == "q"
+        if inp == "q":
             speed -= 100
             print("speed = %d")
-        elif inp == "e"
+        elif inp == "e":
             speed += 100
             print("speed = %d")
-        elif inp == "d"
+        elif inp == "d":
             speed += 10
             print("speed = %d")
-        elif inp == "a"
+        elif inp == "a":
             speed += 10
             print("speed = %d")
-        elif inp == "stop"
+        elif inp == "stop":
             stop()
             break
-        elif inp == "manual"
+        elif inp == "manual":
             manual_drive()
             break
-        elif inp =="arm"
+        elif inp =="arm":
             arm()
             break
 

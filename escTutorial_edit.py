@@ -4,11 +4,10 @@ import os
 import time
 os.system ("sudo pigpiod")
 time.sleep(1)
-import pigpio
+import pigpio as pi
 
 ESC=18
 
-pi = pigpio.pi()
 pi.set_servo_pulsewidth(ESC, 0)
 
 max_value = 2000 #ESC's max value

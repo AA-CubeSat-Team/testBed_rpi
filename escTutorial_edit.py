@@ -5,7 +5,7 @@ import os
 import time
 os.system ("killall pigpiod")
 os.system ("sudo pigpiod")
-time.sleep(1)
+time.sleep(5)
 import pigpio
 
 ESC=18

@@ -5,13 +5,13 @@ import os
 import time
 os.system ("killall pigpiod")
 os.system ("sudo pigpiod")
-time.sleep(5)
+time.sleep(1)
 import pigpio
 
 ESC=18
 
-pi = pigpio.pi()
-pi.set_servo_pulsewidth(ESC, 0)
+gpio = pigpio.pi()
+gpio.set_servo_pulsewidth(ESC, 0)
 
 max_value = 2000 #ESC's max value
 min_value = 700 #ESC's min value
@@ -34,23 +34,23 @@ def manual_drive(): #You will use this function to program your ESC if required
             arm()
             break
         else:
-            pi.set_servo_pulsewidth(ESC, inp)
+            gpio.set_servo_pulsewidth(ESC, inp)
 
 def calibrate():
-    pi.set_servo_pulsewidth(ESC, 0)
+    gpio.set_servo_pulsewidth(ESC, 0)
     print("Disconnect the battery and press Enter")
     inp = input()
     if inp == "":
-        pi.set_servo_pulsewidth(ESC, max_value)
+        gpio.set_servo_pulsewidth(ESC, max_value)
         print("Connect the battery NOW.. you will here two beeps, then wait for a gradual falling tone then press Enter")
         inp = input()
         if inp == "":
-            pi.set_servo_pulsewidth(ESC, min_value)
+            gpio.set_servo_pulsewidth(ESC, min_value)
             print("Playing special tone")
             time.sleep(5)
-            pi.set_servo_pulsewidth(ESC, 0)
+            gpio.set_servo_pulsewidth(ESC, 0)
             print("Arming ESC now")
-            pi.set_servo_pulsewidth(ESC, min_value)
+            gpio.set_servo_pulsewidth(ESC, min_value)
             control()
 
 def control():
@@ -62,7 +62,7 @@ def control():
     print("d - speed up a little")
     print("e - speed up a lot")
     while True:
-        pi.set_servo_pulsewidth(ESC, speed)
+        gpio.set_servo_pulsewidth(ESC, speed)
         inp = input()
 
         if inp == "q":
@@ -91,17 +91,17 @@ def arm():
     print("Connect the battery and press Enter")
     inp = input()
     if inp == "":
-        pi.set_servo_pulsewidth(ESC, 0)
+        gpio.set_servo_pulsewidth(ESC, 0)
         time.sleep(1)
-        pi.set_servo_pulsewidth(ESC, max_value)
+        gpio.set_servo_pulsewidth(ESC, max_value)
         time.sleep(1)
-        pi.set_servo_pulsewidth(ESC, min_value)
+        gpio.set_servo_pulsewidth(ESC, min_value)
         time.sleep(1)
         control()
 
 def stop():
-    pi.set_servo_pulsewidth(ESC, 0)
-    pi.stop()
+    gpio.set_servo_pulsewidth(ESC, 0)
+    gpio.stop()
 
 inp = input()
 if inp == "manual":

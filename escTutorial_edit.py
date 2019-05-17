@@ -34,7 +34,7 @@ def manual_drive(): #You will use this function to program your ESC if required
         else:
             pi.set_servo_pulsewidth(ESC, inp)
 
- def calibrate():
+def calibrate():
     pi.set_servo_pulsewidth(ESC, 0)
     print("Disconnect the battery and press Enter")
     inp = input()
@@ -51,7 +51,7 @@ def manual_drive(): #You will use this function to program your ESC if required
             pi.set_servo_pulsewidth(ESC, min_value)
             control()
 
- def control():
+def control():
     print("starting motor if its calibrated and armed, if not press x")
     time.sleep(1)
     speed = 1500
@@ -85,8 +85,8 @@ def manual_drive(): #You will use this function to program your ESC if required
             arm()
             break
 
- def arm():
-    print"Connect the battery and press Enter"
+def arm():
+    print("Connect the battery and press Enter")
     inp = input()
     if inp == "":
         pi.set_servo_pulsewidth(ESC, 0)
@@ -97,22 +97,22 @@ def manual_drive(): #You will use this function to program your ESC if required
         time.sleep(1)
         control()
 
- def stop():
+def stop():
     pi.set_servo_pulsewidth(ESC, 0)
     pi.stop()
 
- inp == input()
- if inp == "manual":
+inp = input()
+if inp == "manual":
     manual_drive()
- elif inp == "calibrate":
+elif inp == "calibrate":
     calibrate()
- elif inp == "arm":
+elif inp == "arm":
     arm()
- elif inp == "control":
+elif inp == "control":
     control()
- elif inp == "stop":
+elif inp == "stop":
     stop()
- else:
+else:
     print("Restart the program")
 
 

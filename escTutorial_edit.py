@@ -34,9 +34,9 @@ def manual_drive(): #You will use this function to program your ESC if required
             arm()
             break
         else:
-            gpio.set_servo_pulsewidth(ESC, inp)
-            time.sleep(10)
-            print("done")
+            for k in range(0,10):
+                gpio.set_servo_pulsewidth(ESC, inp)
+            
 
 def calibrate():
     gpio.set_servo_pulsewidth(ESC, 0)

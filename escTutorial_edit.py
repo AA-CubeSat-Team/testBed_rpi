@@ -13,8 +13,8 @@ ESC=18
 gpio = pigpio.pi()
 gpio.set_servo_pulsewidth(ESC, 0)
 
-max_value = 2000 #ESC's max value
-min_value = 700 #ESC's min value
+max_value = 1950 #ESC's max value
+min_value = 1000 #ESC's min value
 
 print("For first time launch, select calibrate")
 print("Type the exact word for the function you want")
@@ -67,16 +67,16 @@ def control():
 
         if inp == "q":
             speed -= 100
-            print("speed = %d")
+            print("speed = " + string(speed))
         elif inp == "e":
             speed += 100
-            print("speed = %d")
+            print("speed = " + string(speed))
         elif inp == "d":
             speed += 10
-            print("speed = %d")
+            print("speed = " + string(speed))
         elif inp == "a":
             speed += 10
-            print("speed = %d")
+            print("speed = " + string(speed))
         elif inp == "stop":
             stop()
             break

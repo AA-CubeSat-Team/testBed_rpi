@@ -35,7 +35,7 @@ def manual_drive(): #You will use this function to program your ESC if required
             break
         else:
             for k in range(0,10):
-                gpio.set_servo_pulsewidth(ESC, inp)
+                gpio.set_servo_pulsewidth(ESC, inp) #figure out what this command does, how to make it work
             
 
 def calibrate():

@@ -1,4 +1,4 @@
-#callibration_test.py
+#calibration_test.py
 import RPi.GPIO as gp
 import time
 
@@ -21,10 +21,11 @@ max = 97.5
 print("Please cut off power from the ESC if it is not already off. Press enter when the ESC has power cut off from it")
 inp = raw_input()
 pwm.start(max)
-#wait 2 seconds to ensure that the pwm has received max as full throtle
-time.sleep(2)
-pwm.ChangeDutyCycle(min)
-print("you should have just heard a beep from the motor.\n this means that that esc has saved and stored its current callibration settings.")
+print("turn on power to the ESC and press enter")
+inp = raw_input()
+if inp == ""
+    pwm.ChangeDutyCycle(min)
+    print("you should have just heard a beep from the motor.\n this means that that esc has saved and stored its current calibration settings.")
 
 #enter into the eternal while loop to allow for playing around with duty cycles
 print("any duty cycle above 97.5 will be rounded down to 97.5. and below 50 will be rounded to 50")

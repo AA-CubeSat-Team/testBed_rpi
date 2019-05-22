@@ -36,6 +36,6 @@ while(True):
         inp = max
     elif(inp < min):
         inp = min
-    elif(inp = 0)
+    elif(inp == 0)
         pwm.stop()
     pwm.ChangeDutyCycle(inp)

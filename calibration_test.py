@@ -18,24 +18,24 @@ max = 97.5
 #start the pwm with a duty cycle of 0. the power should not be on at this point or should be turned off when prompted
 
 #prompt the user to cut off power from the esc
-print("Cut off power from the ESC if it is not already off. Press enter when the power is cut")
+print("Turn off power to the ESC (if it is not already off) and press enter")
 inp = raw_input()
 pwm.start(max)
 print("Turn on power to the ESC and press enter")
 inp = raw_input()
 if inp == "":
     pwm.ChangeDutyCycle(min)
-    print("You should have just heard a beep from the motor.\n this means that that esc has saved and stored its current calibration settings.")
+    print("You should have  heard a beep from the motor.\n This means that that esc has saved and stored its current calibration settings.")
 
 #enter into the eternal while loop to allow for playing around with duty cycles
 print("Any duty cycle above 97.5 will be rounded down to 97.5. and below 50 will be rounded to 50")
 print("The exit code for the program is: 8051")
 while(True):
-    inp = input("Enter the next duty cyle you would like to try: ")
+    inp = input("Enter next duty cycle: ")
     if(inp > max):
         inp = max
-    elif(inp < min):
-        inp = min
     elif(inp == 0):
         pwm.stop()
+    elif(inp < min):
+        inp = min
     pwm.ChangeDutyCycle(inp)

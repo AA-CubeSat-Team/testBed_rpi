@@ -23,7 +23,7 @@ inp = raw_input()
 pwm.start(max)
 print("turn on power to the ESC and press enter")
 inp = raw_input()
-if inp == ""
+if inp == "":
     pwm.ChangeDutyCycle(min)
     print("you should have just heard a beep from the motor.\n this means that that esc has saved and stored its current calibration settings.")
 

@@ -11,7 +11,7 @@ gp.setup(18,gp.OUT)
 #the presumed frequency of the esc for this test is 500Hz. The duration of one period is 2000
 pwm = gp.PWM(18, 500)#sets pin 18 to a 500HZ pwm, referenced as pwm
 #MINIMUM PULSE WIDTH = 1000 This results in a duty cycle of 50%
-min = 20
+min = 50
 #MAXIMUM PULSE WIDTH = 1950 this results in a duty cycle of 97.5%
 max = 97.5
 
@@ -28,7 +28,7 @@ if inp == "":
     print("You should have just heard a beep from the motor.\n this means that that esc has saved and stored its current calibration settings.")
 
 #enter into the eternal while loop to allow for playing around with duty cycles
-print("Any duty cycle above 97.5 will be rounded down to 97.5. and below 20 will be rounded to 20")
+print("Any duty cycle above 97.5 will be rounded down to 97.5. and below 50 will be rounded to 50")
 print("The exit code for the program is: 8051")
 while(True):
     inp = input("Enter the next duty cyle you would like to try: ")

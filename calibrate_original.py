@@ -30,6 +30,11 @@ if inp == "":
 #enter into the eternal while loop to allow for playing around with duty cycles
 print("Any duty cycle above 97.5 will be rounded down to 97.5. and below 50 will be rounded to 50")
 print("The exit code for the program is: 8051")
+
+GPIO.setup(6, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Set GPIO6 to be an input pin and set initial value to be pulled low (off)
+GPIO.add_event_detect(6, GPIO.RISING)
+
+num = 0
 while(True):
     inp = input("Enter next duty cycle: ")
     if(inp > max):
@@ -39,3 +44,7 @@ while(True):
     elif(inp < min):
         inp = min
     pwm.ChangeDutyCycle(inp)
+
+    if GPIO.event_detected(6):
+        num += 1
+        print(num)

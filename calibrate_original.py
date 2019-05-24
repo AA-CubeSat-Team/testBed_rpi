@@ -2,7 +2,7 @@
 import RPi.GPIO as gp
 import time
 
-#initialize GPIO settings
+#initialize gp settings
 gp.setmode(gp.BCM)
 gp.setwarnings(False)
 gp.setup(18,gp.OUT)
@@ -31,8 +31,8 @@ if inp == "":
 print("Any duty cycle above 97.5 will be rounded down to 97.5. and below 50 will be rounded to 50")
 print("The exit code for the program is: 8051")
 
-GPIO.setup(6, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Set GPIO6 to be an input pin and set initial value to be pulled low (off)
-GPIO.add_event_detect(6, GPIO.RISING)
+gp.setup(6, gp.IN, pull_up_down=gp.PUD_DOWN) # Set gp6 to be an input pin and set initial value to be pulled low (off)
+gp.add_event_detect(6, gp.RISING)
 
 num = 0
 while(True):
@@ -45,6 +45,6 @@ while(True):
         inp = min
     pwm.ChangeDutyCycle(inp)
 
-    if GPIO.event_detected(6):
+    if gp.event_detected(6):
         num += 1
         print(num)

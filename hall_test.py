@@ -4,7 +4,7 @@ import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
 import time
 def EventHandler(pin):
     num += 1
-    print(num)
+
 
 GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BCM)
@@ -14,5 +14,6 @@ GPIO.add_event_callback(6,EventHandler,10)
 num = 0
 while True:
     print("I'm alive!")#This
+    print("num is ", num)
     time.sleep(2)
 GPIO.cleanup() # Clean up

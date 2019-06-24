@@ -45,6 +45,6 @@ while(True):
         inp = min
     pwm.ChangeDutyCycle(inp)
 
-    if gp.event_detected(6):
+    elif gp.event_detected(6):
         num += 1
         print(num)

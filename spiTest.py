@@ -3,4 +3,7 @@
 import time
 import spidev
 
-print('import successful')
+bus = 0
+device = 0      # slave select pin
+
+spi = spidev.SpiDev()

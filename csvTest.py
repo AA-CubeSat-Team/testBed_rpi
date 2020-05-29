@@ -2,31 +2,32 @@
 import csv 
 import time
 
+# setup start
 kk = 0
 
-header = ['entry', 'time', 'type1', 'type2'] 
+header = ['entry', 'time', 'type1', 'type2']        # modify headers to fit data inputs
 
-file = open('output.csv', 'w', newline ='') 
+file = open('output.csv', 'w', newline ='')         # open(..'w'..) creates new CSV file
 with file:   
     write = csv.writer(file) 
     write.writerow([header[0], header[1], header[2], header[3]]) 
+# setup end
 
-
-
+# iterate start
 kk = kk + 1
 ts = time.gmtime()
 time1 = time.strftime("%H:%M:%S %Z", ts)
 
-reply1 = [101, 201]                                                  # reply input from spi.xfer
+reply1 = [101, 201]                                                  # data input
 
 row1_ll = [[kk], [time1], reply1]
 row1  = [val for sublist in row1_ll for val in sublist]             # flattens list-of-lists into single list
 
-file = open('output.csv', 'a', newline ='') 
+file = open('output.csv', 'a', newline ='')         # open(..'a'..) edits existing CSV file
 with file:   
     write = csv.writer(file) 
     write.writerow([row1[0], row1[1], row1[2], row1[3]]) 
-
+# iterate end
 
 
 # GOAL: given list (SPI output) write a new row in existing CSV file

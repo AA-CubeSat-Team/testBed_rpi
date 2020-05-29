@@ -17,7 +17,7 @@ while True:
     msg = [0xff]
     spi.xfer2(msg)
     print('transfer complete')
-    sleep(2)
+    time.sleep(2)
 
 
 

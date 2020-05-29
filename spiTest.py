@@ -13,8 +13,12 @@ spi.open(bus, device)       # opens connection on specified bus, device
 spi.max_speed_hz = 250000   # sets master freq at 250 kHz, must be (150:300) kHz
 spi.mode = 0
 
-msg = [0xff]
-spi.xfer2(msg)
+while True
+    msg = [0xff]
+    spi.xfer2(msg)
+    print('transfer complete')
+    sleep(2)
 
-print('transfer complete')
+
+
 

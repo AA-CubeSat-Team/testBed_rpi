@@ -14,7 +14,7 @@ spi.max_speed_hz = 250000   # sets master freq at 250 kHz, must be (150:300) kHz
 spi.mode = 0
 
 while True:
-    msg = 2
+    msg = [0xFF]
     rpl = spi.xfer2(msg)
     print(rpl)
     time.sleep(2)

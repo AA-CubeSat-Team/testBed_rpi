@@ -15,8 +15,8 @@ spi.mode = 0
 
 while True:
     msg = [0x02]
-    spi.xfer2(msg)
-    print('transfer complete')
+    rpl = spi.xfer2(msg)
+    print(rpl)
     time.sleep(2)
 
 

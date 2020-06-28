@@ -21,11 +21,10 @@ ISR (SPI_STC_vect) {      // interrupt service routine
   rcv = SPDR;   // byte from transfer                
   Serial.println(rcv);
   
-  rpl = 2;
+  rpl = 3;
   SPDR = rpl;             // transfers rpl back up MISO
   
-  received = true; 
-  Serial.println("received");                      
+  received = true;                    
 }
 
 // ISSUE: not triggering interrupt

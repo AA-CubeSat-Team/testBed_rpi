@@ -19,17 +19,17 @@ void setup() {
 
 ISR (SPI_STC_vect) {      // interrupt service routine
   rcv = SPDR;   // byte from transfer                
-  Serial.println((rcv));
+  Serial.println((rcv));    // sizeof(rcv)=1, only sees 1 byte at a time
   
-  uint8_t rpl = 3;
+  uint8_t rpl = 1;
   SPDR = rpl;             // transfers rpl back up MISO
   
   received = true;                    
 }
 
-// ISSUE: not triggering interrupt
-// CHECK: wiring/pins, interrupt configured correctly, RPi transferrring correctly,
-//        compatibility of signals, 5V vs 3.3V
+// ISSUE: sending first byte of rcv back as second byte of rpl
+// CHECK: storing rcv byte in SPDR? -> stores second byte in SPDR ??
+//        probably need to research into more
 
 void loop() {
 /*  

@@ -19,7 +19,7 @@ void setup() {
 
 ISR (SPI_STC_vect) {      // interrupt service routine
   rcv = SPDR;   // byte from transfer                
-  Serial.println(sizeof(rcv));
+  Serial.println((rcv));
   
   uint8_t rpl = 3;
   SPDR = rpl;             // transfers rpl back up MISO

@@ -21,15 +21,18 @@ ISR (SPI_STC_vect) {      // interrupt service routine
   rcv = SPDR;   // byte from transfer                
   Serial.println((rcv));    // sizeof(rcv)=1, only sees 1 byte at a time
   
-  uint8_t rpl = 1;
+  rpl = 1;
   SPDR = rpl;             // transfers rpl back up MISO
   
   received = true;                    
 }
 
-// ISSUE: sending first byte of rcv back as second byte of rpl
+// ISSUE: sends rpl byte, then starts repeating back the rcv bytes
 // CHECK: storing rcv byte in SPDR? -> stores second byte in SPDR ??
 //        probably need to research into more
+
+// ISSUE: want to store/send rcv and rpl bytes as connected array
+// SOLVE: possibly use iteration to store into array? need to understand how SPDR works
 
 void loop() {
 /*  

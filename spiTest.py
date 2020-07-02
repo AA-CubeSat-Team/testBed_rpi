@@ -65,13 +65,14 @@ while True:
     speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
 
     payloadArr = sum([cmdArr, speedArr],[])
-    print(payloadArr)
-    print([hex(x) for x in payloadArr])
-    break
-    crcArr = crcCompute(payload)
+    crcArr = crcCompute(payloadArr)
 
     reqArr = sum([payloadArr, crcArr],[])
-    print(reqArr)
+
+    output = reqArr
+    print(output)
+    print([hex(x) for x in output])
+
     break
     rpl = spi.xfer2(req)
     print(rpl)

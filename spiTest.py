@@ -63,6 +63,7 @@ while True:
     crcSplit = crcCompute(payload)
 
     req = sum([payload, crcSplit],[])
+    print(req)
     break
     rpl = spi.xfer2(req)
     print(rpl)

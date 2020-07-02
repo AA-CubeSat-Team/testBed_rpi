@@ -66,6 +66,7 @@ while True: # convert bytes to bytearray to list
 
     payloadArr = sum([cmdArr, speedArr],[])
     print(payloadArr)
+    print(hex(payloadArr))
     break
     crcArr = crcCompute(payload)
 

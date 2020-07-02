@@ -57,12 +57,12 @@ def crcCompute(payload):
     return crcSplit
 
 # MAIN
-while True:
+while True: # convert bytes to bytearray to list
     cmd = 1
     cmdArr = [cmd]
 
     speed = 65000
-    speedArr = (speed).to_bytes(4, byteorder='little', signed=True)
+    speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
 
     payloadArr = sum([cmdArr, speedArr],[])
     print(payload)

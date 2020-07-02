@@ -58,9 +58,15 @@ def crcCompute(payload):
 
 # MAIN
 while True:
+    cmd = 1
 
-    payload = [0x03, 0x05, 0x07]
-    crcSplit = crcCompute(payload)
+    speed = 65000
+    speedArr = (speed).to_bytes(4, byteorder='little', signed=True)
+
+    payload = sum([cmd, speedArr],[])
+    print(payload)
+    break
+    crcArr = crcCompute(payload)
 
     req = sum([payload, crcSplit],[])
     print(req)

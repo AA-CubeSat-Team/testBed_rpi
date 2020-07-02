@@ -59,7 +59,7 @@ def crcCompute(payload):
 # MAIN
 while True: 
     cmd = 1
-    cmdArr = list(bytearray((speed).to_bytes(1, byteorder='little', signed=True)))
+    cmdArr = list(bytearray((cmd).to_bytes(1, byteorder='little', signed=True)))
 
     speed = 65000
     speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))

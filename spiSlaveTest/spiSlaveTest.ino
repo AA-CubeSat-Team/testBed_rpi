@@ -1,6 +1,6 @@
 
 volatile boolean received;
-byte req;
+byte reqByte;
 byte rpl;
 
 void setup (void){ 
@@ -20,7 +20,7 @@ void setup (void){
 // SPI interrupt routine
 ISR (SPI_STC_vect){
   reqByte = SPDR;               //sizeof(reqByte) = 1, reads a single byte at a time
-  Serial.println(reqByte));
+  Serial.println(reqByte);
 
   rpl = 5;
   SPDR = rpl;

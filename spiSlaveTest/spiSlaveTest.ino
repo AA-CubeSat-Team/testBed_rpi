@@ -1,7 +1,7 @@
 # include <SPI.h>
 
 volatile boolean received;
-volatile byte rcv;
+volatile byte req;
 volatile byte rpl;
 
 void setup() {
@@ -18,16 +18,16 @@ void setup() {
 
 
 ISR (SPI_STC_vect) {      // interrupt service routine
-  rcv = SPDR;   // byte from transfer                
-  Serial.println((rcv));    // sizeof(rcv)=1, only sees 1 byte at a time
+  req = SPDR;   // byte from transfer                
+  Serial.println((req));    // sizeof(rcv)=1, only sees 1 byte at a time
   
-  rpl = 1;
+  rpl = req;
   SPDR = rpl;             // transfers rpl back up MISO
   
   received = true;                    
 }
 
-// ISSUE: sends rpl byte, then starts repeating back the rcv bytes
+// ISSUE: sends rpl byte at front, then starts repeating back the rcv bytes
 // CHECK: storing rcv byte in SPDR? -> stores second byte in SPDR ??
 //        probably need to research into more
 

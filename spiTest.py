@@ -77,8 +77,9 @@ while True:
 
     rpl = spi.xfer2(reqArr)
     print("rpl:", rpl)
-    time.sleep(20)
+    time.sleep(10)
 
 
-# output: ['0x1', '0xe8', '0xfd', '0x0', '0x0', '0x77', '0x1b']
+# req (int): [1, 232, 253, 0, 0, 119, 27]
+# req (hex): ['0x1', '0xe8', '0xfd', '0x0', '0x0', '0x77', '0x1b']
 

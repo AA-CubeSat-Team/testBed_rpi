@@ -20,7 +20,7 @@ void setup (void){
 // SPI interrupt routine
 ISR (SPI_STC_vect){
   req = SPDR;
-  Serial.println(req);
+  Serial.println(sizeof(req));
 
   rpl = 5;
   SPDR = rpl;

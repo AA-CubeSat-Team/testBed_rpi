@@ -19,8 +19,8 @@ void setup (void){
 
 // SPI interrupt routine
 ISR (SPI_STC_vect){
-  req = SPDR;
-  Serial.println(sizeof(req));
+  reqByte = SPDR;               //sizeof(reqByte) = 1, reads a single byte at a time
+  Serial.println(reqByte));
 
   rpl = 5;
   SPDR = rpl;

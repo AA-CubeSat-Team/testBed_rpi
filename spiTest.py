@@ -76,7 +76,7 @@ while True:
     #print([hex(x) for x in output])
 
     for b in reqArr:
-        rpl = spi.xfer2(b)
+        #rpl = spi.xfer2(b)
         print(b)
         print(rpl)
         time.sleep(2)

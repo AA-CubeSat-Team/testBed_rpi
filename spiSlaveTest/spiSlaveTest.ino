@@ -17,7 +17,7 @@ void setup (void){
 }  // end of setup
 
 
-// SPI interrupt routine
+// SPI interrupt routine (triggers once for each byte in request)
 ISR (SPI_STC_vect){
   reqByte = SPDR;               //sizeof(reqByte) = 1, reads a single byte at a time
   Serial.println(reqByte);

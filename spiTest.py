@@ -73,11 +73,11 @@ while True:
 
     output = reqArr
     print(output)
-    print([hex(x) for x in output])
+    #print([hex(x) for x in output])
 
     rpl = spi.xfer2(reqArr)
     print(rpl)
-    time.sleep(10)
+    time.sleep(20)
 
 
 # output: ['0x1', '0xe8', '0xfd', '0x0', '0x0', '0x77', '0x1b']

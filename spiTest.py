@@ -78,7 +78,7 @@ while True:
     for b in reqArr:
         #rpl = spi.xfer2(b)
         print(b)
-        print(rpl)
+        #print(rpl)
         time.sleep(2)
 
 

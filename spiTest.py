@@ -79,7 +79,7 @@ while True:
     rpl = spi.xfer2([req])
     print("req:", req)
     #rpl = spi.xfer2(reqArr)
-    #print("rpl:", rpl)
+    print("rpl:", rpl)
     time.sleep(5)
 
 

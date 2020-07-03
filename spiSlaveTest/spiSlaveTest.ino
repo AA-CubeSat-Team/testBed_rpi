@@ -21,8 +21,8 @@ void setup (void){
 ISR (SPI_STC_vect){
   reqByte = SPDR;               //sizeof(reqByte) = 1, reads a single byte at a time
   Serial.println(reqByte);
-
-  rpl = 5;
+  Serial.println("interrupt");
+  rpl = reqByte;
   SPDR = rpl;
   
   received = true; 

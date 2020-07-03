@@ -12,7 +12,8 @@ spi = spidev.SpiDev()       # enables spi, creates "spi" object
 spi.open(bus, device)       # opens connection on specified bus, device
 
 spi.max_speed_hz = 250000   # sets master freq at 250 kHz, must be (150:300) kHz for RWA
-spi.mode = 0
+spi.mode = 0                # sets SPI mode to 0 (look up online)
+
 
 # CRC FUNCTION
 crcTable = [0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7, 
@@ -56,6 +57,7 @@ def crcCompute(payload):
     crcSplit = [crcValue & 0x00FF, crcValue >> 8]
     return crcSplit
 
+
 # MAIN
 while True: 
     cmd = 1
@@ -73,11 +75,10 @@ while True:
     print(output)
     print([hex(x) for x in output])
 
-    break
-    rpl = spi.xfer2(req)
+    rpl = spi.xfer2(reqArr)
     print(rpl)
     time.sleep(10)
 
 
-
+# output: ['0x1', '0xe8', '0xfd', '0x0', '0x0', '0x77', '0x1b']
 

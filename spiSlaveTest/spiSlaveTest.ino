@@ -1,50 +1,34 @@
-# include <SPI.h>
 
 volatile boolean received;
-volatile byte req;
-volatile byte rpl;
+byte req;
+byte rpl;
 
-void setup() {
-  Serial.begin(115200);   // standard serial monitor set up
+void setup (void){ 
+  Serial.begin(115200);
+  
+  pinMode(MISO, OUTPUT);  // output thru "slave out" pin
 
-  pinMode(MISO,OUTPUT);   // sends output through "slave out" pin
-
-  SPCR |= _BV(SPE);       // puts SPI Control Register in slave mode
+  SPCR |= _BV(SPE);     // turn on SPI in slave mode  
+  SPCR |= _BV(SPIE);    // turn on interrupts
+  
   received = false;
 
-  SPI.attachInterrupt();  // if data received from master, interrupt is triggered
   Serial.println("Setup complete");
-}
+}  // end of setup
 
 
-ISR (SPI_STC_vect) {      // interrupt service routine
-  req = SPDR;   // byte from transfer                
-  Serial.println((req));    // sizeof(rcv)=1, only sees 1 byte at a time
+// SPI interrupt routine
+ISR (SPI_STC_vect){
+  req = SPDR;
+  Serial.println(req);
+
+  rpl = 5;
+  SPDR = rpl;
   
-  rpl = req;
-  SPDR = rpl;             // transfers rpl back up MISO
-  
-  received = true;                    
-}
+  received = true; 
+}  // end of interrupt service routine (ISR) SPI_STC_vect
 
-// ISSUE: sends rpl byte at front, then starts repeating back the rcv bytes
-// CHECK: storing rcv byte in SPDR? -> stores second byte in SPDR ??
-//        probably need to research into more
-
-// ISSUE: want to store/send rcv and rpl bytes as connected array
-// SOLVE: possibly use iteration to store into array? need to understand how SPDR works
-
-void loop() {
-/*  
-  if(received) {                           // logic to SET LED ON OR OFF depending upon the value recerived from master
-    if (rcv == 1) {              // "1" is the contents of the SPI transfer
-        Serial.println("Slave LED ON");
-    }
-    else {
-        Serial.println("Slave LED OFF");
-    }    
-    delay(1000);
+void loop (void){
+  if(received){
   }
-  Serial.println(received);
-*/  
-}
+}  // end of loop

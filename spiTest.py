@@ -72,12 +72,14 @@ while True:
     reqArr = sum([payloadArr, crcArr],[])
 
     output = reqArr
-    print("req:", output)
+    #print("req:", output)
     #print([hex(x) for x in output])
 
-    rpl = spi.xfer2(reqArr)
-    print("rpl:", rpl)
-    time.sleep(10)
+    for b in reqArr
+        rpl = spi.xfer2(b)
+        print(b)
+        print(rpl)
+        time.sleep(2)
 
 
 # req (int): [1, 232, 253, 0, 0, 119, 27]

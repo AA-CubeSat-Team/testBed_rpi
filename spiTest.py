@@ -77,6 +77,7 @@ while True:
 
     req = [0x01, 0x02, 0x03, 0x04, 0x00]          # trailing 0x00 allows slave to reply final byte
     rpl = spi.xfer2(req)
+    rpl.pop(0)
     print("req:", req)
     #rpl = spi.xfer2(reqArr)
     print("rpl:", rpl)

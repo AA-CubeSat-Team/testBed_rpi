@@ -35,6 +35,7 @@ ISR (SPI_STC_vect){
 
 void loop (void){
   if (flag == true){
+    Serial.println(sizeof(reqArr));
     for (int jj = 0; jj < 4; jj++){
       Serial.print(reqArr[jj]);
       Serial.print(" ");

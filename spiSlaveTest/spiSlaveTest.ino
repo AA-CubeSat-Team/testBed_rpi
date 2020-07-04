@@ -1,10 +1,10 @@
 
 volatile boolean process;
-int reqArr[5];
-int kk;
-int pp;
-volatile byte req;
-volatile byte rpl;
+byte reqArr[4];
+byte kk;
+byte pp;
+volatile byte reqB;
+volatile byte rplB;
 
 void setup (void){ 
   Serial.begin(115200);
@@ -16,40 +16,43 @@ void setup (void){
 
   SPDR = 1;
   kk = 0;
+  pp = 1;
   
   process = false;
 
   Serial.println("Setup complete");
-}  // end of setup
+} 
 
 
 // SPI interrupt routine 
 ISR (SPI_STC_vect){
-  req = SPDR;
-  Serial.println(pp++);
+  reqB = SPDR;
   
-  if (kk < 4){
-    reqArr[kk] = req;
-    Serial.println("first");
+  if (kk < 3){
+    reqArr[kk] = kk+2;
     kk++;
   }
   
-  if (false){
-    reqArr[kk] = req;
+  if (kk = 3){
+    reqArr[kk] = kk+3;
     process = true;
-    Serial.println("kk=4");
   }
   
-  rpl = req;
-  SPDR = rpl;               // need to create mechanism to store req bytes in an array
+  rplB = reqB + 10;
+  SPDR = rplB;               
 
-}  // end of interrupt service routine (ISR) SPI_STC_vect
+}  
 
 void loop (void){
   if(process){
-    Serial.println(kk);
-    Serial.println(sizeof(reqArr));
+    Serial.println("New Request");
+    Serial.println(kk);                 // triggers twice for each 4 byte request
+    Serial.println(sizeof(reqArr));     // contains 8 elements, both times
+    for(int i = 0; i < sizeof(reqArr); i++){
+      Serial.println(reqArr[i]);
+      reqArr[i] = 0;
+    }
     kk = 0;
     process = false;
   }
-}  // end of loop
+}  

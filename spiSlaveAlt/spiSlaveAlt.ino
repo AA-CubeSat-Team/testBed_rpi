@@ -1,6 +1,6 @@
 #include<SPI.h>  
 
-byte reqArr[4];
+byte reqArr[5];
 volatile byte reqB;
 volatile byte rplB;
 volatile bool flag;
@@ -18,6 +18,8 @@ void setup (void){
 
   flag = false;
   kk = 0;
+
+  Serial.println("Setup complete");
 }  
 
 ISR (SPI_STC_vect){
@@ -26,7 +28,7 @@ ISR (SPI_STC_vect){
   reqArr[kk] = reqB;
   kk++;
   
-  if (kk == 4){
+  if (kk == 5){
     flag = true;
   }
 
@@ -37,7 +39,7 @@ ISR (SPI_STC_vect){
 
 void loop (void){
   if (flag == true){
-    for (int jj = 0; jj < 4; jj++){
+    for (int jj = 0; jj < 5; jj++){
       Serial.print(reqArr[jj]);
       Serial.print(" ");
     }

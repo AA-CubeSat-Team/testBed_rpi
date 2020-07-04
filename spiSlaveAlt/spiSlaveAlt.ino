@@ -35,6 +35,12 @@ ISR (SPI_STC_vect){
     flag = true;
     Serial.println("flag");
   }
+
+  if (reqB == 7){
+    SPI.detachInterrupt();
+    flag = true;
+    Serial.println("flag");
+  }
   
   rplB = reqB+2;                     // finishes ISR even after interrupt is detached
   SPDR = rplB;
@@ -53,6 +59,7 @@ void loop (void){
     SPDR = 0;
     flag = false;
     kk = 0;
-    SPI.attachInterrupt();
+    delay(1000);
+    SPI.attachInterrupt();            // retriggers interrupt before transmission is over
   }
 }

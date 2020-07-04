@@ -6,6 +6,8 @@ volatile byte rplB;
 volatile bool flag;
 volatile byte kk;
 
+// CURRENT STATE: returns manipilated request in correct form
+// NEXT STEP: needs to be robust to changes in request length, eventually build in constant 0x00s
 void setup (void){
   Serial.begin (115200);
   
@@ -35,7 +37,6 @@ ISR (SPI_STC_vect){
 
 void loop (void){
   if (flag == true){
-    Serial.println(sizeof(reqArr));
     for (int jj = 0; jj < 4; jj++){
       Serial.print(reqArr[jj]);
       Serial.print(" ");

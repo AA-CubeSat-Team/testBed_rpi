@@ -1,6 +1,6 @@
 #include<SPI.h>  
 
-byte reqArr[5];
+byte reqArr[9];
 volatile byte reqB;
 volatile byte rplB;
 volatile bool flag;
@@ -16,6 +16,7 @@ void setup (void){
   SPCR |= _BV(SPE);  
   SPCR |= _BV(SPIE);
 
+  SPDR = 0;
   flag = false;
   kk = 0;
 
@@ -28,18 +29,19 @@ ISR (SPI_STC_vect){
   reqArr[kk] = reqB;
   kk++;
   
-  if (kk == 5){
+  if (kk == 9){
     flag = true;
   }
 
-  rplB = reqB + 10;
+  rplB = reqB * 10;
   SPDR = rplB;
 }
 
 
 void loop (void){
   if (flag == true){
-    for (int jj = 0; jj < 5; jj++){
+    Serial.print("req: ");
+    for (int jj = 0; jj < 9; jj++){
       Serial.print(reqArr[jj]);
       Serial.print(" ");
     }

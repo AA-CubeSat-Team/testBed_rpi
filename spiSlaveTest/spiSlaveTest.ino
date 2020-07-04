@@ -1,7 +1,10 @@
 
-volatile boolean received;
-byte req;
-byte rpl;
+volatile boolean process;
+int reqArr[5];
+int kk;
+int pp;
+volatile byte req;
+volatile byte rpl;
 
 void setup (void){ 
   Serial.begin(115200);
@@ -12,8 +15,9 @@ void setup (void){
   SPCR |= _BV(SPIE);    // turn on interrupts
 
   SPDR = 1;
+  kk = 0;
   
-  received = false;
+  process = false;
 
   Serial.println("Setup complete");
 }  // end of setup
@@ -22,16 +26,30 @@ void setup (void){
 // SPI interrupt routine 
 ISR (SPI_STC_vect){
   req = SPDR;
+  Serial.println(pp++);
   
-  rpl = req + 2;
-  SPDR = rpl;
+  if (kk < 4){
+    reqArr[kk] = req;
+    Serial.println("first");
+    kk++;
+  }
+  
+  if (false){
+    reqArr[kk] = req;
+    process = true;
+    Serial.println("kk=4");
+  }
+  
+  rpl = req;
+  SPDR = rpl;               // need to create mechanism to store req bytes in an array
 
-  received = true; 
 }  // end of interrupt service routine (ISR) SPI_STC_vect
 
 void loop (void){
-  if(received){
-    Serial.println(req);
-    received = false;
+  if(process){
+    Serial.println(kk);
+    Serial.println(sizeof(reqArr));
+    kk = 0;
+    process = false;
   }
 }  // end of loop

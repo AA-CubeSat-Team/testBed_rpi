@@ -75,7 +75,7 @@ while True:
     #print("req:", output)
     #print([hex(x) for x in output])
 
-    req = [0x00, 0x1b, 0x09, 0x03, 0x00]
+    req = [0x01, 0x02, 0x03, 0x04]          # trailing 0x00 allows slave to reply final byte
     rpl = spi.xfer2(req)
     print("req:", req)
     #rpl = spi.xfer2(reqArr)

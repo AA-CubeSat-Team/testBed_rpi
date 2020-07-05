@@ -14,14 +14,19 @@ void setup (void){
   
   pinMode(MISO, OUTPUT);
 
-  SPCR |= _BV(SPE);  
-  SPI.attachInterrupt();
-
+  Serial.print("SPE: ");           // SPCR is 1 byte, 8 bits, where each bit controls something
+  Serial.println(SPE, BIN);
+  SPCR = SPCR | bit(SPE);           // sets SPE bit in SPCR to 1, enabling SPI
+  SPCR = SPCR | bit(SPIE);          // sets SPIE bit in SPCR to 1, enabling SPI interrupts
+  Serial.print("SPCR: ");
+  Serial.println(SPCR, BIN);
+  
   SPDR = 0;
   flag = false;
   kk = 0;
 
   Serial.println("Setup complete");
+  Serial.println(bit(SPIE));
 }  
 
 ISR (SPI_STC_vect){
@@ -36,7 +41,7 @@ ISR (SPI_STC_vect){
     Serial.println("flag");
   }
 
-  if (reqB == 7){
+  if (reqB == 8){
     SPI.detachInterrupt();
     flag = true;
     Serial.println("flag");
@@ -59,7 +64,8 @@ void loop (void){
     SPDR = 0;
     flag = false;
     kk = 0;
-    delay(1000);
+    delay(500);                      // interrupt flag is set even when interrupts are detached
+    //SPIF |= 1;
     SPI.attachInterrupt();            // retriggers interrupt before transmission is over
   }
 }

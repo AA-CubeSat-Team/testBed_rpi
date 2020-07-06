@@ -17,6 +17,7 @@ spi.mode = 0                # sets SPI mode to 0 (look up online)
 # CSV INITIALIZATION
 import csv 
 
+global qq
 qq = 0
 
 header = ['entry', 'time', 'type1', 'type2']        # modify headers to fit data inputs

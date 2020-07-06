@@ -14,6 +14,17 @@ spi.open(bus, device)       # opens connection on specified bus, device
 spi.max_speed_hz = 250000   # sets master freq at 250 kHz, must be (150:300) kHz for RWA
 spi.mode = 0                # sets SPI mode to 0 (look up online)
 
+# CSV INITIALIZATION
+import csv 
+
+ee = 0
+
+header = ['entry', 'time', 'type1', 'type2']        # modify headers to fit data inputs
+
+file = open('output.csv', 'w', newline ='')         # open(..'w'..) creates new CSV file
+with file:   
+    write = csv.writer(file) 
+    write.writerow([header[0], header[1], header[2], header[3]]) 
 
 # CRC FUNCTION
 crcTable = [0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7, 
@@ -57,6 +68,21 @@ def crcCompute(payload):
     crcSplit = [crcValue & 0x00FF, crcValue >> 8]
     return crcSplit
 
+# CSV FUNCTION
+def csvAdd(rpl):
+    qq = qq + 1
+    ts = time.gmtime()
+    time1 = time.strftime("%H:%M:%S %Z", ts)
+                                                 
+    row1_ll = [[qq], [time1], rpl]
+    row1  = [val for sublist in row1_ll for val in sublist]          
+
+    file = open('output.csv', 'a', newline ='')         
+    with file:   
+        write = csv.writer(file) 
+        write.writerow([row1[0], row1[1], row1[2], row1[3], row1[4], row1[5]]) 
+    
+
 
 # MAIN
 while True: 
@@ -77,6 +103,8 @@ while True:
 
     req = [0x01, 0x02, 0x03, 0x04, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e]          # trailing 0x7e allows slave to reply 
     rpl = spi.xfer2(req)
+
+    csvAdd(rpl)
     
     #req.pop(-1)
     #rpl.pop(0)

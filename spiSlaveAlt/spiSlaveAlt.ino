@@ -1,6 +1,6 @@
 #include<SPI.h>  
 
-volatile byte reqArr[9];
+volatile byte reqArr[9];        // robust to changes in req length, reqArr fills w 0s after flag
 volatile byte rplArr[4] = {9,8,7,6};
 volatile byte reqB;
 volatile byte rplB;

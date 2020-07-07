@@ -1,5 +1,8 @@
 # spiTest.py
 
+
+# INIT --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
 # SPI INITIALIZATION
 import time
 import spidev
@@ -73,20 +76,19 @@ def crcCompute(payload):
 def csvAdd(rpl):
     global qq
     qq = qq + 1
-    ts = time.gmtime()
-    time1 = time.strftime("%H:%M:%S %Z", ts)
+    ts1 = time.gmtime()
+    time1 = time.strftime("%H:%M:%S %Z", ts1)
                                                  
     row1_ll = [[qq], [time1], rpl]
     row1  = [val for sublist in row1_ll for val in sublist]          
 
-    file = open('output.csv', 'a', newline ='')         
+    file = open('output.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file
     with file:   
         write = csv.writer(file) 
         write.writerow([row1[0], row1[1], row1[2], row1[3], row1[4], row1[5]]) 
     
 
-
-# MAIN
+# MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 while True: 
     cmd = 1
     cmdArr = list(bytearray((cmd).to_bytes(1, byteorder='little', signed=True)))
@@ -99,14 +101,14 @@ while True:
 
     reqArr = sum([payloadArr, crcArr],[])
 
-    output = reqArr
+    #output = reqArr
     #print("req:", output)
     #print([hex(x) for x in output])
 
-    req = [0x01, 0x02, 0x03, 0x04, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e]          # trailing 0x7e allows slave to reply 
-    rpl = spi.xfer2(req)
+    reqArr = [0x01, 0x02, 0x03, 0x04, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e]          # trailing 0x7e allows slave to reply 
+    rplArr = spi.xfer2(reqArr)
 
-    csvAdd(rpl)
+    csvAdd(rplArr)
     
     #req.pop(-1)
     #rpl.pop(0)

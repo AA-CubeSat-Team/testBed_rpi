@@ -107,10 +107,10 @@ while True:
     print("req:", reqArr)
     print("S7e:", S7eArr)
 
-    time.sleep(0.100)       # waits 100 ms for RWA to process
+    #time.sleep(0.100)       # waits 100 ms for RWA to process
 
-    M7eArr = [0x7e] * 6
-    rplArr = spi.xfer2(M7eArr)
+    #M7eArr = [0x7e] * 6
+    #rplArr = spi.xfer2(M7eArr)
 
 
 
@@ -119,8 +119,8 @@ while True:
     #req.pop(-1)
     #rpl.pop(0)
     
-    print("M7e:", M7eArr)
-    print("rpl:", rplArr)
+    #print("M7e:", M7eArr)
+    #print("rpl:", rplArr)
     time.sleep(5)
 
     #output = reqArr

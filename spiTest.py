@@ -104,21 +104,23 @@ while True:
     reqArr = [0x01, 0x02, 0x03, 0x04]          
     S7eArr = spi.xfer2(reqArr)
 
+    print("req:", reqArr)
+    print("S7e:", S7eArr)
+
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
     M7eArr = [0x7e] * 4
+    rplArr = spi.xfer2(M7eArr)
 
-    print(M7eArr)
 
-    break
 
-    csvAdd(rplArr)
+    #csvAdd(rplArr)
     
     #req.pop(-1)
     #rpl.pop(0)
     
-    print("req:", req)
-    print("rpl:", rpl)
+    print("req:", reqArr)
+    print("S7e:", S7eArr)
     time.sleep(5)
 
     #output = reqArr

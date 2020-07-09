@@ -119,8 +119,8 @@ while True:
     #req.pop(-1)
     #rpl.pop(0)
     
-    print("req:", reqArr)
-    print("S7e:", S7eArr)
+    print("M7e:", M7eArr)
+    print("rpl:", rplArr)
     time.sleep(5)
 
     #output = reqArr

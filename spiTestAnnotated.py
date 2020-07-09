@@ -1,10 +1,31 @@
-# spiTest.py
+# spiTest.py – MASTER
+
+# INTRO: this scripts primary goals are to assemble the request array for transmission,
+#        then receive and store the reply array from the slave
+
+# BKGND: CSV – a .CSV file stands for "Comma Separated Values", it's essentially a very
+#        minimal spreadsheet that stores numbers and text in row entries
+#        
+#        CRC - stands for "Cyclic Redundancy Check", which is a method of checking for errors
+#        in data transmissions. the CRC is 2 bytes, and they are calculated with a function 
+#        that inputs the request package and outputs the 2 CRC bytes. the RWA will then
+#        recalculate the CRC based on the package receives and see if it matches the CRC we sent
+#
+#        hex – hex is a another number format like decimal or binary, where one byte is 
+#        displayed "0xNN". you can read about the numbering scheme online (base-16). some
+#        notable numbers are 0x00 = 0, 0x01 = 1, and 0xFF = 255
+#       
+#        little endian - a method of writing multi-byte numbers where the least significant 
+#        byte (LSB) is placed first (to the left), while the most significant byte (MSB) is
+#        placed last (to the right). significance refers to the magnitude of number represented
+#
+#        2's complement – a method of writing negative numbers in binary/hex that's used here 
 
 
 # INIT --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 # SPI INITIALIZATION
-import time
+import time                 # imports raspberry pi/python libraries that provide more functions
 import spidev
 
 bus = 0
@@ -15,7 +36,7 @@ spi = spidev.SpiDev()       # enables spi, creates "spi" object
 spi.open(bus, device)       # opens connection on specified bus, device
 
 spi.max_speed_hz = 250000   # sets master freq at 250 kHz, must be (150:300) kHz for RWA
-spi.mode = 0                # sets SPI mode to 0 (look up online)
+spi.mode = 0                # sets SPI mode to 0 (look up what this means online)
 
 # CSV INITIALIZATION
 import csv 
@@ -65,7 +86,7 @@ crcTable = [0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7,
             0x6e17,0x7e36,0x4e55,0x5e74,0x2e93,0x3eb2,0x0ed1,0x1ef0];
 
 def crcCompute(payload):
-    crcValue = 0xFFFF
+    crcValue = 0xFFFF                                                       # generic CRC formula following the "0xFFFF" standard
     for iterbyte in payload:                          
         crcValue = (crcValue << 8) ^ crcTable[((crcValue >> 8) ^ iterbyte) & 0x00FF];
         crcValue = ((1 << 16) - 1)  &  crcValue;
@@ -91,28 +112,19 @@ def csvAdd(rpl):
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 while True: 
     cmd = 1
-    cmdArr = list(bytearray((cmd).to_bytes(1, byteorder='little', signed=True)))
+    cmdArr = list(bytearray((cmd).to_bytes(1, byteorder='little', signed=True)))      # this is 3 functions stacked in one line
+                                                                                      # the 1st function chops integer speed into 4 bytes
+    speed = 65000                                                                     # the 2nd function converts the bytes into a byte array
+    speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))  # the 3rd function converts the byte array into a list  
 
-    speed = 65000
-    speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
+    payloadArr = sum([cmdArr, speedArr],[])                 # flattens the command list and speed list into a single payload list
+    crcArr = crcCompute(payloadArr)                         # calculates CRC ofthe payload
 
-    payloadArr = sum([cmdArr, speedArr],[])
-    crcArr = crcCompute(payloadArr)
+    reqArr = sum([payloadArr, crcArr],[])                   # attaches the CRC bytes to the end of the request (compare with RWA datasheet)
+    
+    rplArr = spi.xfer2(reqArr)                              # transfers full request over SPI to the slave, receives reply from slave
 
-    reqArr = sum([payloadArr, crcArr],[])
-
-    reqArr = [0x01, 0x02, 0x03, 0x04]          
-    S7eArr = spi.xfer2(reqArr)
-
-    time.sleep(0.100)       # waits 100 ms for RWA to process
-
-    M7eArr = [0x7e] * 4
-
-    print(M7eArr)
-
-    break
-
-    csvAdd(rplArr)
+    csvAdd(rplArr)                                          # stores each byte of the reply list in a new row of the .CSV file
     
     #req.pop(-1)
     #rpl.pop(0)
@@ -121,10 +133,9 @@ while True:
     print("rpl:", rpl)
     time.sleep(5)
 
-    #output = reqArr
-    #print("req:", output)
-    #print([hex(x) for x in output])
-
+#reqArr = [0x01, 0x02, 0x03, 0x04, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e]          # spare code for testing 
 # req (int): [1, 232, 253, 0, 0, 119, 27]
 # req (hex): ['0x1', '0xe8', '0xfd', '0x0', '0x0', '0x77', '0x1b']
+#print("req:", req)
+#print([hex(x) for x in output])
 

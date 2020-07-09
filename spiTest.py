@@ -101,7 +101,7 @@ while True:
 
     reqArr = sum([payloadArr, crcArr],[])
 
-    reqArr = [0x01, 0x02, 0x03, 0x04, 0x7e]          
+    reqArr = [0x7e, 0x01, 0x02, 0x03, 0x04, 0x7e]          
     S7eArr = spi.xfer2(reqArr)
 
     print("req:", reqArr)
@@ -109,7 +109,7 @@ while True:
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
-    M7eArr = [0x7e] * 4
+    M7eArr = [0x7e] * 6
     rplArr = spi.xfer2(M7eArr)
 
 

@@ -25,7 +25,7 @@ void setup (void){
   kk = 0;
   reqB_old = 126;
 
-  Serial.println(reqB_old);
+  Serial.println("Setup complete");
 }  
 
 

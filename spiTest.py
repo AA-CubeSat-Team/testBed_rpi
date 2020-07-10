@@ -73,19 +73,27 @@ def crcCompute(payload):
     return crcSplit
 
 # CSV FUNCTION
-def csvAdd(rpl):
+def csvAdd(arr, mode):
     global qq
     qq = qq + 1
     ts1 = time.gmtime()
     time1 = time.strftime("%H:%M:%S %Z", ts1)
-                                                 
-    row1_ll = [[qq], [time1], rpl]
+    
+    if mode == req:
+        arr.pop(0)
+        arr.pop(-1)
+        data == arr
+
+    if mode == rpl:
+        #specific cleaning/converting
+
+    row1_ll = [[qq], [time1], data]
     row1  = [val for sublist in row1_ll for val in sublist]          
 
     file = open('output.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file
     with file:   
         write = csv.writer(file) 
-        write.writerow([row1[0], row1[1], row1[2], row1[3], row1[4], row1[5]]) 
+        write.writerow([row1[0], row1[1], row1[2], row1[3]])    # need to automate length of row
     
 
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -107,7 +115,9 @@ while True:
     print("req:", reqArr)
     #print("S7e:", S7eArr)
 
-    time.sleep(0.500)       # waits 100 ms for RWA to process
+    csvAdd(reqArr, reqMode)
+
+    time.sleep(0.100)       # waits 100 ms for RWA to process
 
     rplN = 4
     M7eArr = [0x7e] * (rplN + 3)
@@ -116,7 +126,7 @@ while True:
     #sprint("M7e:", M7eArr)
     print("rpl:", rplArr)
 
-    csvAdd(rplArr)
+    #csvAdd(rplArr, rplMode)
     
     #req.pop(-1)
     #rpl.pop(0)

@@ -107,7 +107,7 @@ while True:
     print("req:", reqArr)
     #print("S7e:", S7eArr)
 
-    time.sleep(0.100)       # waits 100 ms for RWA to process
+    time.sleep(0.500)       # waits 100 ms for RWA to process
 
     rplN = 4
     M7eArr = [0x7e] * (rplN + 3)

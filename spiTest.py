@@ -25,7 +25,7 @@ qq = 0
 global xx
 xx = 0
 
-header = ["entry", "time", "xfer", "mode", "type1", "type2"]        
+header = ["entry", "time", "xfer", "mode", "byte1", "byte2", "byte3", "byte4"]        
 
 file = open('output.csv', 'w', newline ='')         # open(..'w'..) creates new CSV file
 with file:   

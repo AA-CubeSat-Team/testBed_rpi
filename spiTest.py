@@ -113,6 +113,7 @@ while True:
     comID = input("enter a command ID:\n")
     comID = bytes(comID, 'utf-8')
     print(comID)
+    print(type(comID))
     print(" ")
 
     #cmd = 1

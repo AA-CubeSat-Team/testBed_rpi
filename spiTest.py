@@ -143,9 +143,6 @@ while True:
 
     csvAdd(rplArr, "rplMode")
 
-    time.sleep(5)
-
-
 
     #output = reqArr
     #print("req:", output)

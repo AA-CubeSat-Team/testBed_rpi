@@ -105,7 +105,7 @@ while True:
     S7eArr = spi.xfer2(reqArr)
 
     print("req:", reqArr)
-    print("S7e:", S7eArr)
+    #print("S7e:", S7eArr)
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
@@ -113,7 +113,7 @@ while True:
     M7eArr = [0x7e] * (rplN + 3)
     rplArr = spi.xfer2(M7eArr)
     
-    print("M7e:", M7eArr)
+    #sprint("M7e:", M7eArr)
     print("rpl:", rplArr)
 
     csvAdd(rplArr)

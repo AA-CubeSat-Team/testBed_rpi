@@ -72,8 +72,8 @@ void loop (void){
     byte rpl1[6] = {126,8,7,6,5,126};
     byte rpl2[6] = {126,5,6,7,8,126};
 
-    //memcpy(rplArr, rpl1, sizeof(rpl1));
-    memcpy(rplArr, rpl2, sizeof(rpl1));
+    memcpy(rplArr, rpl1, sizeof(rpl1));
+    //memcpy(rplArr, rpl2, sizeof(rpl1));
     
     SPDR = 0;
     flag = false;

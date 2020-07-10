@@ -109,7 +109,8 @@ while True:
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
-    M7eArr = [0x7e] * 7
+    rplN = 4
+    M7eArr = [0x7e] * (rplN + 3)
     rplArr = spi.xfer2(M7eArr)
     
     print("M7e:", M7eArr)

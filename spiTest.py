@@ -131,7 +131,7 @@ while True:
     #sprint("M7e:", M7eArr)
     print("rpl:", rplArr)
 
-    #csvAdd(rplArr, rplMode)
+    csvAdd(rplArr, "rplMode")
     
     #req.pop(-1)
     #rpl.pop(0)

@@ -79,12 +79,12 @@ def csvAdd(arr, mode):
     ts1 = time.gmtime()
     time1 = time.strftime("%H:%M:%S %Z", ts1)
     
-    if mode == req:
+    if mode == reqMode:
         arr.pop(0)
         arr.pop(-1)
         data == arr
 
-    if mode == rpl:
+    if mode == rplMode:
         #specific cleaning/converting
 
     row1_ll = [[qq], [time1], data]

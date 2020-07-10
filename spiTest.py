@@ -86,16 +86,16 @@ def csvAdd(arr, mode):
         arr.pop(0)
         arr.pop(-1)
         data = arr
-        src = "M"
+        src = "master"
 
     if mode == "rplMode":
         arr.pop(0)
         arr.pop(0)
         arr.pop(-1)
         data = arr
-        src = "S"
+        src = "slave"
 
-    row1_ll = [[qq], [time1], src, [data]]
+    row1_ll = [[qq], [time1], [src], data]
     row1  = [val for sublist in row1_ll for val in sublist]          
 
     file = open('output.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file

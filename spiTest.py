@@ -81,12 +81,12 @@ def csvAdd(arr, mode):
     ts1 = time.gmtime()
     time1 = time.strftime("%H:%M:%S %Z", ts1)
     
-    if mode == 1:
+    if mode == "reqMode":
         arr.pop(0)
         arr.pop(-1)
         data = arr
 
-    if mode == 2:
+    if mode == "rplMode":
         one = 1 #specific cleaning/converting
 
     row1_ll = [[qq], [time1], data]
@@ -95,7 +95,7 @@ def csvAdd(arr, mode):
     file = open('output.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file
     with file:   
         write = csv.writer(file) 
-        write.writerow([row1[0], row1[1], row1[2], row1[3]])    # need to automate length of row
+        write.writerow([row1[0], row1[1], row1[2], row1[3], row1[4], row1[5]])    # need to automate length of row
     
 
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -117,7 +117,7 @@ while True:
     print("req:", reqArr)
     #print("S7e:", S7eArr)
 
-    csvAdd(reqArr, 1)
+    csvAdd(reqArr, "reqMode")
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 

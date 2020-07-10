@@ -101,7 +101,7 @@ def csvAdd(arr, mode):
     file = open('output.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file
     with file:   
         write = csv.writer(file) 
-        write.writerow([row1[0], row1[1], row1[2], row1[3], row1[4], row1[5]])    # need to automate length of row
+        write.writerow(row1)    
     
 
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---

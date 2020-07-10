@@ -85,13 +85,21 @@ void loop (void){
 void genReply(byte id){
   byte rpl1[6] = {126,id,3,3,3,126};
   byte rpl2[6] = {126,id,4,4,4,126};
+  byte rpl3[6] = {126,id,5,5,5,126};
+  byte rpl4[6] = {126,id,6,6,6,126};
     
   switch(id) {
     case 1 :
       memcpy(rplArr, rpl1, sizeof(rpl1));
       break;
     case 2 :
-      memcpy(rplArr, rpl2, sizeof(rpl1));
+      memcpy(rplArr, rpl2, sizeof(rpl2));
+      break;
+    case 3 :
+      memcpy(rplArr, rpl3, sizeof(rpl3));
+      break;
+    case 4 :
+      memcpy(rplArr, rpl4, sizeof(rpl4));
       break;
   }
 }

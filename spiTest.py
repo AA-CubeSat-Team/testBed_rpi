@@ -110,18 +110,21 @@ def csvAdd(arr, mode):
 
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 while True: 
-    cmd = 1
-    cmdArr = list(bytearray((cmd).to_bytes(1, byteorder='little', signed=True)))
+    comID = input("enter a command ID:\n")
+    comID = byte(comID)
 
-    speed = 65000
-    speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
+    #cmd = 1
+    #cmdArr = list(bytearray((cmd).to_bytes(1, byteorder='little', signed=True)))
 
-    payloadArr = sum([cmdArr, speedArr],[])
-    crcArr = crcCompute(payloadArr)
+    #speed = 65000
+    #speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
 
-    reqArr = sum([payloadArr, crcArr],[])
+    #payloadArr = sum([cmdArr, speedArr],[])
+    #crcArr = crcCompute(payloadArr)
 
-    reqArr = [0x7e, 0x01, 0x00, 0x00, 0x00, 0x7e]          
+    #reqArr = sum([payloadArr, crcArr],[])
+
+    reqArr = [0x7e, comID, 0x00, 0x00, 0x00, 0x7e]          
     S7eArr = spi.xfer2(reqArr)
 
     print("req:", reqArr)
@@ -131,7 +134,7 @@ while True:
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
-    rplN = 4
+    rplN = 4                # size of expected reply package
     M7eArr = [0x7e] * (rplN + 3)
     rplArr = spi.xfer2(M7eArr)
     

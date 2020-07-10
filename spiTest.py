@@ -28,7 +28,7 @@ header = ['entry', 'time', 'mode', 'type1', 'type2']
 file = open('output.csv', 'w', newline ='')         # open(..'w'..) creates new CSV file
 with file:   
     write = csv.writer(file) 
-    write.writerow([header[0], header[1], header[2], header[3], header[4]]) 
+    write.writerow(header) 
 
 # CRC FUNCTION
 crcTable = [0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7, 

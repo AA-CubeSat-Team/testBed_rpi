@@ -84,7 +84,7 @@ def csvAdd(arr, mode):
         arr.pop(-1)
         data == arr
 
-    if mode == 2
+    if mode == 2:
         one = 1 #specific cleaning/converting
 
     row1_ll = [[qq], [time1], data]

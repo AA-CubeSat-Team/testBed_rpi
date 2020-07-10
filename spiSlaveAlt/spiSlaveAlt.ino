@@ -33,18 +33,18 @@ void setup (void){
 ISR (SPI_STC_vect){
   reqB_new = SPDR;
 
-  if ( (reqB_old == 126) && (reqB_new == 126) ){       
+  if ( (reqB_old == 126) && (reqB_new == 126) ){      // master querying reply   
     // set reply mode
   }
-  if ( (reqB_old == 126) && (reqB_new != 126) ){  
+  if ( (reqB_old == 126) && (reqB_new != 126) ){      // beginning of request
     reqArr[kk] = reqB_new;
     kk++;
   }
-  if ( (reqB_old != 126) && (reqB_new != 126) ){  
+  if ( (reqB_old != 126) && (reqB_new != 126) ){      // during request
     reqArr[kk] = reqB_new;
     kk++;
   }
-  if ( (reqB_old != 126) && (reqB_new == 126) ){  
+  if ( (reqB_old != 126) && (reqB_new == 126) ){      // end of request
     SPI.detachInterrupt();          
     flag = 1;
   }

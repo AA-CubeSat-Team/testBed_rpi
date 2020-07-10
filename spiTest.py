@@ -87,7 +87,10 @@ def csvAdd(arr, mode):
         data = arr
 
     if mode == "rplMode":
-        one = 1 #specific cleaning/converting
+        arr.pop(0)
+        arr.pop(0)
+        arr.pop(-1)
+        data = arr
 
     row1_ll = [[qq], [time1], data]
     row1  = [val for sublist in row1_ll for val in sublist]          

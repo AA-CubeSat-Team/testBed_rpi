@@ -111,10 +111,7 @@ def csvAdd(arr, mode):
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 while True: 
     comID = input("enter a command ID:\n")
-    comID = bytes(comID, 'utf-8')
-    print(comID)
-    print(type(0x01))
-    print(" ")
+    comID = int(comID)
 
     #cmd = 1
     #cmdArr = list(bytearray((cmd).to_bytes(1, byteorder='little', signed=True)))

@@ -117,8 +117,8 @@ while True:
 
     csvAdd(rplArr)
     
-    req.pop(-1)
-    rpl.pop(0)
+    #req.pop(-1)
+    #rpl.pop(0)
 
     time.sleep(5)
 

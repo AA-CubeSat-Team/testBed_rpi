@@ -76,7 +76,7 @@ def crcCompute(payload):
 def csvAdd(arr, mode):
     global qq
     global data
-    
+
     qq = qq + 1
     ts1 = time.gmtime()
     time1 = time.strftime("%H:%M:%S %Z", ts1)
@@ -84,7 +84,7 @@ def csvAdd(arr, mode):
     if mode == 1:
         arr.pop(0)
         arr.pop(-1)
-        data == arr
+        data = arr
 
     if mode == 2:
         one = 1 #specific cleaning/converting

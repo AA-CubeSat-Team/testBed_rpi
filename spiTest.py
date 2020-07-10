@@ -114,7 +114,7 @@ while True:
 
     reqArr = sum([payloadArr, crcArr],[])
 
-    reqArr = [0x7e, 0x01, 0x02, 0x03, 0x04, 0x7e]          
+    reqArr = [0x7e, 0x01, 0x00, 0x00, 0x00, 0x7e]          
     S7eArr = spi.xfer2(reqArr)
 
     print("req:", reqArr)

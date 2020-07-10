@@ -23,12 +23,12 @@ import csv
 global qq
 qq = 0
 
-header = ['entry', 'time', 'type1', 'type2']        # modify headers to fit data inputs
+header = ['entry', 'time', 'mode', 'type1', 'type2']        
 
 file = open('output.csv', 'w', newline ='')         # open(..'w'..) creates new CSV file
 with file:   
     write = csv.writer(file) 
-    write.writerow([header[0], header[1], header[2], header[3]]) 
+    write.writerow([header[0], header[1], header[2], header[3], header[4]]) 
 
 # CRC FUNCTION
 crcTable = [0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7, 
@@ -81,18 +81,18 @@ def csvAdd(arr, mode):
     ts1 = time.gmtime()
     time1 = time.strftime("%H:%M:%S %Z", ts1)
     
-    if mode == "reqMode":
+    if mode == "req":
         arr.pop(0)
         arr.pop(-1)
         data = arr
 
-    if mode == "rplMode":
+    if mode == "rpl":
         arr.pop(0)
         arr.pop(0)
         arr.pop(-1)
         data = arr
 
-    row1_ll = [[qq], [time1], data]
+    row1_ll = [[qq], [time1], mode, data]
     row1  = [val for sublist in row1_ll for val in sublist]          
 
     file = open('output.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file
@@ -120,7 +120,7 @@ while True:
     print("req:", reqArr)
     #print("S7e:", S7eArr)
 
-    csvAdd(reqArr, "reqMode")
+    csvAdd(reqArr, "req")
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
@@ -131,10 +131,7 @@ while True:
     #sprint("M7e:", M7eArr)
     print("rpl:", rplArr)
 
-    csvAdd(rplArr, "rplMode")
-    
-    #req.pop(-1)
-    #rpl.pop(0)
+    csvAdd(rplArr, "rpl")
 
     time.sleep(5)
 

@@ -1,6 +1,6 @@
 #include<SPI.h>  
 
-volatile byte reqArr[9];        // robust to changes in req length, reqArr fills w 0s after flag
+volatile byte reqArr[9];        
 byte rplArr[6]; 
 volatile byte reqB_new;
 volatile byte reqB_old;
@@ -10,8 +10,8 @@ volatile byte kk;
 volatile byte yy;
 volatile byte readReg;
 
-// CURRENT STATE: recognizes flag, cuts interrupts to process data
-// NEXT STEP: test on long 0x7E requests, input own reply package
+// CURRENT STATE: sends follow-up reply package based on request contents
+// NEXT STEP: 
 
 void setup (void){
   Serial.begin (115200);
@@ -29,7 +29,6 @@ void setup (void){
 
   Serial.println("Setup complete");
 }  
-
 
 
 ISR (SPI_STC_vect){
@@ -57,10 +56,12 @@ ISR (SPI_STC_vect){
   
   reqB_old = reqB_new;
 }
+
                                      
-//SPI.detachInterrupt();
 void loop (void){
   if (flag == 1){
+    genReply(reqArr[0]);
+    
     Serial.print("req: ");
     for (int jj = 0; jj < sizeof(reqArr); jj++){
       Serial.print(reqArr[jj]);
@@ -69,17 +70,6 @@ void loop (void){
     }
     Serial.println();
 
-    byte rpl1[6] = {126,8,7,6,5,126};
-    byte rpl2[6] = {126,5,6,7,8,126};
-
-    if (reqArr[0] == 1){
-      memcpy(rplArr, rpl1, sizeof(rpl1));
-    }
-    if (reqArr[0] == 2){
-      memcpy(rplArr, rpl2, sizeof(rpl1));
-    }
-
-    
     SPDR = 0;
     flag = false;
     kk = 0;
@@ -88,5 +78,20 @@ void loop (void){
     readReg = SPSR;
     readReg = SPDR;
     SPCR = SPCR | bit(SPIE);            
+  }
+}
+
+
+void genReply(int id){
+  byte rpl1[6] = {126,3,3,3,3,126};
+  byte rpl2[6] = {126,4,4,4,4,126};
+    
+  switch(id) {
+    case 1 :
+      memcpy(rplArr, rpl1, sizeof(rpl1));
+      break;
+    case 2 :
+      memcpy(rplArr, rpl2, sizeof(rpl1));
+      break;
   }
 }

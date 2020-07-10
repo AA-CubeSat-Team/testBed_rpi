@@ -95,7 +95,7 @@ def csvAdd(arr, mode):
         data = arr
         src = "S"
 
-    row1_ll = [[qq], [time1], src, data]
+    row1_ll = [[qq], [time1], src, [data]]
     row1  = [val for sublist in row1_ll for val in sublist]          
 
     file = open('output.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file

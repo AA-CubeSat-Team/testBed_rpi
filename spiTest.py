@@ -79,12 +79,12 @@ def csvAdd(arr, mode):
     ts1 = time.gmtime()
     time1 = time.strftime("%H:%M:%S %Z", ts1)
     
-    if mode == reqMode:
+    if mode == 1:
         arr.pop(0)
         arr.pop(-1)
         data == arr
 
-    if mode == rplMode:
+    if mode == 2
         one = 1 #specific cleaning/converting
 
     row1_ll = [[qq], [time1], data]
@@ -115,7 +115,7 @@ while True:
     print("req:", reqArr)
     #print("S7e:", S7eArr)
 
-    csvAdd(reqArr, reqMode)
+    csvAdd(reqArr, 1)
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 

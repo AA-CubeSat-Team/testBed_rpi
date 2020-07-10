@@ -76,23 +76,26 @@ def crcCompute(payload):
 def csvAdd(arr, mode):
     global qq
     global data
+    global src
 
     qq = qq + 1
     ts1 = time.gmtime()
     time1 = time.strftime("%H:%M:%S %Z", ts1)
     
-    if mode == 'req':
+    if mode == "reqMode":
         arr.pop(0)
         arr.pop(-1)
         data = arr
+        src = "M"
 
-    if mode == 'rpl':
+    if mode == "rplMode":
         arr.pop(0)
         arr.pop(0)
         arr.pop(-1)
         data = arr
+        src = "S"
 
-    row1_ll = [[qq], [time1], mode, data]
+    row1_ll = [[qq], [time1], src, data]
     row1  = [val for sublist in row1_ll for val in sublist]          
 
     file = open('output.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file
@@ -120,7 +123,7 @@ while True:
     print("req:", reqArr)
     #print("S7e:", S7eArr)
 
-    csvAdd(reqArr, 'req')
+    csvAdd(reqArr, "reqMode")
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
@@ -131,7 +134,7 @@ while True:
     #sprint("M7e:", M7eArr)
     print("rpl:", rplArr)
 
-    csvAdd(rplArr, 'rpl')
+    csvAdd(rplArr, "rplMode")
 
     time.sleep(5)
 

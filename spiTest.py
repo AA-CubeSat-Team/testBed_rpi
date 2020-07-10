@@ -22,8 +22,10 @@ import csv
 
 global qq
 qq = 0
+global xx
+xx = 0
 
-header = ['entry', 'time', 'mode', 'type1', 'type2']        
+header = ["entry", "time", "xfer", "mode", "type1", "type2"]        
 
 file = open('output.csv', 'w', newline ='')         # open(..'w'..) creates new CSV file
 with file:   
@@ -75,6 +77,7 @@ def crcCompute(payload):
 # CSV FUNCTION
 def csvAdd(arr, mode):
     global qq
+    global xx
     global data
     global src
 
@@ -87,6 +90,7 @@ def csvAdd(arr, mode):
         arr.pop(-1)
         data = arr
         src = "req"
+        xx = xx + 1
 
     if mode == "rplMode":
         arr.pop(0)
@@ -95,7 +99,7 @@ def csvAdd(arr, mode):
         data = arr
         src = "rpl"
 
-    row1_ll = [[qq], [time1], [src], data]
+    row1_ll = [[qq], [time1], [xx], [src], data]
     row1  = [val for sublist in row1_ll for val in sublist]          
 
     file = open('output.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file

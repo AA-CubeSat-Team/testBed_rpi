@@ -82,9 +82,9 @@ void loop (void){
 }
 
 
-void genReply(int id){
-  byte rpl1[6] = {126,3,3,3,3,126};
-  byte rpl2[6] = {126,4,4,4,4,126};
+void genReply(byte id){
+  byte rpl1[6] = {126,id,3,3,3,126};
+  byte rpl2[6] = {126,id,4,4,4,126};
     
   switch(id) {
     case 1 :

@@ -1,12 +1,13 @@
 #include<SPI.h>  
 
 volatile byte reqArr[9];        // robust to changes in req length, reqArr fills w 0s after flag
-volatile byte rplArr[4] = {9,8,7,6};
+byte rplArr[6]; 
 volatile byte reqB_new;
 volatile byte reqB_old;
 volatile byte rplB;
 volatile byte flag;
 volatile byte kk;
+volatile byte yy;
 volatile byte readReg;
 
 // CURRENT STATE: recognizes flag, cuts interrupts to process data
@@ -23,6 +24,7 @@ void setup (void){
   SPDR = 0;
   flag = 0;
   kk = 0;
+  yy = 0;
   reqB_old = 126;
 
   Serial.println("Setup complete");
@@ -34,15 +36,19 @@ ISR (SPI_STC_vect){
   reqB_new = SPDR;
 
   if ( (reqB_old == 126) && (reqB_new == 126) ){      // master querying reply   
-    // set reply mode
+    SPDR = rplArr[yy];
+    yy++;
   }
   if ( (reqB_old == 126) && (reqB_new != 126) ){      // beginning of request
     reqArr[kk] = reqB_new;
     kk++;
+    yy = 0;
+    SPDR = 126;
   }
   if ( (reqB_old != 126) && (reqB_new != 126) ){      // during request
     reqArr[kk] = reqB_new;
     kk++;
+    SPDR = 126;
   }
   if ( (reqB_old != 126) && (reqB_new == 126) ){      // end of request
     SPI.detachInterrupt();          
@@ -50,8 +56,6 @@ ISR (SPI_STC_vect){
   }
   
   reqB_old = reqB_new;
-
-  SPDR = 126;
 }
                                      
 //SPI.detachInterrupt();
@@ -64,6 +68,12 @@ void loop (void){
       reqArr[jj] = 0;
     }
     Serial.println();
+
+    byte rpl1[6] = {126,8,7,6,5,126};
+    byte rpl2[6] = {126,5,6,7,8,126};
+
+    //memcpy(rplArr, rpl1, sizeof(rpl1));
+    memcpy(rplArr, rpl2, sizeof(rpl1));
     
     SPDR = 0;
     flag = false;
@@ -75,40 +85,3 @@ void loop (void){
     SPCR = SPCR | bit(SPIE);            
   }
 }
-
-/*
-ISR (SPI_STC_vect){
-  reqB = SPDR;
-  reqArr[kk] = reqB;
-  kk++;
-  
-  if (reqB == 126){
-    SPI.detachInterrupt();          // sets SPIE bit in SPCR to 0, disabling interrupts 
-    flag = 1;
-  }
-  
-  rplB = reqB+2;                    
-  SPDR = rplB;
-}
-                                     
-
-void loop (void){
-  if (flag == 1){
-    Serial.print("req: ");
-    for (int jj = 0; jj < sizeof(reqArr); jj++){
-      Serial.print(reqArr[jj]);
-      Serial.print(" ");
-      reqArr[jj] = 0;
-    }
-    Serial.println();
-    
-    SPDR = 0;
-    flag = false;
-    kk = 0;
-    
-    readReg = SPSR;
-    readReg = SPDR;
-    SPCR = SPCR | bit(SPIE);            
-  }
-}
-*/

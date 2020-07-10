@@ -109,24 +109,24 @@ while True:
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
-    M7eArr = [0x7e] * 6
+    M7eArr = [0x7e] * 7
     rplArr = spi.xfer2(M7eArr)
-
-
-
-    #csvAdd(rplArr)
-    
-    #req.pop(-1)
-    #rpl.pop(0)
     
     print("M7e:", M7eArr)
     print("rpl:", rplArr)
+
+    csvAdd(rplArr)
+    
+    req.pop(-1)
+    rpl.pop(0)
+
     time.sleep(5)
+
+
 
     #output = reqArr
     #print("req:", output)
     #print([hex(x) for x in output])
 
-# req (int): [1, 232, 253, 0, 0, 119, 27]
-# req (hex): ['0x1', '0xe8', '0xfd', '0x0', '0x0', '0x77', '0x1b']
+
 

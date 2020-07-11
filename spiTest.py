@@ -74,6 +74,47 @@ def crcCompute(payload):
     crcSplit = [crcValue & 0x00FF, crcValue >> 8]
     return crcSplit
 
+# LIST FLATTENING TOOL
+import collections
+def flatList(x):
+    if isinstance(x, collections.Iterable):
+        return [a for i in x for a in flatList(i)]
+    else:
+        return [x]
+
+# FLAG/ESCAPE XOR FUNCTION
+def xor(arr, mode):
+    if mode == "reqMode":
+        idxList = [i for i, val in enumerate(arr) if val == 0x7d]
+
+        for idx in idxList:
+            arr[idx] = [0x7d, arr[idx]^0x20]
+            
+        arr  = flatList(arr) 
+
+        idxList = [i for i, val in enumerate(arr) if val == 0x7e]
+        idxList.pop(-1)
+        idxList.pop(0)
+
+        for idx in idxList:
+            arr[idx] = [0x7d, arr[idx]^0x20]
+            
+        arrXOR = flatList(arr) 
+        return(arrXOR)
+
+    if mode == "rplMode":
+        idxList = [i for i, val in enumerate(arr) if val == 0x7d]
+
+        for idx in idxList:
+            arr[idx+1] = arr[idx+1]^0x20
+
+        idxList.reverse()
+        for idx in idxList:
+            arr.pop(idx)
+
+        arrTrue = arr
+        return(arrTrue)
+
 # CSV FUNCTION
 def csvAdd(arr, mode):
     global qq
@@ -100,7 +141,7 @@ def csvAdd(arr, mode):
         src = "rpl"
 
     row1_ll = [[qq], [time1], [xx], [src], data]
-    row1  = [val for sublist in row1_ll for val in sublist]          
+    row1  = flatList(row1_ll)      
 
     file = open('output.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file
     with file:   
@@ -119,28 +160,29 @@ while True:
     #speed = 65000
     #speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
 
-    #payloadArr = sum([cmdArr, speedArr],[])
+    #payloadArr = flatList([cmdArr, speedArr])
     #crcArr = crcCompute(payloadArr)
 
-    #reqArr = sum([payloadArr, crcArr],[])
+    #reqArr = flatList([payloadArr, crcArr])
 
-    reqArr = [0x7e, comID, 0x00, 0x00, 0x00, 0x7e]          
-    S7eArr = spi.xfer2(reqArr)
+    reqArrT = [0x7e, comID, 0x00, 0x7e, 0x00, 0x7e]   
 
-    print("req:", reqArr)
-    #print("S7e:", S7eArr)
-
-    csvAdd(reqArr, "reqMode")
+    reqArrX = xor(reqArrT, "reqMode")
+    S7eArr = spi.xfer2(reqArrX)
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
-    rplN = 4                # size of expected reply package
+    rplN = 4                            # size of expected reply package
     M7eArr = [0x7e] * (rplN + 3)
-    rplArr = spi.xfer2(M7eArr)
-    
-    #sprint("M7e:", M7eArr)
-    print("rpl:", rplArr)
 
+    rplArrX = spi.xfer2(M7eArr)
+    rplArrT = xor(rplArrX, "rplMode")    # need to set up XOR on Arduino
+
+    
+    print("req:", reqArrX)
+    print("rpl:", rplArrX)
+
+    csvAdd(reqArr, "reqMode")
     csvAdd(rplArr, "rplMode")
 
 

@@ -175,15 +175,15 @@ while True:
     rplN = 4                            # size of expected reply package
     M7eArr = [0x7e] * (rplN + 3)
 
-    rplArrX = spi.xfer2(M7eArr)
-    rplArrT = xor(rplArrX, "rplMode")    # need to set up XOR on Arduino
+    rplArrT = spi.xfer2(M7eArr)
+    #rplArrT = xor(rplArrX, "rplMode")    # need to set up XOR on Arduino
 
     
     print("req:", reqArrX)
     print("rpl:", rplArrX)
 
-    print(xor(reqArr,"reqMode"))
-    print(xor(rplArr,"rplMode"))
+    print(xor(reqArrT,"reqMode"))
+    print(xor(rplArrX,"rplMode"))
 
     #csvAdd(reqArrT, "reqMode")
     #csvAdd(rplArrT, "rplMode")

@@ -182,8 +182,11 @@ while True:
     print("req:", reqArrX)
     print("rpl:", rplArrX)
 
-    csvAdd(reqArrT, "reqMode")
-    csvAdd(rplArrT, "rplMode")
+    print(xor(reqArr,"reqMode"))
+    print(xor(rplArr,"rplMode"))
+
+    #csvAdd(reqArrT, "reqMode")
+    #csvAdd(rplArrT, "rplMode")
 
 
     #output = reqArr

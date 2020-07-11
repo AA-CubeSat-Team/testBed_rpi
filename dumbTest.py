@@ -1,5 +1,5 @@
 
-
+# LIST FLATTENING TOOL
 import collections
 def flatList(x):
     if isinstance(x, collections.Iterable):
@@ -7,6 +7,7 @@ def flatList(x):
     else:
         return [x]
 
+# FLAG/ESCAPE XOR FUNCTION
 def xor(arr, mode):
     if mode == "reqMode":
         idxList = [i for i, val in enumerate(arr) if val == 0x7d]

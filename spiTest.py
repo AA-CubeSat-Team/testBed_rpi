@@ -28,8 +28,9 @@ xx = 0
 header = ["entry", "time", "xfer", "mode", "byte1", "byte2", "byte3", "byte4"]        
 
 global fileName
-fileEnd = input("enter a file name: spiLog_")
-fileName = 'spiLog_' + fileEnd + '.csv'
+#fileEnd = input("enter a file name: spiLog_")
+#fileName = 'spiLog_' + fileEnd + '.csv'
+fileName = 'output.csv'
 
 file = open(fileName, 'w', newline ='')         # open(..'w'..) creates new CSV file
 with file:   
@@ -181,14 +182,14 @@ while True:
     M7eArr = [0x7e] * (rplN + 3)
 
     rplArrX = spi.xfer2(M7eArr)
-    print("rplX:", rplArrX)
-    rplArrT = xor(rplArrX, "rplMode")    # need to set up XOR on Arduino
+
+    #rplArrT = xor(rplArrX, "rplMode")    # need to set up XOR on Arduino
 
     
     print("reqT:", reqArrT)
     print("reqX:", reqArrX)
     print("rplX:", rplArrX)
-    print("rplT:", rplArrT)
+    #print("rplT:", rplArrT)
 
 
     #print(xor(reqArrT,"reqMode"))

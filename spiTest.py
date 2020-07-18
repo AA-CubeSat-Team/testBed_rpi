@@ -186,7 +186,7 @@ while True:
 
     rplArrT = xorFunc(rplArrX, "rplMode")    # need to set up XOR on Arduino
 
-    rplArrC = rplArrT[2:5]     # pulls out info package from frame, could automate to find flags
+    rplArrC = rplArrT[2:6]     # pulls out info package from frame, could automate to find flags
     
     print("reqC:", reqArrC)
     print("reqT:", reqArrT)

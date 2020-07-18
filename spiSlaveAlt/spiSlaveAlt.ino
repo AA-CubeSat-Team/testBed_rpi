@@ -4,6 +4,9 @@ volatile byte reqArr[9];
 byte rplArrT[16] = { }; 
 byte rplArrD[16] = { };
 byte rplArrX[16] = { }; 
+int rplLenT;
+int ee = 0;
+int ff = 0;
 volatile byte reqB_new;
 volatile byte reqB_old;
 volatile byte rplB;
@@ -11,6 +14,7 @@ volatile byte flag;
 volatile byte kk;
 volatile byte yy;
 volatile byte readReg;
+
 
 // CURRENT STATE: sends follow-up reply package based on request contents
 // NEXT STEP: 
@@ -37,8 +41,13 @@ ISR (SPI_STC_vect){
   reqB_new = SPDR;
 
   if ( (reqB_old == 126) && (reqB_new == 126) ){      // master querying reply   
-    SPDR = rplArrX[yy];
-    yy++;
+    if (yy < (rplLenT + ee + ff)){
+      SPDR = rplArrX[yy];
+      yy++;
+    }
+    if (yy >= (rplLenT + ee + ff)){
+      SPDR = 126;
+    }
   }
   if ( (reqB_old == 126) && (reqB_new != 126) ){      // beginning of request
     reqArr[kk] = reqB_new;
@@ -62,7 +71,7 @@ ISR (SPI_STC_vect){
                                      
 void loop (void){
   if (flag == 1){
-    genReply(reqArr[0]);
+    genReply(reqArr[0]);                // assigns rplArrX using genReply function
     
     Serial.print("req: ");
     for (int jj = 0; jj < sizeof(reqArr); jj++){
@@ -93,38 +102,51 @@ void genReply(byte id){                       // want to build XOR functionality
   switch(id) {
     case 1 :
       memcpy(rplArrT, rplArr1T, sizeof(rplArr1T));
+      rplLenT = sizeof(rplArr1T);
       break;
     case 2 :
       memcpy(rplArrT, rplArr2T, sizeof(rplArr2T));
+      rplLenT = sizeof(rplArr2T);
       break;
     case 3 :
       memcpy(rplArrT, rplArr3T, sizeof(rplArr3T));
+      rplLenT = sizeof(rplArr3T);
       break;
     case 4 :
       memcpy(rplArrT, rplArr4T, sizeof(rplArr4T));
+      rplLenT = sizeof(rplArr4T);
       break;
-  }
+  }                                                 
 
-  int ff = 0;
-  int ee = 0;
-  for (int tt = 0; tt < sizeof(rplArrT); tt++){        
+  // know length of rplArrT, don't know length of rplArrX (max = 2*rplLenT)
+  // want to start by creating a rplArrT
+  // want to end by handing rplArrX to SPI mechanism
+
+  // byte rplArrT[16] = { }; 
+  // byte rplArrD[16] = { };
+  // byte rplArrX[16] = { };   these lengths never change, rplLenT=6 allows XOR mechanism to find contents within 16
+                                                    
+  for (int tt = 0; tt < rplLenT; tt++){        
     if (rplArrT[tt] != 125){
-      rplArrD[tt+ff] = rplArrT[tt];
+      rplArrD[tt+ee] = rplArrT[tt];
     }
     if (rplArrT[tt] == 125){
-      rplArrD[tt+ff] = 125;
-      rplArrD[tt+ff+1] = rplArrT[tt]^0x20;
-      ff++;
-    }
-  }                                            
-  for (int dd = 0; dd < (sizeof(rplArrT)+ff); dd++){
-    if ( (dd != 0) || (dd != sizeof(rplArrT)+ff-1) || (rplArrD[dd] != 126) ){
-      rplArrX[dd+ee] = rplArrD[dd];
-    }
-    if ( (dd != 0) && (dd != sizeof(rplArrT)+ff-1) && (rplArrD[dd] == 126) ){
-      rplArrX[dd+ee] = 125;
-      rplArrX[dd+ee+1] = rplArrD[dd]^0x20;
+      rplArrD[tt+ee] = 125;
+      rplArrD[tt+ee+1] = rplArrT[tt]^0x20;
       ee++;
     }
+  }                                            
+  for (int dd = 0; dd < (rplLenT+ee); dd++){
+    if ( (dd != 0) || (dd != rplLenT+ee-1) || (rplArrD[dd] != 126) ){
+      rplArrX[dd+ff] = rplArrD[dd];
+    }
+    if ( (dd != 0) && (dd != rplLenT+ee-1) && (rplArrD[dd] == 126) ){   
+      rplArrX[dd+ff] = 125;
+      rplArrX[dd+ff+1] = rplArrD[dd]^0x20;
+      ff++;
+    }
   }
+  // rplArrX is still length 16, but its contents take up rplLenT + ff + ee characters added
+  // since rplArrX length is known at runtime, can use variable int to cut off SPI reply transmission
+  // init array lengths can all be as long as you want, because extra elements will be cut off in reply transmission
 }

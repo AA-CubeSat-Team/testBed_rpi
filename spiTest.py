@@ -179,7 +179,7 @@ while True:
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
-    rplN = 10                       # size of expected reply package, will need to be automated
+    rplN = 14                       # size of expected reply package, will need to be automated
     m7eArr = [0x7e] * (rplN + 3)   # extra 3 bytes for two flags and one byte delay
 
     rplArrX = spi.xfer2(m7eArr)

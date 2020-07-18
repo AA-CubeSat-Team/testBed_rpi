@@ -28,7 +28,7 @@ xx = 0
 header = ["entry", "time", "xfer", "mode", "byte1", "byte2", "byte3", "byte4"]        
 
 global fileName
-fileName = 'nameTest.csv'
+fileName = input("enter a file name:\n output_")
 file = open(fileName, 'w', newline ='')         # open(..'w'..) creates new CSV file
 with file:   
     write = csv.writer(file) 

@@ -1,7 +1,9 @@
 #include<SPI.h>  
 
 volatile byte reqArr[9];        
-byte rplArr[6]; 
+byte rplArrT[16] = { }; 
+byte rplArrD[16] = { };
+byte rplArrX[16] = { }; 
 volatile byte reqB_new;
 volatile byte reqB_old;
 volatile byte rplB;
@@ -35,7 +37,7 @@ ISR (SPI_STC_vect){
   reqB_new = SPDR;
 
   if ( (reqB_old == 126) && (reqB_new == 126) ){      // master querying reply   
-    SPDR = rplArr[yy];
+    SPDR = rplArrX[yy];
     yy++;
   }
   if ( (reqB_old == 126) && (reqB_new != 126) ){      // beginning of request
@@ -82,25 +84,47 @@ void loop (void){
 }
 
 
-
-void genReply(byte id){
-  byte rpl1[6] = {126,id,125,94,3,126};
-  byte rpl2[6] = {126,id,125,94,4,126};
-  byte rpl3[6] = {126,id,125,94,5,126};
-  byte rpl4[6] = {126,id,125,94,6,126};
+void genReply(byte id){                       // want to build XOR functionality into genReply to deliver
+  byte rplArr1T[6] = {126,id,126,3,3,126};       //    final reply array to SPI interrupt sequence
+  byte rplArr2T[6] = {126,id,126,4,4,126};
+  byte rplArr3T[6] = {126,id,126,5,5,126};
+  byte rplArr4T[6] = {126,id,126,6,6,126};
     
   switch(id) {
     case 1 :
-      memcpy(rplArr, rpl1, sizeof(rpl1));
+      memcpy(rplArrT, rplArr1T, sizeof(rplArr1T));
       break;
     case 2 :
-      memcpy(rplArr, rpl2, sizeof(rpl2));
+      memcpy(rplArrT, rplArr2T, sizeof(rplArr2T));
       break;
     case 3 :
-      memcpy(rplArr, rpl3, sizeof(rpl3));
+      memcpy(rplArrT, rplArr3T, sizeof(rplArr3T));
       break;
     case 4 :
-      memcpy(rplArr, rpl4, sizeof(rpl4));
+      memcpy(rplArrT, rplArr4T, sizeof(rplArr4T));
       break;
+  }
+
+  int ff = 0;
+  int ee = 0;
+  for (int tt = 0; tt < sizeof(rplArrT); tt++){        
+    if (rplArrT[tt] != 125){
+      rplArrD[tt+ff] = rplArrT[tt];
+    }
+    if (rplArrT[tt] == 125){
+      rplArrD[tt+ff] = 125;
+      rplArrD[tt+ff+1] = rplArrT[tt]^0x20;
+      ff++;
+    }
+  }                                            
+  for (int dd = 0; dd < (sizeof(rplArrT)+ff); dd++){
+    if ( (dd != 0) || (dd != sizeof(rplArrT)+ff-1) || (rplArrD[dd] != 126) ){
+      rplArrX[dd+ee] = rplArrD[dd];
+    }
+    if ( (dd != 0) && (dd != sizeof(rplArrT)+ff-1) && (rplArrD[dd] == 126) ){
+      rplArrX[dd+ee] = 125;
+      rplArrX[dd+ee+1] = rplArrD[dd]^0x20;
+      ee++;
+    }
   }
 }

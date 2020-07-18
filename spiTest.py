@@ -161,28 +161,28 @@ while True:
     comID = input("enter a command ID:\n")
     comID = int(comID)
 
-    #cmd = 1
-    #cmdArr = list(bytearray((cmd).to_bytes(1, byteorder='little', signed=True)))
+    #comIDArr = list(bytearray((comID).to_bytes(1, byteorder='little', signed=True)))
 
-    #speed = 65000
+    #speed = input("enter a speed [0.1 RPM]:\n")
+    #speed = int(speed)
     #speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
 
-    #payloadArr = flatList([cmdArr, speedArr])
+    #payloadArr = flatList([comIDArr, speedArr])
     #crcArr = crcCompute(payloadArr)
 
-    #reqArr = flatList([payloadArr, crcArr])
+    #reqArrT = flatList([payloadArr, crcArr])
 
     reqArrT = [0x7e, comID, 0x00, 0x7e, 0x00, 0x7e]   
     reqArrX = xorFunc(reqArrT, "reqMode")
 
-    S7eArr = spi.xfer2(reqArrX)
+    s7eArr = spi.xfer2(reqArrX)
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
-    rplN = 4                       # size of expected reply package, will need to be automated
-    M7eArr = [0x7e] * (rplN + 3)
+    rplN = 10                       # size of expected reply package, will need to be automated
+    m7eArr = [0x7e] * (rplN + 3)   # extra 3 bytes for two flags and one byte delay
 
-    rplArrX = spi.xfer2(M7eArr)
+    rplArrX = spi.xfer2(m7eArr)
 
     rplArrT = xorFunc(rplArrX, "rplMode")    # need to set up XOR on Arduino
 
@@ -193,10 +193,9 @@ while True:
     print("rplT:", rplArrT)
 
 
-    #print(xor(reqArrT,"reqMode"))
-    #print(xor(rplArrX,"rplMode"))
-
     #csvAdd(reqArrT, "reqMode")
+    #csvAdd(reqArrX, "reqMode")
+    #csvAdd(rplArrX, "rplMode")
     #csvAdd(rplArrT, "rplMode")
 
 

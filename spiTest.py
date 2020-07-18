@@ -183,13 +183,13 @@ while True:
 
     rplArrX = spi.xfer2(M7eArr)
 
-    #rplArrT = xor(rplArrX, "rplMode")    # need to set up XOR on Arduino
+    rplArrT = xor(rplArrX, "rplMode")    # need to set up XOR on Arduino
 
     
     print("reqT:", reqArrT)
     print("reqX:", reqArrX)
     print("rplX:", rplArrX)
-    #print("rplT:", rplArrT)
+    print("rplT:", rplArrT)
 
 
     #print(xor(reqArrT,"reqMode"))

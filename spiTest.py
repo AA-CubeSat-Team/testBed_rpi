@@ -89,7 +89,7 @@ def flatList(x):
 
 # FLAG/ESCAPE XOR FUNCTION
 def xorFunc(arr, mode):
-    arrInp = arr
+    arrInp = arr[:]
     if mode == "reqMode":
         idxList = [i for i, val in enumerate(arrInp) if val == 0x7d]
 

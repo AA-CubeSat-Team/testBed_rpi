@@ -171,26 +171,29 @@ while True:
     #crcArr = crcCompute(payloadArr)
 
     #reqArrT = flatList([payloadArr, crcArr])
-
-    reqArrT = [0x7e, comID, 0x00, 0x7e, 0x00, 0x7e]   
+    reqArrC = [comID, 0x00, 0x7e, 0x00]
+    reqArrT = flatList([0x7e, reqArrC, 0x7e]) 
     reqArrX = xorFunc(reqArrT, "reqMode")
 
     s7eArr = spi.xfer2(reqArrX)
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
-    rplN = 14                       # size of expected reply package, will need to be automated
-    m7eArr = [0x7e] * (rplN + 3)   # extra 3 bytes for two flags and one byte delay
+    rplN = 4                          # size of expected reply package
+    m7eArr = [0x7e] * (2*rplN + 3)    # doubled for XOR, extra 3 bytes for flags and delay
 
     rplArrX = spi.xfer2(m7eArr)
 
     rplArrT = xorFunc(rplArrX, "rplMode")    # need to set up XOR on Arduino
 
+    rplArrC = rplArrT[2:(rplN+1)]     # pulls out info package from frame, could automate to find flags
     
+    print("reqC:", reqArrC)
     print("reqT:", reqArrT)
     print("reqX:", reqArrX)
     print("rplX:", rplArrX)
     print("rplT:", rplArrT)
+    print("rplC:", rplArrC)
 
 
     #csvAdd(reqArrT, "reqMode")

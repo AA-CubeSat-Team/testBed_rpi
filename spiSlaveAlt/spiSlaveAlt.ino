@@ -1,12 +1,14 @@
 #include<SPI.h>  
 
-volatile byte reqArr[9];        
+volatile byte reqArrX[16] = { };
+byte reqArrT[16] = { };  
+int qq;      
 byte rplArrT[16] = { }; 
 byte rplArrD[16] = { };
 byte rplArrX[16] = { }; 
 int rplLenT;
-int ee = 0;
-int ff = 0;
+int ee;
+int ff;
 volatile byte reqB_new;
 volatile byte reqB_old;
 volatile byte rplB;
@@ -41,27 +43,30 @@ ISR (SPI_STC_vect){
   reqB_new = SPDR;
 
   if ( (reqB_old == 126) && (reqB_new == 126) ){      // master querying reply   
-    if (yy < (rplLenT + ee + ff)){
+    if (yy < (rplLenT + ee + ff + 1)){
       SPDR = rplArrX[yy];
       yy++;
     }
-    if (yy >= (rplLenT + ee + ff)){
+    if (yy >= (rplLenT + ee + ff + 1)){
       SPDR = 126;
     }
   }
   if ( (reqB_old == 126) && (reqB_new != 126) ){      // beginning of request
-    reqArr[kk] = reqB_new;
+    reqArrX[kk] = reqB_old;
     kk++;
-    yy = 0;
+    reqArrX[kk] = reqB_new;
+    kk++;
     SPDR = 126;
   }
   if ( (reqB_old != 126) && (reqB_new != 126) ){      // during request
-    reqArr[kk] = reqB_new;
+    reqArrX[kk] = reqB_new;
     kk++;
     SPDR = 126;
   }
   if ( (reqB_old != 126) && (reqB_new == 126) ){      // end of request
-    SPI.detachInterrupt();          
+    SPI.detachInterrupt();   
+    reqArrX[kk] = reqB_new;
+    kk++;       
     flag = 1;
   }
   
@@ -71,13 +76,46 @@ ISR (SPI_STC_vect){
                                      
 void loop (void){
   if (flag == 1){
-    genReply(reqArr[0]);                // assigns rplArrX using genReply function
     
-    Serial.print("req: ");
-    for (int jj = 0; jj < sizeof(reqArr); jj++){
-      Serial.print(reqArr[jj]);
+    qq = 0;
+    int reqLenX = kk;
+    for (int xx = 0; xx < reqLenX; xx++){
+      if (reqArrX[xx+qq] != 125){
+        reqArrT[xx] = reqArrX[xx+qq];
+      }
+      if (reqArrX[xx+qq] == 125){
+        reqArrT[xx] = reqArrX[xx+qq+1]^0x20;
+        qq++;
+      }
+    }
+    
+    genReply(reqArrT[1]);                // need to pass entire array at some point
+    yy = 0;
+        
+    Serial.print("reqX: ");
+    for (int jj = 0; jj < sizeof(reqArrX); jj++){
+      Serial.print(reqArrX[jj]);
       Serial.print(" ");
-      reqArr[jj] = 0;
+      reqArrX[jj] = 0;
+    }
+    Serial.println();
+    Serial.print("reqT: ");
+    for (int jj = 0; jj < sizeof(reqArrT); jj++){
+      Serial.print(reqArrT[jj]);
+      Serial.print(" ");
+      reqArrT[jj] = 0;
+    }
+    Serial.println();
+    Serial.print("rplT: ");
+    for (int jj = 0; jj < sizeof(rplArrT); jj++){
+      Serial.print(rplArrT[jj]);
+      Serial.print(" ");
+    }
+    Serial.println();
+    Serial.print("rplX: ");
+    for (int jj = 0; jj < sizeof(rplArrX); jj++){
+      Serial.print(rplArrX[jj]);
+      Serial.print(" ");
     }
     Serial.println();
 
@@ -94,11 +132,20 @@ void loop (void){
 
 
 void genReply(byte id){                       // want to build XOR functionality into genReply to deliver
-  byte rplArr1T[6] = {126,id,126,3,3,126};       //    final reply array to SPI interrupt sequence
+  byte rplArr1T[6] = {126,id,126,125,3,126};       //    final reply array to SPI interrupt sequence
   byte rplArr2T[6] = {126,id,126,4,4,126};
   byte rplArr3T[6] = {126,id,126,5,5,126};
   byte rplArr4T[6] = {126,id,126,6,6,126};
-    
+
+
+  for (int jj = 0; jj < sizeof(rplArrT); jj++){
+    rplArrT[jj] = 0;
+  }
+  for (int jj = 0; jj < sizeof(rplArrX); jj++){
+    rplArrX[jj] = 0;
+  }
+
+      
   switch(id) {
     case 1 :
       memcpy(rplArrT, rplArr1T, sizeof(rplArr1T));
@@ -125,7 +172,9 @@ void genReply(byte id){                       // want to build XOR functionality
   // byte rplArrT[16] = { }; 
   // byte rplArrD[16] = { };
   // byte rplArrX[16] = { };   these lengths never change, rplLenT=6 allows XOR mechanism to find contents within 16
-                                                    
+
+  ee = 0;
+  ff = 0;                                                  
   for (int tt = 0; tt < rplLenT; tt++){        
     if (rplArrT[tt] != 125){
       rplArrD[tt+ee] = rplArrT[tt];
@@ -146,7 +195,8 @@ void genReply(byte id){                       // want to build XOR functionality
       ff++;
     }
   }
-  // rplArrX is still length 16, but its contents take up rplLenT + ff + ee characters added
+  
+  // rplArrX is still length 16, but its contents take up rplLenT + ff + ee, rest thru end are zeros
   // since rplArrX length is known at runtime, can use variable int to cut off SPI reply transmission
   // init array lengths can all be as long as you want, because extra elements will be cut off in reply transmission
 }

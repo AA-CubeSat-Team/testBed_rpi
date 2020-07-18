@@ -28,7 +28,8 @@ xx = 0
 header = ["entry", "time", "xfer", "mode", "byte1", "byte2", "byte3", "byte4"]        
 
 global fileName
-fileName = input("enter a file name:\n output_")
+fileEnd = input("enter a file name: spiLog_")
+fileName = 'spiLog_' + fileEnd + '.csv'
 file = open(fileName, 'w', newline ='')         # open(..'w'..) creates new CSV file
 with file:   
     write = csv.writer(file) 

@@ -27,7 +27,9 @@ xx = 0
 
 header = ["entry", "time", "xfer", "mode", "byte1", "byte2", "byte3", "byte4"]        
 
-file = open('output.csv', 'w', newline ='')         # open(..'w'..) creates new CSV file
+global fileName
+fileName = 'nameTest.csv'
+file = open(fileName, 'w', newline ='')         # open(..'w'..) creates new CSV file
 with file:   
     write = csv.writer(file) 
     write.writerow(header) 
@@ -68,8 +70,8 @@ crcTable = [0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7,
 
 def crcCompute(payload):
     crcValue = 0xFFFF
-    for iterbyte in payload:                          
-        crcValue = (crcValue << 8) ^ crcTable[((crcValue >> 8) ^ iterbyte) & 0x00FF];
+    for iterByte in payload:                          
+        crcValue = (crcValue << 8) ^ crcTable[((crcValue >> 8) ^ iterByte) & 0x00FF];
         crcValue = ((1 << 16) - 1)  &  crcValue;
     crcSplit = [crcValue & 0x00FF, crcValue >> 8]
     return crcSplit
@@ -121,6 +123,7 @@ def csvAdd(arr, mode):
     global xx
     global data
     global src
+    global fileName
 
     qq = qq + 1
     ts1 = time.gmtime()
@@ -143,7 +146,7 @@ def csvAdd(arr, mode):
     row1_ll = [[qq], [time1], [xx], [src], data]
     row1  = flatList(row1_ll)      
 
-    file = open('output.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file
+    file = open(fileName, 'a', newline ='')      # open(..'a'..) appends existing CSV file
     with file:   
         write = csv.writer(file) 
         write.writerow(row1)    
@@ -175,7 +178,7 @@ while True:
     rplN = 4                            # size of expected reply package
     M7eArr = [0x7e] * (rplN + 3)
 
-    rplArrT = spi.xfer2(M7eArr)
+    rplArrX = spi.xfer2(M7eArr)
     #rplArrT = xor(rplArrX, "rplMode")    # need to set up XOR on Arduino
 
     
@@ -183,7 +186,7 @@ while True:
     print("rpl:", rplArrX)
 
     print(xor(reqArrT,"reqMode"))
-    print(xor(rplArrX,"rplMode"))
+    #print(xor(rplArrX,"rplMode"))
 
     #csvAdd(reqArrT, "reqMode")
     #csvAdd(rplArrT, "rplMode")

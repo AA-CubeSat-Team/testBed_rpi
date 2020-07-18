@@ -7,7 +7,8 @@ kk = 0
 
 header = ['entry', 'time', 'type1', 'type2']        # modify headers to fit data inputs
 
-file = open('output.csv', 'w', newline ='')         # open(..'w'..) creates new CSV file
+fileName = 'name.csv'
+file = open('name.csv', 'w', newline ='')         # open(..'w'..) creates new CSV file
 with file:   
     write = csv.writer(file) 
     write.writerow([header[0], header[1], header[2], header[3]]) 
@@ -23,11 +24,20 @@ reply1 = [101, 201]                                                  # data inpu
 row1_ll = [[kk], [time1], reply1]
 row1  = [val for sublist in row1_ll for val in sublist]             # flattens list-of-lists into single list
 
-file = open('output.csv', 'a', newline ='')         # open(..'a'..) edits existing CSV file
+file = open('name.csv', 'a', newline ='')         # open(..'a'..) edits existing CSV file
 with file:   
     write = csv.writer(file) 
     write.writerow([row1[0], row1[1], row1[2], row1[3]]) 
 # iterate end
+
+
+
+
+
+
+
+
+
 
 
 # GOAL: given list (SPI output) write a new row in existing CSV file

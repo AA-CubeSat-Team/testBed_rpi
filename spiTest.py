@@ -185,7 +185,7 @@ while True:
     print("req:", reqArrX)
     print("rpl:", rplArrX)
 
-    print(xor(reqArrT,"reqMode"))
+    #print(xor(reqArrT,"reqMode"))
     #print(xor(rplArrX,"rplMode"))
 
     #csvAdd(reqArrT, "reqMode")

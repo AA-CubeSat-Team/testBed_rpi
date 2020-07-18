@@ -30,6 +30,7 @@ header = ["entry", "time", "xfer", "mode", "byte1", "byte2", "byte3", "byte4"]
 global fileName
 fileEnd = input("enter a file name: spiLog_")
 fileName = 'spiLog_' + fileEnd + '.csv'
+
 file = open(fileName, 'w', newline ='')         # open(..'w'..) creates new CSV file
 with file:   
     write = csv.writer(file) 
@@ -170,21 +171,25 @@ while True:
     #reqArr = flatList([payloadArr, crcArr])
 
     reqArrT = [0x7e, comID, 0x00, 0x7e, 0x00, 0x7e]   
-
     reqArrX = xor(reqArrT, "reqMode")
+
     S7eArr = spi.xfer2(reqArrX)
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
-    rplN = 4                            # size of expected reply package
+    rplN = 4                       # size of expected reply package, will need to be automated
     M7eArr = [0x7e] * (rplN + 3)
 
     rplArrX = spi.xfer2(M7eArr)
-    #rplArrT = xor(rplArrX, "rplMode")    # need to set up XOR on Arduino
+    
+    rplArrT = xor(rplArrX, "rplMode")    # need to set up XOR on Arduino
 
     
-    print("req:", reqArrX)
-    print("rpl:", rplArrX)
+    print("reqT:", reqArrT)
+    print("reqX:", reqArrX)
+    print("rplX:", rplArrX)
+    print("rplT:", rplArrT)
+
 
     #print(xor(reqArrT,"reqMode"))
     #print(xor(rplArrX,"rplMode"))

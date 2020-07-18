@@ -84,10 +84,10 @@ void loop (void){
 
 
 void genReply(byte id){
-  byte rpl1[6] = {126,id,3,3,3,126};
-  byte rpl2[6] = {126,id,4,4,4,126};
-  byte rpl3[6] = {126,id,5,5,5,126};
-  byte rpl4[6] = {126,id,6,6,6,126};
+  byte rpl1[6] = {126,id,125,94,3,126};
+  byte rpl2[6] = {126,id,125,94,4,126};
+  byte rpl3[6] = {126,id,125,94,5,126};
+  byte rpl4[6] = {126,id,125,94,6,126};
     
   switch(id) {
     case 1 :

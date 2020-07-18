@@ -88,36 +88,37 @@ def flatList(x):
         return [x]
 
 # FLAG/ESCAPE XOR FUNCTION
-def xor(arr, mode):
+def xorFunc(arr, mode):
+    arrInp = arr
     if mode == "reqMode":
-        idxList = [i for i, val in enumerate(arr) if val == 0x7d]
+        idxList = [i for i, val in enumerate(arrInp) if val == 0x7d]
 
         for idx in idxList:
-            arr[idx] = [0x7d, arr[idx]^0x20]
+            arrInp[idx] = [0x7d, arr[idx]^0x20]
             
-        arr  = flatList(arr) 
+        arrInp  = flatList(arrInp) 
 
-        idxList = [i for i, val in enumerate(arr) if val == 0x7e]
+        idxList = [i for i, val in enumerate(arrInp) if val == 0x7e]
         idxList.pop(-1)
         idxList.pop(0)
 
         for idx in idxList:
-            arr[idx] = [0x7d, arr[idx]^0x20]
+            arrInp[idx] = [0x7d, arrInp[idx]^0x20]
             
-        arrXOR = flatList(arr) 
+        arrXOR = flatList(arrInp) 
         return(arrXOR)
 
     if mode == "rplMode":
-        idxList = [i for i, val in enumerate(arr) if val == 0x7d]
+        idxList = [i for i, val in enumerate(arrInp) if val == 0x7d]
 
         for idx in idxList:
-            arr[idx+1] = arr[idx+1]^0x20
+            arrInp[idx+1] = arrInp[idx+1]^0x20
 
         idxList.reverse()
         for idx in idxList:
-            arr.pop(idx)
+            arrInp.pop(idx)
 
-        arrTrue = arr
+        arrTrue = arrInp
         return(arrTrue)
 
 # CSV FUNCTION
@@ -172,7 +173,7 @@ while True:
     #reqArr = flatList([payloadArr, crcArr])
 
     reqArrT = [0x7e, comID, 0x00, 0x7e, 0x00, 0x7e]   
-    reqArrX = xor(reqArrT, "reqMode")
+    reqArrX = xorFunc(reqArrT, "reqMode")
 
     S7eArr = spi.xfer2(reqArrX)
 
@@ -183,7 +184,7 @@ while True:
 
     rplArrX = spi.xfer2(M7eArr)
 
-    rplArrT = xor(rplArrX, "rplMode")    # need to set up XOR on Arduino
+    rplArrT = xorFunc(rplArrX, "rplMode")    # need to set up XOR on Arduino
 
     
     print("reqT:", reqArrT)

@@ -181,7 +181,7 @@ while True:
     M7eArr = [0x7e] * (rplN + 3)
 
     rplArrX = spi.xfer2(M7eArr)
-    
+    print("rplX:", rplArrX)
     rplArrT = xor(rplArrX, "rplMode")    # need to set up XOR on Arduino
 
     

@@ -251,10 +251,10 @@ while True:
 
 ##- CRC Confirmation --- --- ---
     slvCRC = [rplArr[-2],rplArr[-1]]
-    print(slvCRC)
+    print("slvCRC: ", slvCRC)
 
     rplArrCorr = crcAppend(rplArr[0:(rplN-2)])
-    print(rplArrCorr)
+    print("rplArrCorr: ", rplArrCorr)
     corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
     print(corrCRC)
 

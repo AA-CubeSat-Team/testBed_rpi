@@ -159,7 +159,8 @@ def csvAdd(arr, mode):
 
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 while True: 
-##- User Input and Payload Assembly --- --- ---
+
+##- Input to Request Payload --- --- ---
     comID = input("enter a command ID:\n")
     comID = int(comID)
     comIDArr = list(bytearray((comID).to_bytes(1, byteorder='little', signed=False)))
@@ -233,20 +234,30 @@ while True:
 
 
 ##- SPI Transmission --- --- ---
+    msrEmpArr = [0x7e] * (2*rplN + 3) 
+
     reqArrF = flatList([0x7e, reqArr, 0x7e]) 
     reqArrX = xorFunc(reqArrF, "reqMode")
 
     slvEmpArr = spi.xfer2(reqArrX)
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
-
-    msrEmpArr = [0x7e] * (2*rplN + 3)    # doubled for XOR, extra 3 bytes for flags and delay
+       
     rplArrX = spi.xfer2(msrEmpArr)
 
-    rplArrF = xorFunc(rplArrX, "rplMode")    # need to set up XOR on Arduino
-    rplArr = rplArrF[(0+2):(rplN+2)]     # pulls out info package from frame, could automate to find flags
+    rplArrF = xorFunc(rplArrX, "rplMode")    
+    rplArr = rplArrF[(0+2):(rplN+2)]     # pulls info package from frame, automate to find flags
     
 
+##- CRC Confirmation --- --- ---
+    slvCRC = [rplArr[rplN+3],rplArr[rplN+4]]
+    print(slvCRC)
+
+    corrCRCArr = crcAppend(rplArr[0:(rplN-1)])
+    print(corrCRCArr)
+
+
+##- Input to Request Payload --- --- ---
 
 
 

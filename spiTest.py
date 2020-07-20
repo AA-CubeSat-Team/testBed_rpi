@@ -257,6 +257,11 @@ while True:
     corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
     print("corrCRC: ", corrCRC)
 
+    if slvCRC == corrCRC:
+        print("reply CRC confirmed")
+    if slvCRC != corrCRC:
+        print("error in reply CRC")
+
 
 ##- Input to Request Payload --- --- ---
 

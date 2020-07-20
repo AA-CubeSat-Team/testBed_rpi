@@ -186,7 +186,7 @@ def spiFunc(reqArr1,rplN1):
 
     if rplArr1[1] == 1:
         print("EXECUTION SUCCESSFUL")
-    if rplArr1[1] != 0:
+    if rplArr1[1] == 0:
         print("EXECUTION FAILED")
 
     return rplArr1   

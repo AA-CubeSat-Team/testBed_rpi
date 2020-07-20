@@ -173,9 +173,9 @@ def spiFunc(reqArr1,rplN1):
     rplArr1 = rplArrH[(0+2):(rplN1+2)] 
        
 
-    slvCRC = [rplArr[-2],rplArr[-1]]
+    slvCRC = [rplArr1[-2],rplArr1[-1]]
 
-    rplArrCorr = crcAppend(rplArr[0:(rplN1-2)])
+    rplArrCorr = crcAppend(rplArr1[0:(rplN1-2)])
     corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
 
     if slvCRC == corrCRC:

@@ -217,7 +217,7 @@ while True:
         rplN = 1 + 4
         rplArr = spiFunc(reqArr,rplN)
 
-        lastResetStatus = int.from_bytes(bytes(bytearray(rplArr[2])), byteorder='little', signed=False)
+        lastResetStatus = int.from_bytes(bytes(bytearray(rplArr[1])), byteorder='little', signed=False)
         print("last reset status: ", lastResetStatus)
 
     if comID == 3:

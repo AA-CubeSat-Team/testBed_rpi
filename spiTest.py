@@ -244,7 +244,7 @@ while True:
 
     msrEmpArr = [0x7e] * (2*rplN + 3)    # doubled for XOR, extra 3 bytes for flags and delay
 
-    rplArrX = spi.xfer2(m7eArr)
+    rplArrX = spi.xfer2(msrEmpArr)
 
     rplArrT = xorFunc(rplArrX, "rplMode")    # need to set up XOR on Arduino
 

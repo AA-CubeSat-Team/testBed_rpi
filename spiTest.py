@@ -158,6 +158,7 @@ def csvAdd(arr, mode):
 
 # SPI FUNCTION
 def spiFunc(reqArr1,rplN1):
+    # SPI transmission
     msrEmpArr = [0x7e] * (2*rplN1 + 3) 
 
     reqArrH = flatList([0x7e, reqArr1, 0x7e]) 
@@ -172,7 +173,7 @@ def spiFunc(reqArr1,rplN1):
     rplArrH = xorFunc(rplArrX, "rplMode")    
     rplArr1 = rplArrH[(0+2):(rplN1+2)] 
        
-
+    # CRC error check
     slvCRC = [rplArr1[-2],rplArr1[-1]]
 
     rplArrCorr = crcAppend(rplArr1[0:(rplN1-2)])
@@ -182,6 +183,11 @@ def spiFunc(reqArr1,rplN1):
         print("REPLY CRC CONFIRM")
     if slvCRC != corrCRC:
         print("REPLY CRC ERROR")
+
+    if rplArr1[1] == 1:
+        print("EXECUTION SUCCESSFUL")
+    if rplArr1[1] != 0:
+        print("EXECUTION FAILED")
 
     return rplArr1   
     
@@ -207,6 +213,8 @@ while True:
         
         rplN = 1 + 4
         rplArr = spiFunc(reqArr,rplN)
+
+        rplInt = int.from_bytes(bytes(bytearray(rplArr[1])), byteorder='little', signed=True)
 
     if comID == 3:
         payloadArr = flatList([comIDArr])

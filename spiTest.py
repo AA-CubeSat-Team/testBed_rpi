@@ -218,7 +218,7 @@ while True:
         rplArr = spiFunc(reqArr,rplN)
 
         lastResetStatus = int.from_bytes(bytes(bytearray(rplArr[2])), byteorder='little', signed=False)
-        print("last reset status: ", rplArr[2])
+        print("last reset status: ", rplArr[2])     # why is from_bytes not working?
 
     if comID == 3:
         payloadArr = flatList([comIDArr])
@@ -233,6 +233,15 @@ while True:
         
         rplN = 10 + 4
         rplArr = spiFunc(reqArr,rplN)
+
+        currSpeed = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
+        print("curr speed: ", currSpeed)
+        refSpeed = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=True)
+        print("curr speed: ", refSpeed)
+        state = int.from_bytes(bytes(bytearray(rplArr[10])), byteorder='little', signed=False)
+        print("curr speed: ", state)
+        clcModeS = int.from_bytes(bytes(bytearray(rplArr[11])), byteorder='little', signed=True)
+        print("clc mode: ", clcModeS)
 
     if comID == 5:
         payloadArr = flatList([comIDArr])
@@ -257,9 +266,9 @@ while True:
         rplArr = spiFunc(reqArr,rplN)
 
     if comID == 7:
-        clcMode = input("enter a current limit control mode [0 - low, 1 - high]:\n")
-        clcMode = int(clcMode)
-        clcModeArr = list(bytearray((clcMode).to_bytes(1, byteorder='little', signed=False)))
+        clcModeM = input("enter a current limit control mode [0 - low, 1 - high]:\n")
+        clcModeM = int(clcModeM)
+        clcModeArr = list(bytearray((clcModeM).to_bytes(1, byteorder='little', signed=False)))
 
         payloadArr = flatList([comIDArr, clcModeArr])
         reqArr = crcAppend(payloadArr)

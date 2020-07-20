@@ -253,6 +253,7 @@ while True:
     slvCRC = [rplArr[-2],rplArr[-1]]
     print(slvCRC)
 
+    print(rplArr[0:(rplN-3)])
     rplArrCorr = crcAppend(rplArr[0:(rplN-3)])
     print(rplArrCorr)
     corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
@@ -263,11 +264,11 @@ while True:
 
 
 
-    print("reqArr:", [hex(x) for x in reqArr])
-    print("reqArrF:", [hex(x) for x in reqArrF])
-    print("reqArrX:", [hex(x) for x in reqArrX])
-    print("rplArrX:", [hex(x) for x in rplArrX])
-    print("rplArrF:", [hex(x) for x in rplArrF])
+    #print("reqArr:", [hex(x) for x in reqArr])
+    #print("reqArrF:", [hex(x) for x in reqArrF])
+    #print("reqArrX:", [hex(x) for x in reqArrX])
+    #print("rplArrX:", [hex(x) for x in rplArrX])
+    #print("rplArrF:", [hex(x) for x in rplArrF])
     print("rplArr:", [hex(x) for x in rplArr])
 
 

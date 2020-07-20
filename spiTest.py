@@ -180,14 +180,14 @@ def spiFunc(reqArr1,rplN1):
     corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
 
     if slvCRC == corrCRC:
-        print("REPLY CRC CONFIRM")
+        print("REPLY CRC: TRUE")
     if slvCRC != corrCRC:
-        print("REPLY CRC ERROR")
+        print("REPLY CRC: FALSE")
 
     if rplArr1[1] == 1:
-        print("EXECUTION SUCCESSFUL")
+        print("EXECUTION: TRUE")
     if rplArr1[1] == 0:
-        print("EXECUTION FAILED")
+        print("EXECUTION: FALSE")
 
     return rplArr1   
     

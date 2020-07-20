@@ -271,7 +271,7 @@ while True:
         rplN = 4 + 4
         rplArr = spiFunc(reqArr,rplN)
 
-        temp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=False)
+        temp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
         print("temp: ", temp)
 
     if comID == 9:

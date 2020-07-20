@@ -71,13 +71,14 @@ crcTable = [0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7,
             0xef1f,0xff3e,0xcf5d,0xdf7c,0xaf9b,0xbfba,0x8fd9,0x9ff8,
             0x6e17,0x7e36,0x4e55,0x5e74,0x2e93,0x3eb2,0x0ed1,0x1ef0];
 
-def crcCompute(payload):
+def crcAppend(payloadArr1):
     crcValue = 0xFFFF
-    for iterByte in payload:                          
+    for iterByte in payloadArr1:                          
         crcValue = (crcValue << 8) ^ crcTable[((crcValue >> 8) ^ iterByte) & 0x00FF];
         crcValue = ((1 << 16) - 1)  &  crcValue;
-    crcSplit = [crcValue & 0x00FF, crcValue >> 8]
-    return crcSplit
+    crcSplit = [crcValue >> 8, crcValue & 0x00FF]
+    payloadArrCRC = flatList([payloadArr1,crcSplit])
+    return payloadArrCRC
 
 # LIST FLATTENING TOOL
 import collections
@@ -158,42 +159,103 @@ def csvAdd(arr, mode):
 
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 while True: 
+##- User Input and Payload Assembly --- --- ---
     comID = input("enter a command ID:\n")
     comID = int(comID)
+    comIDArr = list(bytearray((comID).to_bytes(1, byteorder='little', signed=True)))
 
-    #comIDArr = list(bytearray((comID).to_bytes(1, byteorder='little', signed=True)))
+    if comID == 1:
+        payloadArr = flatList([comIDArr])
+        reqArrCRC = crcAppend(payloadArr)
+        rplN = 0 + 4
 
-    #speed = input("enter a speed [0.1 RPM]:\n")
-    #speed = int(speed)
-    #speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
+    if comID == 2:
+        payloadArr = flatList([comIDArr])
+        reqArrCRC = crcAppend(payloadArr)
+        rplN = 1 + 4
 
-    #payloadArr = flatList([comIDArr, speedArr])
-    #crcArr = crcCompute(payloadArr)
+    if comID == 3:
+        payloadArr = flatList([comIDArr])
+        reqArrCRC = crcAppend(payloadArr)
+        rplN = 0 + 4
 
-    #reqArrT = flatList([payloadArr, crcArr])
-    reqArrC = [comID, 0x00, 0x7e, 0x00]
-    reqArrT = flatList([0x7e, reqArrC, 0x7e]) 
+    if comID == 4:
+        payloadArr = flatList([comIDArr])
+        reqArrCRC = crcAppend(payloadArr)
+        rplN = 10 + 4
+
+    if comID == 5:
+        payloadArr = flatList([comIDArr])
+        reqArrCRC = crcAppend(payloadArr)
+        rplN = 0 + 4
+
+    if comID == 6:
+        speed = input("enter a speed [-65000:65000, 0.1 RPM]:\n")
+        speed = int(speed)
+        speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
+
+        rampTime = input("enter a rampTime [10:10000, ms]:\n")
+        rampTime = int(speed)
+        rampTimeArr = list(bytearray((rampTime).to_bytes(2, byteorder='little', signed=True)))
+
+        payloadArr = flatList([comIDArr, speedArr, rampTimeArr])
+        reqArrCRC = crcAppend(payloadArr)
+        rplN = 0 + 4
+
+    if comID == 7:
+        clcMode = input("enter a current limit control mode [0 - low, 1 - high]:\n")
+        clcMode = int(clcMode)
+        clcModeArr = list(bytearray((clcMode).to_bytes(1, byteorder='little', signed=True)))
+
+        payloadArr = flatList([comIDArr, clcModeArr])
+        reqArrCRC = crcAppend(payloadArr)
+        rplN = 0 + 4
+
+    if comID == 8:
+        payloadArr = flatList([comIDArr])
+        reqArrCRC = crcAppend(payloadArr)
+        rplN = 4 + 4
+
+    if comID == 9:
+        payloadArr = flatList([comIDArr])
+        reqArrCRC = crcAppend(payloadArr)
+        rplN = 79 + 4
+
+    if comID == 10:
+        payloadArr = flatList([comIDArr])
+        reqArrCRC = crcAppend(payloadArr)
+        rplN = 0 + 4
+
+    if comID == 11:
+        payloadArr = flatList([comIDArr])
+        reqArrCRC = crcAppend(payloadArr)
+        rplN = 20 + 4
+
+    else:
+        print("invalid command ID")
+
+##- SPI Transmission --- --- ---
+    reqArrT = flatList([0x7e, reqArrCRC, 0x7e]) 
     reqArrX = xorFunc(reqArrT, "reqMode")
 
-    s7eArr = spi.xfer2(reqArrX)
+    slvEmpArr = spi.xfer2(reqArrX)
 
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
-    rplN = 4                          # size of expected reply package
-    m7eArr = [0x7e] * (8 + 3)    # doubled for XOR, extra 3 bytes for flags and delay
+    msrEmpArr = [0x7e] * (2*rplN + 3)    # doubled for XOR, extra 3 bytes for flags and delay
 
     rplArrX = spi.xfer2(m7eArr)
 
     rplArrT = xorFunc(rplArrX, "rplMode")    # need to set up XOR on Arduino
 
-    rplArrC = rplArrT[2:(rplN+2)]     # pulls out info package from frame, could automate to find flags
+    rplArrCRC = rplArrT[2:rplN]     # pulls out info package from frame, could automate to find flags
     
-    print("reqC:", reqArrC)
+    print("reqCRC:", reqArrCRC)
     print("reqT:", reqArrT)
     print("reqX:", reqArrX)
     print("rplX:", rplArrX)
     print("rplT:", rplArrT)
-    print("rplC:", rplArrC)
+    print("rplCRC:", rplArrCRC)
 
 
     #csvAdd(reqArrT, "reqMode")

@@ -179,6 +179,9 @@ def spiFunc(reqArr1,rplN1):
     rplArrCorr = crcAppend(rplArr1[0:(rplN1-2)])
     corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
 
+    print("reqArr1:", [hex(x) for x in reqArr])
+    print("rplArr1:", [hex(x) for x in rplArr])
+
     if slvCRC == corrCRC:
         print("REPLY CRC: TRUE")
     if slvCRC != corrCRC:
@@ -304,12 +307,7 @@ while True:
 
 
 
-    #print("reqArr:", [hex(x) for x in reqArr])
-    #print("reqArrH:", [hex(x) for x in reqArrH])
-    #print("reqArrX:", [hex(x) for x in reqArrX])
-    #print("rplArrX:", [hex(x) for x in rplArrX])
-    #print("rplArrH:", [hex(x) for x in rplArrH])
-    print("rplArr:", [hex(x) for x in rplArr])
+    
 
 
     #csvAdd(reqArrT, "reqMode")

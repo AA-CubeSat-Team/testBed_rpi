@@ -120,7 +120,7 @@ void loop (void){
 void genReply(byte id){ 
   // 1 - reset MCU
       // no reply                     
-      byte rplArr1[6] = {0x7E, 0x01, 0x01, 0x3E,0x1F, 0x7E};
+      byte rplArr1[7] = {0x7E, 0x01, 0x01, 0x3E,0x1F, 0x7E};
   // 2 - get last reset status
       // uint8_t reset status 0:7
       byte rplArr2[7] = {0x7E, 0x02, 0x01, 0x05, 0xC1,0x68, 0x7E};

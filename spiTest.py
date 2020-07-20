@@ -249,10 +249,10 @@ while True:
     rplArrCRC = rplArrT[(0+2):(rplN+2)]     # pulls out info package from frame, could automate to find flags
     
     print("reqCRC:", [hex(x) for x in reqArrCRC])
-    print("reqT:", [hex(x) for x in reqArrT])
+    #print("reqT:", [hex(x) for x in reqArrT])
     print("reqX:", [hex(x) for x in reqArrX])
     print("rplX:", [hex(x) for x in rplArrX])
-    print("rplT:", [hex(x) for x in rplArrT])
+    #print("rplT:", [hex(x) for x in rplArrT])
     print("rplCRC:", [hex(x) for x in rplArrCRC])
 
 

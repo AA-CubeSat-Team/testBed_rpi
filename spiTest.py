@@ -154,7 +154,36 @@ def csvAdd(arr, mode):
     file = open(fileName, 'a', newline ='')      # open(..'a'..) appends existing CSV file
     with file:   
         write = csv.writer(file) 
-        write.writerow(row1)    
+        write.writerow(row1)  
+
+# SPI FUNCTION
+def spiFunc(reqArr1,rplN1):
+    msrEmpArr = [0x7e] * (2*rplN1 + 3) 
+
+    reqArrH = flatList([0x7e, reqArr1, 0x7e]) 
+    reqArrX = xorFunc(reqArrH, "reqMode")
+
+    slvEmpArr = spi.xfer2(reqArrX)
+
+    time.sleep(0.100)                           # waits 100 ms for RWA to process
+       
+    rplArrX = spi.xfer2(msrEmpArr)
+
+    rplArrH = xorFunc(rplArrX, "rplMode")    
+    rplArr1 = rplArrH[(0+2):(rplN1+2)] 
+       
+
+    slvCRC = [rplArr[-2],rplArr[-1]]
+
+    rplArrCorr = crcAppend(rplArr[0:(rplN1-2)])
+    corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
+
+    if slvCRC == corrCRC:
+        print("REPLY CRC CONFIRM")
+    if slvCRC != corrCRC:
+        print("REPLY CRC ERROR")
+
+    return rplArr1   
     
 
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -168,27 +197,37 @@ while True:
     if comID == 1:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
+        
         rplN = 0 + 4
+        rplArr = spiFunc(reqArr,rplN)
 
     if comID == 2:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
+        
         rplN = 1 + 4
+        rplArr = spiFunc(reqArr,rplN)
 
     if comID == 3:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
+        
         rplN = 0 + 4
+        rplArr = spiFunc(reqArr,rplN)
 
     if comID == 4:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
+        
         rplN = 10 + 4
+        rplArr = spiFunc(reqArr,rplN)
 
     if comID == 5:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
+        
         rplN = 0 + 4
+        rplArr = spiFunc(reqArr,rplN)
 
     if comID == 6:
         speed = input("enter a speed [-65000:65000, 0.1 RPM]:\n")
@@ -201,7 +240,9 @@ while True:
 
         payloadArr = flatList([comIDArr, speedArr, rampTimeArr])
         reqArr = crcAppend(payloadArr)
+        
         rplN = 0 + 4
+        rplArr = spiFunc(reqArr,rplN)
 
     if comID == 7:
         clcMode = input("enter a current limit control mode [0 - low, 1 - high]:\n")
@@ -210,57 +251,41 @@ while True:
 
         payloadArr = flatList([comIDArr, clcModeArr])
         reqArr = crcAppend(payloadArr)
+        
         rplN = 0 + 4
+        rplArr = spiFunc(reqArr,rplN)
 
     if comID == 8:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
+        
         rplN = 4 + 4
+        rplArr = spiFunc(reqArr,rplN)
 
     if comID == 9:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
+        
         rplN = 79 + 4
+        rplArr = spiFunc(reqArr,rplN)
 
     if comID == 10:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
+        
         rplN = 0 + 4
+        rplArr = spiFunc(reqArr,rplN)
 
     if comID == 11:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
+        
         rplN = 20 + 4
+        rplArr = spiFunc(reqArr,rplN)
 
 
-##- SPI Transmission --- --- ---
-    msrEmpArr = [0x7e] * (2*rplN + 3) 
 
-    reqArrF = flatList([0x7e, reqArr, 0x7e]) 
-    reqArrX = xorFunc(reqArrF, "reqMode")
 
-    slvEmpArr = spi.xfer2(reqArrX)
-
-    time.sleep(0.100)       # waits 100 ms for RWA to process
-       
-    rplArrX = spi.xfer2(msrEmpArr)
-
-    rplArrF = xorFunc(rplArrX, "rplMode")    
-    rplArr = rplArrF[(0+2):(rplN+2)]     # pulls info package from frame, automate to find flags
-    
-
-##- CRC Confirmation --- --- ---
-    slvCRC = [rplArr[-2],rplArr[-1]]
-    print("slvCRC: ", slvCRC)
-
-    rplArrCorr = crcAppend(rplArr[0:(rplN-2)])
-    corrCRC = [2*rplArrCorr[-2],rplArrCorr[-1]]
-    print("corrCRC: ", corrCRC)
-
-    if slvCRC == corrCRC:
-        print("reply CRC confirmed")
-    if slvCRC != corrCRC:
-        print("error in reply CRC")
 
 
 ##- Input to Request Payload --- --- ---
@@ -268,10 +293,10 @@ while True:
 
 
     #print("reqArr:", [hex(x) for x in reqArr])
-    #print("reqArrF:", [hex(x) for x in reqArrF])
+    #print("reqArrH:", [hex(x) for x in reqArrH])
     #print("reqArrX:", [hex(x) for x in reqArrX])
     #print("rplArrX:", [hex(x) for x in rplArrX])
-    #print("rplArrF:", [hex(x) for x in rplArrF])
+    #print("rplArrH:", [hex(x) for x in rplArrH])
     print("rplArr:", [hex(x) for x in rplArr])
 
 

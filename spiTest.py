@@ -214,7 +214,8 @@ while True:
         rplN = 1 + 4
         rplArr = spiFunc(reqArr,rplN)
 
-        rplInt = int.from_bytes(bytes(bytearray(rplArr[1])), byteorder='little', signed=True)
+        lastResetStatus = int.from_bytes(bytes(bytearray(rplArr[2])), byteorder='little', signed=False)
+        print("last reset status: ", lastResetStatus)
 
     if comID == 3:
         payloadArr = flatList([comIDArr])
@@ -269,6 +270,9 @@ while True:
         
         rplN = 4 + 4
         rplArr = spiFunc(reqArr,rplN)
+
+        temp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=False)
+        print("temp: ", temp)
 
     if comID == 9:
         payloadArr = flatList([comIDArr])

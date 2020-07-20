@@ -166,27 +166,27 @@ while True:
 
     if comID == 1:
         payloadArr = flatList([comIDArr])
-        reqArrCRC = crcAppend(payloadArr)
+        reqArr = crcAppend(payloadArr)
         rplN = 0 + 4
 
     if comID == 2:
         payloadArr = flatList([comIDArr])
-        reqArrCRC = crcAppend(payloadArr)
+        reqArr = crcAppend(payloadArr)
         rplN = 1 + 4
 
     if comID == 3:
         payloadArr = flatList([comIDArr])
-        reqArrCRC = crcAppend(payloadArr)
+        reqArr = crcAppend(payloadArr)
         rplN = 0 + 4
 
     if comID == 4:
         payloadArr = flatList([comIDArr])
-        reqArrCRC = crcAppend(payloadArr)
+        reqArr = crcAppend(payloadArr)
         rplN = 10 + 4
 
     if comID == 5:
         payloadArr = flatList([comIDArr])
-        reqArrCRC = crcAppend(payloadArr)
+        reqArr = crcAppend(payloadArr)
         rplN = 0 + 4
 
     if comID == 6:
@@ -199,7 +199,7 @@ while True:
         rampTimeArr = list(bytearray((rampTime).to_bytes(2, byteorder='little', signed=False)))
 
         payloadArr = flatList([comIDArr, speedArr, rampTimeArr])
-        reqArrCRC = crcAppend(payloadArr)
+        reqArr = crcAppend(payloadArr)
         rplN = 0 + 4
 
     if comID == 7:
@@ -208,32 +208,32 @@ while True:
         clcModeArr = list(bytearray((clcMode).to_bytes(1, byteorder='little', signed=False)))
 
         payloadArr = flatList([comIDArr, clcModeArr])
-        reqArrCRC = crcAppend(payloadArr)
+        reqArr = crcAppend(payloadArr)
         rplN = 0 + 4
 
     if comID == 8:
         payloadArr = flatList([comIDArr])
-        reqArrCRC = crcAppend(payloadArr)
+        reqArr = crcAppend(payloadArr)
         rplN = 4 + 4
 
     if comID == 9:
         payloadArr = flatList([comIDArr])
-        reqArrCRC = crcAppend(payloadArr)
+        reqArr = crcAppend(payloadArr)
         rplN = 79 + 4
 
     if comID == 10:
         payloadArr = flatList([comIDArr])
-        reqArrCRC = crcAppend(payloadArr)
+        reqArr = crcAppend(payloadArr)
         rplN = 0 + 4
 
     if comID == 11:
         payloadArr = flatList([comIDArr])
-        reqArrCRC = crcAppend(payloadArr)
+        reqArr = crcAppend(payloadArr)
         rplN = 20 + 4
 
 
 ##- SPI Transmission --- --- ---
-    reqArrT = flatList([0x7e, reqArrCRC, 0x7e]) 
+    reqArrF = flatList([0x7e, reqArr, 0x7e]) 
     reqArrX = xorFunc(reqArrT, "reqMode")
 
     slvEmpArr = spi.xfer2(reqArrX)
@@ -241,19 +241,21 @@ while True:
     time.sleep(0.100)       # waits 100 ms for RWA to process
 
     msrEmpArr = [0x7e] * (2*rplN + 3)    # doubled for XOR, extra 3 bytes for flags and delay
-
     rplArrX = spi.xfer2(msrEmpArr)
 
-    rplArrT = xorFunc(rplArrX, "rplMode")    # need to set up XOR on Arduino
-
-    rplArrCRC = rplArrT[(0+2):(rplN+2)]     # pulls out info package from frame, could automate to find flags
+    rplArrF = xorFunc(rplArrX, "rplMode")    # need to set up XOR on Arduino
+    rplArr = rplArrF[(0+2):(rplN+2)]     # pulls out info package from frame, could automate to find flags
     
-    print("reqCRC:", [hex(x) for x in reqArrCRC])
-    print("reqT:", [hex(x) for x in reqArrT])
-    print("reqX:", [hex(x) for x in reqArrX])
-    print("rplX:", [hex(x) for x in rplArrX])
-    print("rplT:", [hex(x) for x in rplArrT])
-    print("rplCRC:", [hex(x) for x in rplArrCRC])
+
+
+
+
+    print("reqArr:", [hex(x) for x in reqArr])
+    print("reqArrF:", [hex(x) for x in reqArrF])
+    print("reqArrX:", [hex(x) for x in reqArrX])
+    print("rplArrX:", [hex(x) for x in rplArrX])
+    print("rplArrF:", [hex(x) for x in rplArrF])
+    print("rplArr:", [hex(x) for x in rplArr])
 
 
     #csvAdd(reqArrT, "reqMode")

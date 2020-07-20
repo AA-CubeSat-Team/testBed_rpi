@@ -231,8 +231,6 @@ while True:
         reqArrCRC = crcAppend(payloadArr)
         rplN = 20 + 4
 
-    else:
-        print("invalid command ID")
 
 ##- SPI Transmission --- --- ---
     reqArrT = flatList([0x7e, reqArrCRC, 0x7e]) 

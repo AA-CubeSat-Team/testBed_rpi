@@ -195,7 +195,7 @@ while True:
         speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
 
         rampTime = input("enter a rampTime [10:10000, ms]:\n")
-        rampTime = int(speed)
+        rampTime = int(rampTime)
         rampTimeArr = list(bytearray((rampTime).to_bytes(2, byteorder='little', signed=False)))
 
         payloadArr = flatList([comIDArr, speedArr, rampTimeArr])

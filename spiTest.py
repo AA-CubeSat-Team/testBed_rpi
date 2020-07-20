@@ -162,7 +162,7 @@ while True:
 ##- User Input and Payload Assembly --- --- ---
     comID = input("enter a command ID:\n")
     comID = int(comID)
-    comIDArr = list(bytearray((comID).to_bytes(1, byteorder='little', signed=True)))
+    comIDArr = list(bytearray((comID).to_bytes(1, byteorder='little', signed=False)))
 
     if comID == 1:
         payloadArr = flatList([comIDArr])
@@ -196,7 +196,7 @@ while True:
 
         rampTime = input("enter a rampTime [10:10000, ms]:\n")
         rampTime = int(speed)
-        rampTimeArr = list(bytearray((rampTime).to_bytes(2, byteorder='little', signed=True)))
+        rampTimeArr = list(bytearray((rampTime).to_bytes(2, byteorder='little', signed=False)))
 
         payloadArr = flatList([comIDArr, speedArr, rampTimeArr])
         reqArrCRC = crcAppend(payloadArr)
@@ -205,7 +205,7 @@ while True:
     if comID == 7:
         clcMode = input("enter a current limit control mode [0 - low, 1 - high]:\n")
         clcMode = int(clcMode)
-        clcModeArr = list(bytearray((clcMode).to_bytes(1, byteorder='little', signed=True)))
+        clcModeArr = list(bytearray((clcMode).to_bytes(1, byteorder='little', signed=False)))
 
         payloadArr = flatList([comIDArr, clcModeArr])
         reqArrCRC = crcAppend(payloadArr)

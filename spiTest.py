@@ -253,8 +253,9 @@ while True:
     slvCRC = [rplArr[-2],rplArr[-1]]
     print(slvCRC)
 
-    corrCRCArr = crcAppend(rplArr[0:(rplN-1)])
-    print(corrCRCArr)
+    rplArrCorr = crcAppend(rplArr[0:(rplN-1)])
+    corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
+    print(corrCRC)
 
 
 ##- Input to Request Payload --- --- ---

@@ -253,7 +253,7 @@ while True:
     slvCRC = [rplArr[-2],rplArr[-1]]
     print(slvCRC)
 
-    print(rplArr[0:(rplN-3)])
+    print(rplArr[0:(rplN-2)])
     rplArrCorr = crcAppend(rplArr[0:(rplN-3)])
     print(rplArrCorr)
     corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]

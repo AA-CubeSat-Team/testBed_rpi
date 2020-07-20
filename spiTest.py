@@ -254,7 +254,7 @@ while True:
     print("slvCRC: ", slvCRC)
 
     rplArrCorr = crcAppend(rplArr[0:(rplN-2)])
-    corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
+    corrCRC = [2*rplArrCorr[-2],rplArrCorr[-1]]
     print("corrCRC: ", corrCRC)
 
     if slvCRC == corrCRC:

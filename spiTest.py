@@ -234,7 +234,7 @@ while True:
 
 ##- SPI Transmission --- --- ---
     reqArrF = flatList([0x7e, reqArr, 0x7e]) 
-    reqArrX = xorFunc(reqArrT, "reqMode")
+    reqArrX = xorFunc(reqArrF, "reqMode")
 
     slvEmpArr = spi.xfer2(reqArrX)
 

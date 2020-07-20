@@ -239,9 +239,9 @@ while True:
         refSpeed = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=True)
         print("curr speed: ", refSpeed)
         state = int.from_bytes(bytes(bytearray(rplArr[10])), byteorder='little', signed=False)
-        print("curr speed: ", state)
+        print("state: ", rplArr[10])
         clcModeS = int.from_bytes(bytes(bytearray(rplArr[11])), byteorder='little', signed=True)
-        print("clc mode: ", clcModeS)
+        print("clc mode: ", rplArr[11])
 
     if comID == 5:
         payloadArr = flatList([comIDArr])

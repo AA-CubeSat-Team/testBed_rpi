@@ -246,7 +246,7 @@ while True:
 
     rplArrT = xorFunc(rplArrX, "rplMode")    # need to set up XOR on Arduino
 
-    rplArrCRC = rplArrT[2:rplN]     # pulls out info package from frame, could automate to find flags
+    rplArrCRC = rplArrT[(0+2):(rplN+2)]     # pulls out info package from frame, could automate to find flags
     
     print("reqCRC:", reqArrCRC)
     print("reqT:", reqArrT)

@@ -238,10 +238,10 @@ while True:
         print("curr speed: ", currSpeed)
         refSpeed = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=True)
         print("curr speed: ", refSpeed)
-        state = int.from_bytes(bytes(bytearray(rplArr[10])), byteorder='little', signed=False)
-        print("state: ", rplArr[10])
-        clcModeS = int.from_bytes(bytes(bytearray(rplArr[11])), byteorder='little', signed=True)
-        print("clc mode: ", rplArr[11])
+        state = int.from_bytes(bytes(rplArr[10]), byteorder='little', signed=False)
+        print("state: ", state)
+        clcModeS = int.from_bytes(bytes(rplArr[11]), byteorder='little', signed=True)
+        print("clc mode: ", clcModeS)
 
     if comID == 5:
         payloadArr = flatList([comIDArr])
@@ -306,6 +306,25 @@ while True:
         
         rplN = 20 + 4
         rplArr = spiFunc(reqArr,rplN)
+
+    if comID == 99:
+        print("manual mode")
+        payloadArr = [0x01]
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 0
+        rplArr = spiFunc(reqArr,rplN)
+
+        versionMajor = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=False)
+        print("version major: ", versionMajor)
+        versionBuildNumber = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=False)
+        print("version build number: ", versionBuildNumber)
+        uid1 = int.from_bytes(bytes(bytearray(rplArr[10:14])), byteorder='little', signed=False)
+        print("UID 1: ", uid1)
+        uid2 = int.from_bytes(bytes(bytearray(rplArr[14:18])), byteorder='little', signed=False)
+        print("UID 2: ", uid2)
+        uid3 = int.from_bytes(bytes(bytearray(rplArr[18:22])), byteorder='little', signed=False)
+        print("UID 3: ", uid3)
 
 
 

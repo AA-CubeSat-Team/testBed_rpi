@@ -238,7 +238,7 @@ while True:
         print("curr speed: ", currSpeed)
         refSpeed = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=True)
         print("curr speed: ", refSpeed)
-        state = int.from_bytes(bytes(rplArr[10]), byteorder='little', signed=False)
+        state = int.from_bytes(byte(rplArr[10]), byteorder='little', signed=False)
         print("state: ", state)
         clcModeS = int.from_bytes(bytes(rplArr[11]), byteorder='little', signed=False)
         print("clc mode: ", clcModeS)

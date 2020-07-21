@@ -240,7 +240,7 @@ while True:
         print("curr speed: ", refSpeed)
         state = int.from_bytes(bytes(rplArr[10]), byteorder='little', signed=False)
         print("state: ", state)
-        clcModeS = int.from_bytes(bytes(rplArr[11]), byteorder='little', signed=True)
+        clcModeS = int.from_bytes(bytes(rplArr[11]), byteorder='little', signed=False)
         print("clc mode: ", clcModeS)
 
     if comID == 5:

@@ -77,7 +77,7 @@ def crcAppend(payloadArr1):
         crcValue = (crcValue << 8) ^ crcTable[((crcValue >> 8) ^ iterByte) & 0x00FF];
         crcValue = ((1 << 16) - 1)  &  crcValue;
     crcSplit = [crcValue >> 8, crcValue & 0x00FF]
-    payloadArrCRC = flatList([payloadArr1,crcSplit[1],crcSplit[0])
+    payloadArrCRC = flatList([payloadArr1,crcSplit[1],crcSplit[0]])
     return payloadArrCRC
 
 # LIST FLATTENING TOOL

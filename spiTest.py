@@ -217,8 +217,8 @@ while True:
         rplN = 1 + 4
         rplArr = spiFunc(reqArr,rplN)
 
-        lastResetStatus = int.from_bytes(bytes(bytearray(rplArr[2])), byteorder='little', signed=False)
-        print("last reset status: ", rplArr[2])     # why is from_bytes not working?
+        lastResetStatus = rplArr[2]
+        print("last reset status: ", lastResetStatus)     
 
     if comID == 3:
         payloadArr = flatList([comIDArr])
@@ -238,9 +238,9 @@ while True:
         print("curr speed: ", currSpeed)
         refSpeed = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=True)
         print("curr speed: ", refSpeed)
-        state = int.from_bytes(byte(rplArr[10]), byteorder='little', signed=False)
+        state = rplArr[10]
         print("state: ", state)
-        clcModeS = int.from_bytes(bytes(rplArr[11]), byteorder='little', signed=False)
+        clcModeS = rplArr[11]
         print("clc mode: ", clcModeS)
 
     if comID == 5:

@@ -208,13 +208,16 @@ while True:
 
     if mode == 2:
         print("USER INPUT MODE")
-        print("enter 'break' to return to mode select")
+        print("enter '99' to return to mode select")
 
         while True: 
             comID = input("enter a command ID:\n")
             comID = int(comID)
             comIDArr = list(bytearray((comID).to_bytes(1, byteorder='little', signed=False)))
 
+            if comID == 99:
+                break
+                
             if comID == 1:
                 payloadArr = flatList([comIDArr])
                 reqArr = crcAppend(payloadArr)

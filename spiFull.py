@@ -199,7 +199,7 @@ def userResults(reqArr1, rplArr1, rplN1):
 
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 while True: 
-    mode = input("enter a operation mode:\n1 - auto test\n2 - user input\n3 - full manual\n")
+    mode = input("\nenter a operation mode:\n1 - auto test\n2 - user input\n3 - full manual\n\n")
     mode = int(mode)
 
     if mode == 1:

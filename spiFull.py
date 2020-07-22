@@ -175,7 +175,7 @@ def spiTransfer(reqArr1,rplN1):
     return rplArr1 
 
 # CRC CHECK FUNCTION
-def userResults(reqArr1, rplArr1):
+def userResults(reqArr1, rplArr1, rplN1):
     slvCRC = [rplArr1[-2],rplArr1[-1]]
 
     rplArrCorr = crcAppend(rplArr1[0:(rplN1-2)])
@@ -201,7 +201,7 @@ def userResults(reqArr1, rplArr1):
 while True: 
     mode = input("enter a operation mode:\n1 - auto test\n2 - user input\n3 - full manual\n")
     mode = int(mode)
-    
+
     if mode == 1:
         a = 1
 
@@ -218,7 +218,7 @@ while True:
             
             rplN = 0 + 4
             rplArr = spiTransfer(reqArr,rplN)
-            userResults(reqArr, rplArr)
+            userResults(reqArr, rplArr, rplN)
 
         if comID == 2:
             payloadArr = flatList([comIDArr])
@@ -226,7 +226,7 @@ while True:
             
             rplN = 1 + 4
             rplArr = spiTransfer(reqArr,rplN)
-            userResults(reqArr, rplArr)
+            userResults(reqArr, rplArr, rplN)
 
             lastResetStatus = rplArr[2]
             print("last reset status: ", lastResetStatus)     
@@ -237,7 +237,7 @@ while True:
             
             rplN = 0 + 4
             rplArr = spiTransfer(reqArr,rplN)
-            userResults(reqArr, rplArr)
+            userResults(reqArr, rplArr, rplN)
 
         if comID == 4:
             payloadArr = flatList([comIDArr])
@@ -245,7 +245,7 @@ while True:
             
             rplN = 10 + 4
             rplArr = spiTransfer(reqArr,rplN)
-            userResults(reqArr, rplArr)
+            userResults(reqArr, rplArr, rplN)
 
             currSpeed = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
             print("curr speed: ", currSpeed)
@@ -262,7 +262,7 @@ while True:
             
             rplN = 0 + 4
             rplArr = spiTransfer(reqArr,rplN)
-            userResults(reqArr, rplArr)
+            userResults(reqArr, rplArr, rplN)
 
         if comID == 6:
             speed = input("enter a speed [-65000:65000, 0.1 RPM]:\n")
@@ -278,7 +278,7 @@ while True:
             
             rplN = 0 + 4
             rplArr = spiTransfer(reqArr,rplN)
-            userResults(reqArr, rplArr)
+            userResults(reqArr, rplArr, rplN)
 
         if comID == 7:
             clcModeM = input("enter a current limit control mode [0 - low, 1 - high]:\n")
@@ -290,7 +290,7 @@ while True:
             
             rplN = 0 + 4
             rplArr = spiTransfer(reqArr,rplN)
-            userResults(reqArr, rplArr)
+            userResults(reqArr, rplArr, rplN)
 
         if comID == 8:
             payloadArr = flatList([comIDArr])
@@ -298,7 +298,7 @@ while True:
             
             rplN = 4 + 4
             rplArr = spiTransfer(reqArr,rplN)
-            userResults(reqArr, rplArr)
+            userResults(reqArr, rplArr, rplN)
 
             temp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
             print("temp: ", temp)
@@ -309,7 +309,7 @@ while True:
             
             rplN = 79 + 4
             rplArr = spiTransfer(reqArr,rplN)
-            userResults(reqArr, rplArr)
+            userResults(reqArr, rplArr, rplN)
 
         if comID == 10:
             payloadArr = flatList([comIDArr])
@@ -317,7 +317,7 @@ while True:
             
             rplN = 0 + 4
             rplArr = spiTransfer(reqArr,rplN)
-            userResults(reqArr, rplArr)
+            userResults(reqArr, rplArr, rplN)
 
         if comID == 11:
             payloadArr = flatList([comIDArr])
@@ -325,7 +325,7 @@ while True:
             
             rplN = 20 + 4
             rplArr = spiTransfer(reqArr,rplN)
-            userResults(reqArr, rplArr)
+            userResults(reqArr, rplArr, rplN)
 
             versionMajor = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=False)
             print("version major: ", versionMajor)

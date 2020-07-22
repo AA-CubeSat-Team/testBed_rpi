@@ -202,7 +202,7 @@ while True:
     mode = input("enter a operation mode:\n1 - auto test\n2 - user input\n3 - full manual\n")
 
     if mode == 1:
-
+        a = 1
 
 
     if mode == 2:

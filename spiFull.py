@@ -175,7 +175,7 @@ def spiTransfer(reqArr1,rplN1):
     return rplArr1 
 
 # CRC CHECK FUNCTION
-def userResults(reqArr1, rplArr1)
+def userResults(reqArr1, rplArr1):
     slvCRC = [rplArr1[-2],rplArr1[-1]]
 
     rplArrCorr = crcAppend(rplArr1[0:(rplN1-2)])

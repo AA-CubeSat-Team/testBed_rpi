@@ -89,7 +89,7 @@ def flatList(x):
         return [x]
 
 # FLAG/ESCAPE XOR FUNCTION
-def xorFunc(arr, mode):
+def xorSwitch(arr, mode):
     arrInp = arr[:]
     if mode == "reqMode":
         idxList = [i for i, val in enumerate(arrInp) if val == 0x7d]
@@ -157,12 +157,11 @@ def csvAdd(arr, mode):
         write.writerow(row1)  
 
 # SPI FUNCTION
-def spiUserFunc(reqArr1,rplN1):
-    # SPI transmission
+def spiTransfer(reqArr1,rplN1):
     msrEmpArr = [0x7e] * (2*rplN1 + 3) 
 
     reqArrH = flatList([0x7e, reqArr1, 0x7e]) 
-    reqArrX = xorFunc(reqArrH, "reqMode")               
+    reqArrX = xorSwitch(reqArrH, "reqMode")               
 
     slvEmpArr = spi.xfer2(reqArrX)
 
@@ -170,10 +169,13 @@ def spiUserFunc(reqArr1,rplN1):
        
     rplArrX = spi.xfer2(msrEmpArr)
 
-    rplArrH = xorFunc(rplArrX, "rplMode")    
+    rplArrH = xorSwitch(rplArrX, "rplMode")    
     rplArr1 = rplArrH[(0+2):(rplN1+2)] 
-       
-    # CRC error check
+
+    return rplArr1 
+
+# CRC CHECK FUNCTION
+def userResults(reqArr1, rplArr1)
     slvCRC = [rplArr1[-2],rplArr1[-1]]
 
     rplArrCorr = crcAppend(rplArr1[0:(rplN1-2)])
@@ -192,16 +194,18 @@ def spiUserFunc(reqArr1,rplN1):
     if rplArr1[1] == 0:
         print("EXECUTION: FALSE")
 
-    return rplArr1   
+      
     
 
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 while True: 
     mode = input("enter a operation mode:\n1 - auto test\n2 - user input\n3 - full manual\n")
 
+    if mode == 1:
+
+
 
     if mode == 2:
-
 
         comID = input("enter a command ID:\n")
         comID = int(comID)
@@ -212,14 +216,16 @@ while True:
             reqArr = crcAppend(payloadArr)
             
             rplN = 0 + 4
-            rplArr = spiUserFunc(reqArr,rplN)
+            rplArr = spiTransfer(reqArr,rplN)
+            userResults(reqArr, rplArr)
 
         if comID == 2:
             payloadArr = flatList([comIDArr])
             reqArr = crcAppend(payloadArr)
             
             rplN = 1 + 4
-            rplArr = spiUserFunc(reqArr,rplN)
+            rplArr = spiTransfer(reqArr,rplN)
+            userResults(reqArr, rplArr)
 
             lastResetStatus = rplArr[2]
             print("last reset status: ", lastResetStatus)     
@@ -229,14 +235,16 @@ while True:
             reqArr = crcAppend(payloadArr)
             
             rplN = 0 + 4
-            rplArr = spiUserFunc(reqArr,rplN)
+            rplArr = spiTransfer(reqArr,rplN)
+            userResults(reqArr, rplArr)
 
         if comID == 4:
             payloadArr = flatList([comIDArr])
             reqArr = crcAppend(payloadArr)
             
             rplN = 10 + 4
-            rplArr = spiUserFunc(reqArr,rplN)
+            rplArr = spiTransfer(reqArr,rplN)
+            userResults(reqArr, rplArr)
 
             currSpeed = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
             print("curr speed: ", currSpeed)
@@ -252,7 +260,8 @@ while True:
             reqArr = crcAppend(payloadArr)
             
             rplN = 0 + 4
-            rplArr = spiUserFunc(reqArr,rplN)
+            rplArr = spiTransfer(reqArr,rplN)
+            userResults(reqArr, rplArr)
 
         if comID == 6:
             speed = input("enter a speed [-65000:65000, 0.1 RPM]:\n")
@@ -267,7 +276,8 @@ while True:
             reqArr = crcAppend(payloadArr)
             
             rplN = 0 + 4
-            rplArr = spiUserFunc(reqArr,rplN)
+            rplArr = spiTransfer(reqArr,rplN)
+            userResults(reqArr, rplArr)
 
         if comID == 7:
             clcModeM = input("enter a current limit control mode [0 - low, 1 - high]:\n")
@@ -278,14 +288,16 @@ while True:
             reqArr = crcAppend(payloadArr)
             
             rplN = 0 + 4
-            rplArr = spiUserFunc(reqArr,rplN)
+            rplArr = spiTransfer(reqArr,rplN)
+            userResults(reqArr, rplArr)
 
         if comID == 8:
             payloadArr = flatList([comIDArr])
             reqArr = crcAppend(payloadArr)
             
             rplN = 4 + 4
-            rplArr = spiUserFunc(reqArr,rplN)
+            rplArr = spiTransfer(reqArr,rplN)
+            userResults(reqArr, rplArr)
 
             temp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
             print("temp: ", temp)
@@ -295,21 +307,24 @@ while True:
             reqArr = crcAppend(payloadArr)
             
             rplN = 79 + 4
-            rplArr = spiUserFunc(reqArr,rplN)
+            rplArr = spiTransfer(reqArr,rplN)
+            userResults(reqArr, rplArr)
 
         if comID == 10:
             payloadArr = flatList([comIDArr])
             reqArr = crcAppend(payloadArr)
             
             rplN = 0 + 4
-            rplArr = spiUserFunc(reqArr,rplN)
+            rplArr = spiTransfer(reqArr,rplN)
+            userResults(reqArr, rplArr)
 
         if comID == 11:
             payloadArr = flatList([comIDArr])
             reqArr = crcAppend(payloadArr)
             
             rplN = 20 + 4
-            rplArr = spiUserFunc(reqArr,rplN)
+            rplArr = spiTransfer(reqArr,rplN)
+            userResults(reqArr, rplArr)
 
             versionMajor = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=False)
             print("version major: ", versionMajor)

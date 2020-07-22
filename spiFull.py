@@ -80,6 +80,26 @@ def crcAppend(payloadArr1):
     payloadArrCRC = flatList([payloadArr1,crcSplit[1],crcSplit[0]])
     return payloadArrCRC
 
+# CRC CHECK FUNCTION
+def userResults(reqArr1, rplArr1, rplN1):
+    slvCRC = [rplArr1[-2],rplArr1[-1]]
+
+    rplArrCorr = crcAppend(rplArr1[0:(rplN1-2)])
+    corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
+
+    print("reqArr:", [hex(x) for x in reqArr1])
+    print("rplArr:", [hex(x) for x in rplArr1])
+
+    if slvCRC == corrCRC:
+        print("REPLY CRC: TRUE")
+    if slvCRC != corrCRC:
+        print("REPLY CRC: FALSE")
+
+    if rplArr1[1] == 1:
+        print("EXECUTION: TRUE")
+    if rplArr1[1] == 0:
+        print("EXECUTION: FALSE")
+
 # LIST FLATTENING TOOL
 import collections
 def flatList(x):
@@ -174,36 +194,196 @@ def spiTransfer(reqArr1,rplN1):
 
     return rplArr1 
 
-# CRC CHECK FUNCTION
-def userResults(reqArr1, rplArr1, rplN1):
-    slvCRC = [rplArr1[-2],rplArr1[-1]]
+# SPI MECHANISM
+def spiAuto(comID1,data1,data2)
+    if comID == 1:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 0 + 4
+        rplArr = spiTransfer(reqArr,rplN)
 
-    rplArrCorr = crcAppend(rplArr1[0:(rplN1-2)])
-    corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
+    if comID == 2:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 1 + 4
+        rplArr = spiTransfer(reqArr,rplN)
 
-    print("reqArr:", [hex(x) for x in reqArr1])
-    print("rplArr:", [hex(x) for x in rplArr1])
+        lastResetStatus = rplArr[2]   
 
-    if slvCRC == corrCRC:
-        print("REPLY CRC: TRUE")
-    if slvCRC != corrCRC:
-        print("REPLY CRC: FALSE")
+    if comID == 3:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 0 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        userResults(reqArr, rplArr, rplN)
 
-    if rplArr1[1] == 1:
-        print("EXECUTION: TRUE")
-    if rplArr1[1] == 0:
-        print("EXECUTION: FALSE")
+    if comID == 4:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 10 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        userResults(reqArr, rplArr, rplN)
+
+        currSpeed = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
+        print("curr speed: ", currSpeed)
+        refSpeed = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=True)
+        print("curr speed: ", refSpeed)
+        state = rplArr[10]
+        print("state: ", state)
+        clcModeS = rplArr[11]
+        print("clc mode: ", clcModeS)
+
+
+def spiUser(comID):
+    comIDArr = list(bytearray((comID).to_bytes(1, byteorder='little', signed=False)))
+
+    if comID == 1:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 0 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        userResults(reqArr, rplArr, rplN)
+
+    if comID == 2:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 1 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        userResults(reqArr, rplArr, rplN)
+
+        lastResetStatus = rplArr[2]
+        print("last reset status: ", lastResetStatus)     
+
+    if comID == 3:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 0 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        userResults(reqArr, rplArr, rplN)
+
+    if comID == 4:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 10 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        userResults(reqArr, rplArr, rplN)
+
+        currSpeed = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
+        print("curr speed: ", currSpeed)
+        refSpeed = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=True)
+        print("curr speed: ", refSpeed)
+        state = rplArr[10]
+        print("state: ", state)
+        clcModeS = rplArr[11]
+        print("clc mode: ", clcModeS)
+
+    if comID == 5:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 0 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        userResults(reqArr, rplArr, rplN)
+
+    if comID == 6:
+        speed = input("enter a speed [-65000:65000, 0.1 RPM]:\n")
+        speed = int(speed)
+        speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
+
+        rampTime = input("enter a rampTime [10:10000, ms]:\n")
+        rampTime = int(rampTime)
+        rampTimeArr = list(bytearray((rampTime).to_bytes(2, byteorder='little', signed=False)))
+
+        payloadArr = flatList([comIDArr, speedArr, rampTimeArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 0 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        userResults(reqArr, rplArr, rplN)
+
+    if comID == 7:
+        clcModeM = input("enter a current limit control mode [0 - low, 1 - high]:\n")
+        clcModeM = int(clcModeM)
+        clcModeArr = list(bytearray((clcModeM).to_bytes(1, byteorder='little', signed=False)))
+
+        payloadArr = flatList([comIDArr, clcModeArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 0 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        userResults(reqArr, rplArr, rplN)
+
+    if comID == 8:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 4 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        userResults(reqArr, rplArr, rplN)
+
+        temp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
+        print("temp: ", temp)
+
+    if comID == 9:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 79 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        userResults(reqArr, rplArr, rplN)
+
+    if comID == 10:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 0 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        userResults(reqArr, rplArr, rplN)
+
+    if comID == 11:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 20 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        userResults(reqArr, rplArr, rplN)
+
+        versionMajor = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=False)
+        print("version major: ", versionMajor)
+        versionBuildNumber = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=False)
+        print("version build number: ", versionBuildNumber)
+        uid1 = int.from_bytes(bytes(bytearray(rplArr[10:14])), byteorder='little', signed=False)
+        print("UID 1: ", uid1)
+        uid2 = int.from_bytes(bytes(bytearray(rplArr[14:18])), byteorder='little', signed=False)
+        print("UID 2: ", uid2)
+        uid3 = int.from_bytes(bytes(bytearray(rplArr[18:22])), byteorder='little', signed=False)
+        print("UID 3: ", uid3)
 
       
     
 
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 while True: 
-    mode = input("\nenter a operation mode:\n1 - auto test\n2 - user input\n3 - full manual\n\n")
+    mode = input("\nenter an operating mode:\n1 - auto test\n2 - user input\n3 - full manual\n\n")
     mode = int(mode)
 
     if mode == 1:
         print("AUTO TEST MODE")
+        print("enter '99' to return to mode select\n")
+
+        t0 = time.time()
+        code_block
+        t1 = time.time()
+
+        total = t1-t0
 
 
     if mode == 2:
@@ -213,138 +393,13 @@ while True:
         while True: 
             comID = input("enter a command ID:\n")
             comID = int(comID)
-            comIDArr = list(bytearray((comID).to_bytes(1, byteorder='little', signed=False)))
 
             if comID == 99:
                 break
 
-            if comID == 1:
-                payloadArr = flatList([comIDArr])
-                reqArr = crcAppend(payloadArr)
-                
-                rplN = 0 + 4
-                rplArr = spiTransfer(reqArr,rplN)
-                userResults(reqArr, rplArr, rplN)
-
-            if comID == 2:
-                payloadArr = flatList([comIDArr])
-                reqArr = crcAppend(payloadArr)
-                
-                rplN = 1 + 4
-                rplArr = spiTransfer(reqArr,rplN)
-                userResults(reqArr, rplArr, rplN)
-
-                lastResetStatus = rplArr[2]
-                print("last reset status: ", lastResetStatus)     
-
-            if comID == 3:
-                payloadArr = flatList([comIDArr])
-                reqArr = crcAppend(payloadArr)
-                
-                rplN = 0 + 4
-                rplArr = spiTransfer(reqArr,rplN)
-                userResults(reqArr, rplArr, rplN)
-
-            if comID == 4:
-                payloadArr = flatList([comIDArr])
-                reqArr = crcAppend(payloadArr)
-                
-                rplN = 10 + 4
-                rplArr = spiTransfer(reqArr,rplN)
-                userResults(reqArr, rplArr, rplN)
-
-                currSpeed = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
-                print("curr speed: ", currSpeed)
-                refSpeed = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=True)
-                print("curr speed: ", refSpeed)
-                state = rplArr[10]
-                print("state: ", state)
-                clcModeS = rplArr[11]
-                print("clc mode: ", clcModeS)
-
-            if comID == 5:
-                payloadArr = flatList([comIDArr])
-                reqArr = crcAppend(payloadArr)
-                
-                rplN = 0 + 4
-                rplArr = spiTransfer(reqArr,rplN)
-                userResults(reqArr, rplArr, rplN)
-
-            if comID == 6:
-                speed = input("enter a speed [-65000:65000, 0.1 RPM]:\n")
-                speed = int(speed)
-                speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
-
-                rampTime = input("enter a rampTime [10:10000, ms]:\n")
-                rampTime = int(rampTime)
-                rampTimeArr = list(bytearray((rampTime).to_bytes(2, byteorder='little', signed=False)))
-
-                payloadArr = flatList([comIDArr, speedArr, rampTimeArr])
-                reqArr = crcAppend(payloadArr)
-                
-                rplN = 0 + 4
-                rplArr = spiTransfer(reqArr,rplN)
-                userResults(reqArr, rplArr, rplN)
-
-            if comID == 7:
-                clcModeM = input("enter a current limit control mode [0 - low, 1 - high]:\n")
-                clcModeM = int(clcModeM)
-                clcModeArr = list(bytearray((clcModeM).to_bytes(1, byteorder='little', signed=False)))
-
-                payloadArr = flatList([comIDArr, clcModeArr])
-                reqArr = crcAppend(payloadArr)
-                
-                rplN = 0 + 4
-                rplArr = spiTransfer(reqArr,rplN)
-                userResults(reqArr, rplArr, rplN)
-
-            if comID == 8:
-                payloadArr = flatList([comIDArr])
-                reqArr = crcAppend(payloadArr)
-                
-                rplN = 4 + 4
-                rplArr = spiTransfer(reqArr,rplN)
-                userResults(reqArr, rplArr, rplN)
-
-                temp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
-                print("temp: ", temp)
-
-            if comID == 9:
-                payloadArr = flatList([comIDArr])
-                reqArr = crcAppend(payloadArr)
-                
-                rplN = 79 + 4
-                rplArr = spiTransfer(reqArr,rplN)
-                userResults(reqArr, rplArr, rplN)
-
-            if comID == 10:
-                payloadArr = flatList([comIDArr])
-                reqArr = crcAppend(payloadArr)
-                
-                rplN = 0 + 4
-                rplArr = spiTransfer(reqArr,rplN)
-                userResults(reqArr, rplArr, rplN)
-
-            if comID == 11:
-                payloadArr = flatList([comIDArr])
-                reqArr = crcAppend(payloadArr)
-                
-                rplN = 20 + 4
-                rplArr = spiTransfer(reqArr,rplN)
-                userResults(reqArr, rplArr, rplN)
-
-                versionMajor = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=False)
-                print("version major: ", versionMajor)
-                versionBuildNumber = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=False)
-                print("version build number: ", versionBuildNumber)
-                uid1 = int.from_bytes(bytes(bytearray(rplArr[10:14])), byteorder='little', signed=False)
-                print("UID 1: ", uid1)
-                uid2 = int.from_bytes(bytes(bytearray(rplArr[14:18])), byteorder='little', signed=False)
-                print("UID 2: ", uid2)
-                uid3 = int.from_bytes(bytes(bytearray(rplArr[18:22])), byteorder='little', signed=False)
-                print("UID 3: ", uid3)
-
-
+            spiUser(comID)
+            
+            
     if mode == 3:
         print("FULL MANUAL MODE")
 

@@ -177,7 +177,7 @@ def csvAdd(outputArr1):
 
     row1 = flatList([1, 2, 3, 4])     
 
-    file = open(fileNameG, 'a', newline ='')      # open(..'a'..) appends existing CSV file
+    file = open(fileNameG + '.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file
     with file:   
         write = csv.writer(file) 
         write.writerow(row1)  

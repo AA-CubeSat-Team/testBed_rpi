@@ -8,4 +8,4 @@ def flatList(inpArr1):
         return [inpArr1]
 
 
-print(flatList([1, [2, 4], 5]))
+print(flatList([1, ['abc', 4], 5]))

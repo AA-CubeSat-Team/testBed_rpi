@@ -203,7 +203,7 @@ def spiTransfer(reqArr1,rplN1):
 
 # SPI AUTO MECHANISM
 def spiAuto(comID1,data1,data2):
-    if comID == 1:
+    if comID1 == 1:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
         
@@ -211,7 +211,7 @@ def spiAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
-    if comID == 2:
+    if comID1 == 2:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
         
@@ -221,7 +221,7 @@ def spiAuto(comID1,data1,data2):
 
         lastResetStatus = rplArr[2]   
 
-    if comID == 3:
+    if comID1 == 3:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
         
@@ -229,7 +229,7 @@ def spiAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
-    if comID == 4:
+    if comID1 == 4:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
         
@@ -244,7 +244,7 @@ def spiAuto(comID1,data1,data2):
 
         outputArr1 = [checkArr[0], checkArr[1], currSpeed, refSpeed, state, clcModeS]
 
-    if comID == 5:
+    if comID1 == 5:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
         
@@ -252,7 +252,7 @@ def spiAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
-    if comID == 6:
+    if comID1 == 6:
         speed = data1
         speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
 
@@ -266,7 +266,7 @@ def spiAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
-    if comID == 7:
+    if comID1 == 7:
         clcModeM = data1
         clcModeArr = list(bytearray((clcModeM).to_bytes(1, byteorder='little', signed=False)))
 
@@ -277,7 +277,7 @@ def spiAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
-    if comID == 8:
+    if comID1 == 8:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
         
@@ -289,7 +289,7 @@ def spiAuto(comID1,data1,data2):
 
         outputArr1 = [checkArr[0], checkArr[1], temp]
 
-    if comID == 9:
+    if comID1 == 9:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
         
@@ -297,7 +297,7 @@ def spiAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
-    if comID == 10:
+    if comID1 == 10:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
         
@@ -305,7 +305,7 @@ def spiAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
-    if comID == 11:
+    if comID1 == 11:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
         
@@ -465,7 +465,7 @@ while True:
         print("enter '99' to return to op mode select\n")
 
         while True: 
-            testMode = input("\nenter a test mode:\n1 - manual speed\n\n")
+            testMode = input("enter a test mode:\n1 - manual speed\n\n")
             testMode = int(testMode)
 
             if testMode == 99:

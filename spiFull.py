@@ -473,9 +473,6 @@ while True:
             if testMode == 1:
                 print("\nMANUAL SPEED TEST MODE")
 
-                print(flatList([1, [2, 3]]))
-                break
-
                 global time0
                 time0 = time.time()
 
@@ -486,6 +483,7 @@ while True:
                 for ii in range(1,10):
                     outputArr = spiAuto(4,0,0)
                     csvAdd(outputArr)
+                    time.sleep(0.5)
 
                 print("test complete")
 

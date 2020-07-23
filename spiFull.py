@@ -175,7 +175,7 @@ def csvAdd(outputArr1):
     timeGMT1 = time.strftime("%H:%M:%S %Z", time.gmtime())
     timeELA1 = time.time() - time0
 
-    row1 = flatList([1, 2, [3, 'a']])     
+    row1 = flatList([1, 2, [3, 5]])     
 
     file = open(fileNameG + '.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file
     with file:   

@@ -90,6 +90,7 @@ def userResults(reqArr1, rplArr1, rplN1):
     rplArrCorr = crcAppend(rplArr1[0:(rplN1-2)])
     corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
 
+    print("\n")
     print("reqArr:", [hex(x) for x in reqArr1])
     print("rplArr:", [hex(x) for x in rplArr1])
 
@@ -102,6 +103,7 @@ def userResults(reqArr1, rplArr1, rplN1):
         print("EXECUTION: TRUE")
     if rplArr1[1] == 0:
         print("EXECUTION: FALSE")
+    print("\n")
 
 
 # LIST FLATTENING TOOL
@@ -240,7 +242,7 @@ def spiAuto(comID1,data1,data2):
         state = rplArr[10]
         clcModeS = rplArr[11]
 
-        outputArr = [checkArr[0], checkArr[1], currSpeed, refSpeed, state, clcModeS]
+        outputArr1 = [checkArr[0], checkArr[1], currSpeed, refSpeed, state, clcModeS]
 
     if comID == 5:
         payloadArr = flatList([comIDArr])
@@ -285,7 +287,7 @@ def spiAuto(comID1,data1,data2):
 
         temp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
 
-        outputArr = [checkArr[0], checkArr[1], temp]
+        outputArr1 = [checkArr[0], checkArr[1], temp]
 
     if comID == 9:
         payloadArr = flatList([comIDArr])
@@ -317,7 +319,7 @@ def spiAuto(comID1,data1,data2):
         uid2 = int.from_bytes(bytes(bytearray(rplArr[14:18])), byteorder='little', signed=False)
         uid3 = int.from_bytes(bytes(bytearray(rplArr[18:22])), byteorder='little', signed=False)
 
-    return outputArr
+    return outputArr1
 
 
 # SPI USER MECHANISM
@@ -459,7 +461,7 @@ while True:
     opMode = int(opMode)
 
     if opMode == 1:
-        print("AUTO TEST OP MODE")
+        print("\nAUTO TEST OP MODE")
         print("enter '99' to return to op mode select\n")
 
         while True: 
@@ -470,7 +472,7 @@ while True:
                 break
 
             if testMode == 1:
-                print("MANUAL SPEED TEST MODE")
+                print("\nMANUAL SPEED TEST MODE")
 
                 global time0
                 time0 = time.time()
@@ -501,7 +503,7 @@ while True:
             
             
     if opMode == 3:
-        print("FULL MANUAL OP MODE")
+        print("\nFULL MANUAL OP MODE")
 
 
 

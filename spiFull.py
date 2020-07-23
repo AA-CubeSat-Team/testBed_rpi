@@ -157,9 +157,9 @@ def csvStart(fileName1, header1):
     qq = 0
  
     global fileNameG
-    fileNameG = fileName1
+    fileNameG = fileName1 
 
-    file = open(fileNameG, 'w', newline ='')         # open(..'w'..) creates new CSV file
+    file = open(fileNameG + '.csv', 'w', newline ='')         # open(..'w'..) creates new CSV file
     with file:   
         write = csv.writer(file) 
         write.writerow(header1) 

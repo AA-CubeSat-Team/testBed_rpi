@@ -12,4 +12,4 @@ def flatList2(inpArr1):
     return newlist
 
 
-print(flatList([1, ['abc', 4], 5]))
+print(flatList2([1, ['abc', 4], 5]))

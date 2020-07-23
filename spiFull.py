@@ -106,11 +106,11 @@ def userResults(reqArr1, rplArr1, rplN1):
 
 # LIST FLATTENING TOOL
 import collections
-def flatList(x):
-    if isinstance(x, collections.Iterable):
-        return [a for i in x for a in flatList(i)]
+def flatList(inpArr1):
+    if isinstance(inpArr1, collections.Iterable):
+        return [a for i in inpArr1 for a in flatList(i)]
     else:
-        return [x]
+        return [inpArr1]
 
 
 # FLAG/ESCAPE XOR FUNCTION
@@ -149,7 +149,7 @@ def xorSwitch(arr, mode):
 
 
 # CSV INITIALIZATION
-def csvStart(fileName1, header1)
+def csvStart(fileName1, header1):
     global qq
     qq = 0
  

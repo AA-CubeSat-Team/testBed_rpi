@@ -108,12 +108,16 @@ def userResults(reqArr1, rplArr1, rplN1):
 
 
 # LIST FLATTENING TOOL
-import collections
+from collections.abc import Iterable                            
+def flatFunc(items):
+    for x in items:
+        if isinstance(x, Iterable) and not isinstance(x, (str, bytes)):
+            yield from flatFunc(x)
+        else:
+            yield x
+
 def flatList(inpArr1):
-    if isinstance(inpArr1, collections.Iterable):
-        return [a for i in inpArr1 for a in flatList(i)]
-    else:
-        return [inpArr1]
+    return list(flatFunc(inpArr1))
 
 
 # FLAG/ESCAPE XOR FUNCTION

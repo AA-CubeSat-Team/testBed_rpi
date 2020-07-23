@@ -473,6 +473,9 @@ while True:
             if testMode == 1:
                 print("\nMANUAL SPEED TEST MODE")
 
+                print(flatList([1, [2, 3]]))
+                break
+
                 global time0
                 time0 = time.time()
 

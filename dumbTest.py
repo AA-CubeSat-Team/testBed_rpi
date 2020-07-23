@@ -11,7 +11,7 @@ def flatList2(inpArr1):
     newlist = [j for i in inpArr1 for j in i]
     return newlist
 
-from collections import Iterable                            # < py38
+from collections.abc import Iterable                            # < py38
 def flatList3(items):
     """Yield items from any nested iterable; see Reference."""
     for x in items:

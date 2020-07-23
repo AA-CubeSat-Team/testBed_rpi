@@ -480,13 +480,11 @@ while True:
                 fileName = "speedTest"
                 csvStart(fileName, header)
 
-                csvAdd([1,2,3])
-
                 break
                 for ii in range(1,10):
                     outputArr = spiAuto(4,0,0)
                     print(outputArr)
-                    #csvAdd(outputArr)
+                    csvAdd(outputArr)
                     time.sleep(0.5)
 
                 print("test complete")

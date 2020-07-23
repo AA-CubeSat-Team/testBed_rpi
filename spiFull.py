@@ -70,6 +70,7 @@ def autoResults(reqArr1, rplArr1, rplN1):
     rplArrCorr = crcAppend(rplArr1[0:(rplN1-2)])
     corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
 
+    checkArr1 = [0, 0]
     if slvCRC == corrCRC:
         checkArr1[0] = 1
     if slvCRC != corrCRC:
@@ -80,7 +81,7 @@ def autoResults(reqArr1, rplArr1, rplN1):
     if rplArr1[1] == 0:
         checkArr1[1] = 0
 
-    return checkArr
+    return checkArr1
 
 
 # CRC CHECK FUNCTION

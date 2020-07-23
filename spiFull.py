@@ -1,12 +1,13 @@
-# spiTest.py
+# spiFull.py
 
 
 # INIT --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-# SPI INITIALIZATION
 import time
 import spidev
+import csv 
 
+# SPI INITIALIZATION
 bus = 0
 device = 0      # slave select pin
 
@@ -17,25 +18,6 @@ spi.open(bus, device)       # opens connection on specified bus, device
 spi.max_speed_hz = 250000   # sets master freq at 250 kHz, must be (150:300) kHz for RWA
 spi.mode = 0                # sets SPI mode to 0 (look up online)
 
-# CSV INITIALIZATION
-import csv 
-
-global qq
-qq = 0
-global xx
-xx = 0
-
-header = ["entry", "time", "xfer", "mode", "byte1", "byte2", "byte3", "byte4"]        
-
-global fileName
-#fileEnd = input("enter a file name: spiLog_")
-#fileName = 'spiLog_' + fileEnd + '.csv'
-fileName = 'output.csv'
-
-file = open(fileName, 'w', newline ='')         # open(..'w'..) creates new CSV file
-with file:   
-    write = csv.writer(file) 
-    write.writerow(header) 
 
 # CRC FUNCTION
 crcTable = [0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7, 
@@ -80,6 +62,27 @@ def crcAppend(payloadArr1):
     payloadArrCRC = flatList([payloadArr1,crcSplit[1],crcSplit[0]])
     return payloadArrCRC
 
+
+# CRC CHECK FUNCTION
+def autoResults(reqArr1, rplArr1, rplN1):
+    slvCRC = [rplArr1[-2],rplArr1[-1]]
+
+    rplArrCorr = crcAppend(rplArr1[0:(rplN1-2)])
+    corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
+
+    if slvCRC == corrCRC:
+        checkArr1[0] = 1
+    if slvCRC != corrCRC:
+        checkArr1[0] = 0
+
+    if rplArr1[1] == 1:
+        checkArr1[1] = 1
+    if rplArr1[1] == 0:
+        checkArr1[1] = 0
+
+    return checkArr
+
+
 # CRC CHECK FUNCTION
 def userResults(reqArr1, rplArr1, rplN1):
     slvCRC = [rplArr1[-2],rplArr1[-1]]
@@ -100,6 +103,7 @@ def userResults(reqArr1, rplArr1, rplN1):
     if rplArr1[1] == 0:
         print("EXECUTION: FALSE")
 
+
 # LIST FLATTENING TOOL
 import collections
 def flatList(x):
@@ -107,6 +111,7 @@ def flatList(x):
         return [a for i in x for a in flatList(i)]
     else:
         return [x]
+
 
 # FLAG/ESCAPE XOR FUNCTION
 def xorSwitch(arr, mode):
@@ -142,39 +147,38 @@ def xorSwitch(arr, mode):
         arrTrue = arrInp
         return(arrTrue)
 
-# CSV FUNCTION
-def csvAdd(arr, mode):
+
+# CSV INITIALIZATION
+def csvStart(fileName1, header1)
     global qq
-    global xx
-    global data
-    global src
-    global fileName
+    qq = 0
+ 
+    global fileNameG
+    fileNameG = fileName1
+
+    file = open(fileNameG, 'w', newline ='')         # open(..'w'..) creates new CSV file
+    with file:   
+        write = csv.writer(file) 
+        write.writerow(header1) 
+                                                # work to do figuring out auto CSV settings
+
+# CSV FUNCTION
+def csvAdd(outputArr1):
+    global fileNameG
+    global qq
+    global time0
 
     qq = qq + 1
-    ts1 = time.gmtime()
-    time1 = time.strftime("%H:%M:%S %Z", ts1)
-    
-    if mode == "reqMode":
-        arr.pop(0)
-        arr.pop(-1)
-        data = arr
-        src = "req"
-        xx = xx + 1
+    timeGMT1 = time.strftime("%H:%M:%S %Z", time.gmtime())
+    timeELA1 = time.time() - time0
 
-    if mode == "rplMode":
-        arr.pop(0)
-        arr.pop(0)
-        arr.pop(-1)
-        data = arr
-        src = "rpl"
+    row1 = flatList([qq, timeGMT1, timeELA1, outputArr1])     
 
-    row1_ll = [[qq], [time1], [xx], [src], data]
-    row1  = flatList(row1_ll)      
-
-    file = open(fileName, 'a', newline ='')      # open(..'a'..) appends existing CSV file
+    file = open(fileNameG, 'a', newline ='')      # open(..'a'..) appends existing CSV file
     with file:   
         write = csv.writer(file) 
         write.writerow(row1)  
+
 
 # SPI FUNCTION
 def spiTransfer(reqArr1,rplN1):
@@ -194,14 +198,16 @@ def spiTransfer(reqArr1,rplN1):
 
     return rplArr1 
 
-# SPI MECHANISM
-def spiAuto(comID1,data1,data2)
+
+# SPI AUTO MECHANISM
+def spiAuto(comID1,data1,data2):
     if comID == 1:
         payloadArr = flatList([comIDArr])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
         rplArr = spiTransfer(reqArr,rplN)
+        checkArr = autoResults(reqArr, rplArr, rplN)
 
     if comID == 2:
         payloadArr = flatList([comIDArr])
@@ -209,6 +215,7 @@ def spiAuto(comID1,data1,data2)
         
         rplN = 1 + 4
         rplArr = spiTransfer(reqArr,rplN)
+        checkArr = autoResults(reqArr, rplArr, rplN)
 
         lastResetStatus = rplArr[2]   
 
@@ -218,7 +225,7 @@ def spiAuto(comID1,data1,data2)
         
         rplN = 0 + 4
         rplArr = spiTransfer(reqArr,rplN)
-        userResults(reqArr, rplArr, rplN)
+        checkArr = autoResults(reqArr, rplArr, rplN)
 
     if comID == 4:
         payloadArr = flatList([comIDArr])
@@ -226,18 +233,94 @@ def spiAuto(comID1,data1,data2)
         
         rplN = 10 + 4
         rplArr = spiTransfer(reqArr,rplN)
-        userResults(reqArr, rplArr, rplN)
+        checkArr = autoResults(reqArr, rplArr, rplN)
 
         currSpeed = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
-        print("curr speed: ", currSpeed)
         refSpeed = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=True)
-        print("curr speed: ", refSpeed)
         state = rplArr[10]
-        print("state: ", state)
         clcModeS = rplArr[11]
-        print("clc mode: ", clcModeS)
+
+        outputArr = [checkArr[0], checkArr[1], currSpeed, refSpeed, state, clcModeS]
+
+    if comID == 5:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 0 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        checkArr = autoResults(reqArr, rplArr, rplN)
+
+    if comID == 6:
+        speed = data1
+        speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
+
+        rampTime = data2
+        rampTimeArr = list(bytearray((rampTime).to_bytes(2, byteorder='little', signed=False)))
+
+        payloadArr = flatList([comIDArr, speedArr, rampTimeArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 0 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        checkArr = autoResults(reqArr, rplArr, rplN)
+
+    if comID == 7:
+        clcModeM = data1
+        clcModeArr = list(bytearray((clcModeM).to_bytes(1, byteorder='little', signed=False)))
+
+        payloadArr = flatList([comIDArr, clcModeArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 0 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        checkArr = autoResults(reqArr, rplArr, rplN)
+
+    if comID == 8:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 4 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        checkArr = autoResults(reqArr, rplArr, rplN)
+
+        temp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
+
+        outputArr = [checkArr[0], checkArr[1], temp]
+
+    if comID == 9:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 79 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        checkArr = autoResults(reqArr, rplArr, rplN)
+
+    if comID == 10:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 0 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        checkArr = autoResults(reqArr, rplArr, rplN)
+
+    if comID == 11:
+        payloadArr = flatList([comIDArr])
+        reqArr = crcAppend(payloadArr)
+        
+        rplN = 20 + 4
+        rplArr = spiTransfer(reqArr,rplN)
+        checkArr = autoResults(reqArr, rplArr, rplN)
+
+        versionMajor = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=False)
+        versionBuildNumber = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=False)      
+        uid1 = int.from_bytes(bytes(bytearray(rplArr[10:14])), byteorder='little', signed=False)
+        uid2 = int.from_bytes(bytes(bytearray(rplArr[14:18])), byteorder='little', signed=False)
+        uid3 = int.from_bytes(bytes(bytearray(rplArr[18:22])), byteorder='little', signed=False)
+
+    return outputArr
 
 
+# SPI USER MECHANISM
 def spiUser(comID):
     comIDArr = list(bytearray((comID).to_bytes(1, byteorder='little', signed=False)))
 
@@ -372,22 +455,39 @@ def spiUser(comID):
 
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 while True: 
-    mode = input("\nenter an operating mode:\n1 - auto test\n2 - user input\n3 - full manual\n\n")
-    mode = int(mode)
+    opMode = input("\nenter an operating mode:\n1 - auto test\n2 - user input\n3 - full manual\n\n")
+    opMode = int(opMode)
 
-    if mode == 1:
-        print("AUTO TEST MODE")
-        print("enter '99' to return to mode select\n")
+    if opMode == 1:
+        print("AUTO TEST OP MODE")
+        print("enter '99' to return to op mode select\n")
 
-        t0 = time.time()
-        code_block
-        t1 = time.time()
+        while True: 
+            testMode = input("\nenter a test mode:\n1 - manual speed\n\n")
+            testMode = int(testMode)
 
-        total = t1-t0
+            if testMode == 99:
+                break
+
+            if testMode == 1:
+                print("MANUAL SPEED TEST MODE")
+
+                global time0
+                time0 = time.time()
+
+                header = ["entry","timeGMT","timeELA","currSpeed","refSpeed","state","clcMode"]
+                fileName = "speedTest"
+                csvStart(fileName, header)
+
+                for ii in range(1,10):
+                    outputArr = spiAuto(4,0,0)
+                    csvAdd(outputArr)
+
+                print("test complete")
 
 
-    if mode == 2:
-        print("\nUSER INPUT MODE")
+    if opMode == 2:
+        print("\nUSER INPUT OP MODE")
         print("enter '99' to return to mode select\n")
 
         while True: 
@@ -400,27 +500,10 @@ while True:
             spiUser(comID)
             
             
-    if mode == 3:
-        print("FULL MANUAL MODE")
+    if opMode == 3:
+        print("FULL MANUAL OP MODE")
 
 
-
-##- Input to Request Payload --- --- ---
-
-
-
-    
-
-
-    #csvAdd(reqArrT, "reqMode")
-    #csvAdd(reqArrX, "reqMode")
-    #csvAdd(rplArrX, "rplMode")
-    #csvAdd(rplArrT, "rplMode")
-
-
-    #output = reqArr
-    #print("req:", output)
-    #print([hex(x) for x in output])
 
 
 

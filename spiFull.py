@@ -461,17 +461,17 @@ while True:
 
     if opMode == 1:
         print("\nAUTO TEST OP MODE")
-        print("enter '99' to return to op mode select\n")
+        print("enter '99' to return to op mode select")
 
         while True: 
-            testMode = input("enter a test mode:\n1 - manual speed\n\n")
+            testMode = input("\nenter a test mode:\n1 - manual speed\n\n")
             testMode = int(testMode)
 
             if testMode == 99:
                 break
 
             if testMode == 1:
-                print("\nMANUAL SPEED TEST MODE")
+                print("\nMANUAL SPEED TEST MODE\n")
 
                 global time0
                 time0 = time.time()
@@ -480,6 +480,9 @@ while True:
                 fileName = "speedTest"
                 csvStart(fileName, header)
 
+                csvAdd([1,2,3])
+
+                break
                 for ii in range(1,10):
                     outputArr = spiAuto(4,0,0)
                     print(outputArr)

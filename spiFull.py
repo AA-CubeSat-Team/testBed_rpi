@@ -204,7 +204,7 @@ def spiTransfer(reqArr1,rplN1):
 # SPI AUTO MECHANISM
 def spiAuto(comID1,data1,data2):
     if comID1 == 1:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
@@ -212,7 +212,7 @@ def spiAuto(comID1,data1,data2):
         checkArr = autoResults(reqArr, rplArr, rplN)
 
     if comID1 == 2:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 1 + 4
@@ -222,7 +222,7 @@ def spiAuto(comID1,data1,data2):
         lastResetStatus = rplArr[2]   
 
     if comID1 == 3:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
@@ -230,7 +230,7 @@ def spiAuto(comID1,data1,data2):
         checkArr = autoResults(reqArr, rplArr, rplN)
 
     if comID1 == 4:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 10 + 4
@@ -245,7 +245,7 @@ def spiAuto(comID1,data1,data2):
         outputArr1 = [checkArr[0], checkArr[1], currSpeed, refSpeed, state, clcModeS]
 
     if comID1 == 5:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
@@ -259,7 +259,7 @@ def spiAuto(comID1,data1,data2):
         rampTime = data2
         rampTimeArr = list(bytearray((rampTime).to_bytes(2, byteorder='little', signed=False)))
 
-        payloadArr = flatList([comIDArr, speedArr, rampTimeArr])
+        payloadArr = flatList([comID, speedArr, rampTimeArr])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
@@ -270,7 +270,7 @@ def spiAuto(comID1,data1,data2):
         clcModeM = data1
         clcModeArr = list(bytearray((clcModeM).to_bytes(1, byteorder='little', signed=False)))
 
-        payloadArr = flatList([comIDArr, clcModeArr])
+        payloadArr = flatList([comID, clcModeArr])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
@@ -278,7 +278,7 @@ def spiAuto(comID1,data1,data2):
         checkArr = autoResults(reqArr, rplArr, rplN)
 
     if comID1 == 8:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 4 + 4
@@ -290,7 +290,7 @@ def spiAuto(comID1,data1,data2):
         outputArr1 = [checkArr[0], checkArr[1], temp]
 
     if comID1 == 9:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 79 + 4
@@ -298,7 +298,7 @@ def spiAuto(comID1,data1,data2):
         checkArr = autoResults(reqArr, rplArr, rplN)
 
     if comID1 == 10:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
@@ -306,7 +306,7 @@ def spiAuto(comID1,data1,data2):
         checkArr = autoResults(reqArr, rplArr, rplN)
 
     if comID1 == 11:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 20 + 4
@@ -324,10 +324,8 @@ def spiAuto(comID1,data1,data2):
 
 # SPI USER MECHANISM
 def spiUser(comID):
-    comIDArr = list(bytearray((comID).to_bytes(1, byteorder='little', signed=False)))
-
     if comID == 1:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
@@ -335,7 +333,7 @@ def spiUser(comID):
         userResults(reqArr, rplArr, rplN)
 
     if comID == 2:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 1 + 4
@@ -346,7 +344,7 @@ def spiUser(comID):
         print("last reset status: ", lastResetStatus)     
 
     if comID == 3:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
@@ -354,7 +352,7 @@ def spiUser(comID):
         userResults(reqArr, rplArr, rplN)
 
     if comID == 4:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 10 + 4
@@ -371,7 +369,7 @@ def spiUser(comID):
         print("clc mode: ", clcModeS)
 
     if comID == 5:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
@@ -387,7 +385,7 @@ def spiUser(comID):
         rampTime = int(rampTime)
         rampTimeArr = list(bytearray((rampTime).to_bytes(2, byteorder='little', signed=False)))
 
-        payloadArr = flatList([comIDArr, speedArr, rampTimeArr])
+        payloadArr = flatList([comID, speedArr, rampTimeArr])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
@@ -399,7 +397,7 @@ def spiUser(comID):
         clcModeM = int(clcModeM)
         clcModeArr = list(bytearray((clcModeM).to_bytes(1, byteorder='little', signed=False)))
 
-        payloadArr = flatList([comIDArr, clcModeArr])
+        payloadArr = flatList([comID, clcModeArr])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
@@ -407,7 +405,7 @@ def spiUser(comID):
         userResults(reqArr, rplArr, rplN)
 
     if comID == 8:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 4 + 4
@@ -418,7 +416,7 @@ def spiUser(comID):
         print("temp: ", temp)
 
     if comID == 9:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 79 + 4
@@ -426,7 +424,7 @@ def spiUser(comID):
         userResults(reqArr, rplArr, rplN)
 
     if comID == 10:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
@@ -434,7 +432,7 @@ def spiUser(comID):
         userResults(reqArr, rplArr, rplN)
 
     if comID == 11:
-        payloadArr = flatList([comIDArr])
+        payloadArr = flatList([comID])
         reqArr = crcAppend(payloadArr)
         
         rplN = 20 + 4

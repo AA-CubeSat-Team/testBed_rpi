@@ -104,7 +104,6 @@ def userResults(reqArr1, rplArr1, rplN1):
         print("EXECUTION: TRUE")
     if rplArr1[1] == 0:
         print("EXECUTION: FALSE")
-    print("\n")
 
 
 # LIST FLATTENING TOOL
@@ -498,7 +497,7 @@ while True:
         print("enter '99' to return to mode select\n")
 
         while True: 
-            comID = input("enter a command ID:\n")
+            comID = input("\nenter a command ID:\n")
             comID = int(comID)
 
             if comID == 99:

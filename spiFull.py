@@ -78,7 +78,7 @@ def autoResults(reqArr1, rplArr1, rplN1):
 
     if rplArr1[1] == 1:
         checkArr1[1] = 1
-    if rplArr1[1] == 0:
+    if (rplArr1[1] == 0) or (rplArr1[1] != 1):
         checkArr1[1] = 0
 
     return checkArr1
@@ -101,7 +101,7 @@ def userResults(reqArr1, rplArr1, rplN1):
 
     if rplArr1[1] == 1:
         print("EXECUTION: TRUE\n")
-    if rplArr1[1] == 0:
+    if (rplArr1[1] == 0) or (rplArr1[1] != 1):
         print("EXECUTION: FALSE\n")
 
 
@@ -496,7 +496,7 @@ while True:
         print("enter '99' to return to mode select\n")
 
         while True: 
-            comID = input("\nenter a command ID:\n")
+            comID = input("enter a command ID:\n")
             comID = int(comID)
 
             if comID == 99:

@@ -207,7 +207,7 @@ def spiTransfer(reqArr1,rplN1):
 
 
 # SPI AUTO MECHANISM
-def spiAuto(comID1,data1,data2):
+def processAuto(comID1,data1,data2):
     if comID1 == 1:
         payloadArr = flatList([comID1])
         reqArr = crcAppend(payloadArr)
@@ -328,8 +328,8 @@ def spiAuto(comID1,data1,data2):
 
 
 # SPI USER MECHANISM
-def spiUser(comID):
-    if comID == 1:
+def processUser(comID1):
+    if comID1 == 1:
         payloadArr = flatList([comID1])
         reqArr = crcAppend(payloadArr)
         
@@ -485,9 +485,9 @@ while True:
                 csvStart(fileName, header)
 
                 for ii in range(1,10):
-                    outputArr = spiAuto(4,0,0)
-                    print(outputArr)
-                    csvAdd(outputArr)
+                    outputArr = processAuto(4,0,0)          
+                    print(outputArr)                # problem with checkArr (also needs headers)
+                    csvAdd(outputArr)               # adjust timing for more accurate results
                     time.sleep(0.5)
 
                 print("test complete")
@@ -504,7 +504,7 @@ while True:
             if comID == 99:
                 break
 
-            spiUser(comID)
+            processUser(comID)
             
             
     if opMode == 3:

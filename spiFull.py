@@ -165,7 +165,7 @@ def csvStart(fileName1, header1):
     with file:   
         write = csv.writer(file) 
         write.writerow(header1) 
-                                                # work to do figuring out auto CSV settings
+                                                
 
 # CSV FUNCTION
 def csvAdd(outputArr1):
@@ -473,18 +473,18 @@ while True:
                 break
 
             if testMode == 1:
-                print("\nMANUAL SPEED TEST MODE\n")
+                print("\nMANUAL SPEED TEST MODE\n") 
+
+                header = ["entry","timeGMT","timeELA","CRC","exec","currSpeed","refSpeed","state","clcMode"]
+                fileName = "speedTest"
+                csvStart(fileName, header)
 
                 global time0
                 time0 = time.time()
 
-                header = ["entry","timeGMT","timeELA","currSpeed","refSpeed","state","clcMode"]
-                fileName = "speedTest"
-                csvStart(fileName, header)
-
                 for ii in range(1,10):
                     outputArr = processAuto(4,0,0)          
-                    print(outputArr)                # problem with checkArr (also needs headers)
+                    print(outputArr)    
                     csvAdd(outputArr)               # adjust timing for more accurate results
                     time.sleep(0.5)
 

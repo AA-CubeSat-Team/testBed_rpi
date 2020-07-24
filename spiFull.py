@@ -91,8 +91,7 @@ def userResults(reqArr1, rplArr1, rplN1):
     rplArrCorr = crcAppend(rplArr1[0:(rplN1-2)])
     corrCRC = [rplArrCorr[-2],rplArrCorr[-1]]
 
-    print("\n")
-    print("reqArr:", [hex(x) for x in reqArr1])
+    print("\nreqArr:", [hex(x) for x in reqArr1])
     print("rplArr:", [hex(x) for x in rplArr1])
 
     if slvCRC == corrCRC:

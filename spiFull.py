@@ -176,6 +176,7 @@ def csvAdd(outputArr1):
     qq = qq + 1
     timeGMT1 = time.strftime("%H:%M:%S %Z", time.gmtime())
     timeELA1 = time.time() - time0
+    timeELA1 = round(timeELA1, 3)
 
     row1 = flatList([qq, timeGMT1, timeELA1, outputArr1])         
 

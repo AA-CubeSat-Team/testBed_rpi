@@ -101,9 +101,9 @@ def userResults(reqArr1, rplArr1, rplN1):
         print("REPLY CRC: FALSE")
 
     if rplArr1[1] == 1:
-        print("EXECUTION: TRUE")
+        print("EXECUTION: TRUE\n")
     if rplArr1[1] == 0:
-        print("EXECUTION: FALSE")
+        print("EXECUTION: FALSE\n")
 
 
 # LIST FLATTENING TOOL

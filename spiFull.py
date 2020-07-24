@@ -344,7 +344,7 @@ def processUser(comID1):
         userResults(reqArr, rplArr, rplN)
 
         lastResetStatus = rplArr[2]
-        print("last reset status: ", lastResetStatus)     
+        print("\nlast reset status: ", lastResetStatus)     
 
     if comID1 == 3:
         payloadArr = flatList([comID1])
@@ -363,7 +363,7 @@ def processUser(comID1):
         userResults(reqArr, rplArr, rplN)
 
         currSpeed = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
-        print("curr speed: ", currSpeed)
+        print("\ncurr speed: ", currSpeed)
         refSpeed = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=True)
         print("curr speed: ", refSpeed)
         state = rplArr[10]
@@ -416,7 +416,7 @@ def processUser(comID1):
         userResults(reqArr, rplArr, rplN)
 
         temp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
-        print("temp: ", temp)
+        print("\ntemp: ", temp)
 
     if comID1 == 9:
         payloadArr = flatList([comID1])
@@ -493,7 +493,7 @@ while True:
 
     if opMode == 2:
         print("\nUSER INPUT OP MODE")
-        print("enter '99' to return to mode select\n")
+        print("enter '99' to return to mode select")
 
         while True: 
             comID = input("\nenter a command ID:\n")

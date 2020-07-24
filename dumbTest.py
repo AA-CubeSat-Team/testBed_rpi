@@ -1,17 +1,27 @@
+import time
+import threading
 
-# LIST FLATTENING TOOL
-from collections.abc import Iterable                            
-def flatFunc(items):
-    for x in items:
-        if isinstance(x, Iterable) and not isinstance(x, (str, bytes)):
-            yield from flatFunc(x)
-        else:
-            yield x
+# set global variable flag
+flag = 1
 
-def flatList(inpArr1):
-    return list(flatFunc(inpArr1))
-
+def normal():
+    global flag
+    while flag==1:
+        print('normal stuff')
+        time.sleep(2)
+        if flag==False:
+            print('The while loop is now closing')
 
 
-flat = flatList([1,['abc',3],'xyz'])
-print(flat)
+def get_input():
+    global flag
+    keystrk=input('Press a key \n')
+    # thread doesn't continue until key is pressed
+    print('You pressed: ', keystrk)
+    flag=False
+    print('flag is now:', flag)
+
+n=threading.Thread(target=normal)
+i=threading.Thread(target=get_input)
+n.start()
+i.start()

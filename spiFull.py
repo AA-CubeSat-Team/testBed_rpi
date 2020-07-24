@@ -476,7 +476,7 @@ while True:
             if testMode == 1:
                 print("\nMANUAL SPEED TEST MODE\n") 
 
-                header = ["entry","timeGMT","timeELA","CRC","exec","currSpeed","refSpeed","state","clcMode"]
+                header = ["entry","timeGMT","timeELA (s)","CRC","exec","currSpeed (0.1 RPM)","refSpeed (0.1 RPM)","state","clcMode"]
                 fileName = "speedTest"
                 csvStart(fileName, header)
 

@@ -220,11 +220,10 @@ def pullSensors():
             # pull power via I2C
             outputArr2 = flatList([rwaStatusArr])
             csvAdd(fileName2, outputArr2)
-            print("sensors running")
+            print("sensor pull")
             time.sleep(samplePeriod)
         if runSensors == 0:
-            print("sensors stopped")
-            time.sleep(samplePeriod)
+            return
 
     return 
 pullSensorsThr = threading.Thread(target = pullSensors)

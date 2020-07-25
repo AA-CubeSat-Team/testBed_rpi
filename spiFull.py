@@ -6,6 +6,7 @@
 import time
 import spidev
 import csv 
+import threading
 
 # SPI INITIALIZATION
 bus = 0
@@ -107,7 +108,7 @@ def userResults(reqArr1, rplArr1, rplN1):
 
 # LIST FLATTENING TOOL
 from collections.abc import Iterable                            
-def flatFunc(items):
+def flatFuncAux(items):
     for x in items:
         if isinstance(x, Iterable) and not isinstance(x, (str, bytes)):
             yield from flatFunc(x)
@@ -115,7 +116,7 @@ def flatFunc(items):
             yield x
 
 def flatList(inpArr1):
-    return list(flatFunc(inpArr1))
+    return list(flatFuncAux(inpArr1))
 
 
 # FLAG/ESCAPE XOR FUNCTION
@@ -157,19 +158,15 @@ def xorSwitch(arr, mode):
 def csvStart(fileName1, header1):
     global qq
     qq = 0
- 
-    global fileNameG
-    fileNameG = fileName1 
 
-    file = open(fileNameG + '.csv', 'w', newline ='')         # open(..'w'..) creates new CSV file
+    file = open(fileName1 + '.csv', 'w', newline ='')         # open(..'w'..) creates new CSV file
     with file:   
         write = csv.writer(file) 
         write.writerow(header1) 
                                                 
 
 # CSV FUNCTION
-def csvAdd(outputArr1):
-    global fileNameG
+def csvAdd(fileName1, outputArr1):
     global qq
     global time0
 
@@ -180,7 +177,7 @@ def csvAdd(outputArr1):
 
     row1 = flatList([qq, timeGMT1, timeELA1, outputArr1])         
 
-    file = open(fileNameG + '.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file
+    file = open(fileName1 + '.csv', 'a', newline ='')      # open(..'a'..) appends existing CSV file
     with file:   
         write = csv.writer(file) 
         write.writerow(row1)  
@@ -203,6 +200,31 @@ def spiTransfer(reqArr1,rplN1):
     rplArr1 = rplArrH[(0+2):(rplN1+2)] 
 
     return rplArr1 
+
+
+global runSensors
+global samplePeriod
+global speedInp
+
+def pullSensors():              # runs in the background, but needs main inputs for .csv
+    global runSensors
+    global samplePeriod
+    global fileName2
+
+    while True:
+        if runSensors == 1:
+            rwaStatusArr = processAuto(4, 0, 0)
+            #tempArr = processAuto(8, 0, 0)
+            # pull power via I2C
+            outputArr2 = flatList([rwaStatusArr])
+            csvAdd(fileName2, outputArr2)
+            time.sleep(samplePeriod)
+        if runSensors == 0:
+            print("not pulling sensors")
+            time.sleep(samplePeriod)
+
+    return 
+pullSensorsThr = threading.Thread(target = pullSensors)
 
 
 # SPI AUTO MECHANISM
@@ -466,6 +488,9 @@ while True:
         print("\nAUTO TEST OP MODE")
         print("enter '99' to return to op mode select")
 
+        pullSensorsThr.start()
+        runSensors = 0
+
         while True: 
             testMode = input("\nenter a test mode:\n1 - manual speed\n\n")
             testMode = int(testMode)
@@ -477,19 +502,40 @@ while True:
                 print("\nMANUAL SPEED TEST MODE\n") 
 
                 header = ["entry","timeGMT","timeELA (s)","CRC","exec","currSpeed (0.1 RPM)","refSpeed (0.1 RPM)","state","clcMode"]
-                fileName = "speedTest"
+                fileName = "manSpeedTest"
                 csvStart(fileName, header)
 
                 global time0
                 time0 = time.time()
 
-                for ii in range(1,10):
-                    outputArr = processAuto(4,0,0)          
-                    print(outputArr)    
-                    csvAdd(outputArr)               # adjust timing for more accurate results
-                    time.sleep(0.5)
+                while True:
+                    speedInp = input("enter a speed [-65000:65000, 0.1 RPM]:\n")
+                    speedInp = int(speedInp)
+                    processAuto(6,speedInp,0)
 
                 print("test complete")
+
+            if testMode == 2:
+                print("\nSTEP SPEED TEST MODE\n")
+
+                fileName = "stepSpeedTest"
+                header = ["entry","timeGMT","timeELA (s)","CRC","exec","currSpeed (0.1 RPM)","refSpeed (0.1 RPM)","state","clcMode"]
+                csvStart(fileName, header)
+
+                global fileName2
+                fileName2 = fileName
+
+                global time0
+                time0 = time.time()
+
+                samplePeriod = 1
+                runSensors = 1
+
+                for ii in range(1,10):
+                    speedInp = 5000*ii + 10000
+                    processAuto(6, speedInp, 0)
+                    time.sleep(2)
+                
 
 
     if opMode == 2:

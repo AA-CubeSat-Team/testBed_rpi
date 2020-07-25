@@ -111,7 +111,7 @@ from collections.abc import Iterable
 def flatFuncAux(items):
     for x in items:
         if isinstance(x, Iterable) and not isinstance(x, (str, bytes)):
-            yield from flatFunc(x)
+            yield from flatFuncAux(x)
         else:
             yield x
 
@@ -287,7 +287,7 @@ def processAuto(comID1,data1,data2):
         rampTime = data2
         rampTimeArr = list(bytearray((rampTime).to_bytes(2, byteorder='little', signed=False)))
 
-        payloadArr = flatList([comID, speedArr, rampTimeArr])
+        payloadArr = flatList([comID1, speedArr, rampTimeArr])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4
@@ -298,7 +298,7 @@ def processAuto(comID1,data1,data2):
         clcModeM = data1
         clcModeArr = list(bytearray((clcModeM).to_bytes(1, byteorder='little', signed=False)))
 
-        payloadArr = flatList([comID, clcModeArr])
+        payloadArr = flatList([comID1, clcModeArr])
         reqArr = crcAppend(payloadArr)
         
         rplN = 0 + 4

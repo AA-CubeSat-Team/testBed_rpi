@@ -220,9 +220,10 @@ def pullSensors():              # runs in the background, but needs main inputs 
             # pull power via I2C
             outputArr2 = flatList([rwaStatusArr])
             csvAdd(fileName2, outputArr2)
+            print("sensors active")
             time.sleep(samplePeriod)
         if runSensors == 0:
-            print("not pulling sensors")
+            print("sensors inactive")
             time.sleep(samplePeriod)
 
     return 
@@ -553,6 +554,7 @@ while True:
                 for ii in range(1,10):
                     speedInp = 5000*ii + 10000
                     processAuto(6, speedInp, 0)
+                    print("speedInp: ", speedInp)
                     time.sleep(2)
                 
 

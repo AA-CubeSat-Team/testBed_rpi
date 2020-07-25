@@ -223,7 +223,7 @@ def pullSensors():
             print("sensor pull")
             time.sleep(samplePeriod)
         if runSensors == 0:
-            return
+            continue
 
     return 
 pullSensorsThr = threading.Thread(target = pullSensors)

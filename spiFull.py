@@ -163,9 +163,11 @@ def csvStart(fileName1, header1):
     with file:   
         write = csv.writer(file) 
         write.writerow(header1) 
-                                                
+         
 
-# CSV FUNCTION
+# CSV FUNCTION                                              
+global time0
+
 def csvAdd(fileName1, outputArr1):
     global qq
     global time0
@@ -504,8 +506,7 @@ while True:
                 header = ["entry","timeGMT","timeELA (s)","CRC","exec","currSpeed (0.1 RPM)","refSpeed (0.1 RPM)","state","clcMode"]
                 fileName = "manSpeedTest"
                 csvStart(fileName, header)
-
-                global time0
+                
                 time0 = time.time()
 
                 while True:
@@ -525,7 +526,6 @@ while True:
                 global fileName2
                 fileName2 = fileName
 
-                global time0
                 time0 = time.time()
 
                 samplePeriod = 1

@@ -490,8 +490,8 @@ while True:
         print("\nAUTO TEST OP MODE")
         print("enter '99' to return to op mode select")
 
-        pullSensorsThr.start()
         runSensors = 0
+        pullSensorsThr.start()
 
         while True: 
             testMode = input("\nenter a test mode:\n1 - manual speed\n2 - step speed\n\n")

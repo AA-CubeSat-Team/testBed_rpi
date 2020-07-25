@@ -550,11 +550,15 @@ while True:
                 samplePeriod = 1
                 runSensors = 1
 
-                for ii in range(1,10):
-                    speedInp = 5000*ii + 10000
+                for speedInp in range(10000, 65000, 5000):
                     processAuto(6, speedInp, 0)
                     print("speedInp: ", speedInp)
-                    time.sleep(2)
+                    time.sleep(1)
+
+                for speedInp in range(65000, 10000, 5000):
+                    processAuto(6, speedInp, 0)
+                    print("speedInp: ", speedInp)
+                    time.sleep(1)
 
                 runSensors = 0
                 print("test complete")

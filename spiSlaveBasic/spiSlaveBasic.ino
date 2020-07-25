@@ -86,14 +86,14 @@ void loop (void){
         
     Serial.print("req: ");
     for (int jj = 0; jj < sizeof(reqArrT); jj++){
-      Serial.print(reqArrT[jj]);
+      Serial.print(reqArrT[jj], HEX);
       Serial.print(" ");
       reqArrT[jj] = 0;
     }
     Serial.println();
     Serial.print("rpl: ");
     for (int jj = 0; jj < sizeof(rplArr); jj++){
-      Serial.print(rplArr[jj]);
+      Serial.print(rplArr[jj], HEX);
       Serial.print(" ");
     }
     Serial.println();

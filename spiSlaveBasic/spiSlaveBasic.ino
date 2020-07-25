@@ -84,14 +84,7 @@ void loop (void){
     genReply(reqArrT[1]);                
     yy = 0;
         
-    Serial.print("reqX: ");
-    for (int jj = 0; jj < sizeof(reqArrX); jj++){
-      Serial.print(reqArrX[jj]);
-      Serial.print(" ");
-      reqArrX[jj] = 0;
-    }
-    Serial.println();
-    Serial.print("reqT: ");
+    Serial.print("req: ");
     for (int jj = 0; jj < sizeof(reqArrT); jj++){
       Serial.print(reqArrT[jj]);
       Serial.print(" ");

@@ -216,7 +216,7 @@ def pullSensors():
     while True:
         if runSensors == 1:
             rwaStatusArr = processAuto(4, 0, 0)
-            #tempArr = processAuto(8, 0, 0)
+            # tempArr = processAuto(8, 0, 0)
             # pull power via I2C
             outputArr2 = flatList([rwaStatusArr])
             csvAdd(fileName2, outputArr2)

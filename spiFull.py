@@ -492,7 +492,7 @@ while True:
         runSensors = 0
 
         while True: 
-            testMode = input("\nenter a test mode:\n1 - manual speed\n\n")
+            testMode = input("\nenter a test mode:\n1 - manual speed\n2 - step speed\n\n")
             testMode = int(testMode)
 
             if testMode == 99:

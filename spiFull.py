@@ -554,7 +554,8 @@ while True:
                     processAuto(6, speedInp, 0)
                     print("speedInp: ", speedInp)
                     time.sleep(1)
-
+                print("max speed")
+                
                 for speedInp in range(65000, 10000, 5000):
                     processAuto(6, speedInp, 0)
                     print("speedInp: ", speedInp)

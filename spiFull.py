@@ -239,6 +239,8 @@ def processAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
+        outputArr1 = [checkArr[0], checkArr[1]]
+
     if comID1 == 2:
         payloadArr = flatList([comID1])
         reqArr = crcAppend(payloadArr)
@@ -247,7 +249,9 @@ def processAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
-        lastResetStatus = rplArr[2]   
+        lastResetStatus = rplArr[2]  
+
+        outputArr1 = [checkArr[0], checkArr[1], rplArr[2]] 
 
     if comID1 == 3:
         payloadArr = flatList([comID1])
@@ -256,6 +260,8 @@ def processAuto(comID1,data1,data2):
         rplN = 0 + 4
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
+
+        outputArr1 = [checkArr[0], checkArr[1]]
 
     if comID1 == 4:
         payloadArr = flatList([comID1])
@@ -280,6 +286,8 @@ def processAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
+        outputArr1 = [checkArr[0], checkArr[1]]
+
     if comID1 == 6:
         speed = data1
         speedArr = list(bytearray((speed).to_bytes(4, byteorder='little', signed=True)))
@@ -294,6 +302,8 @@ def processAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
+        outputArr1 = [checkArr[0], checkArr[1]]
+
     if comID1 == 7:
         clcModeM = data1
         clcModeArr = list(bytearray((clcModeM).to_bytes(1, byteorder='little', signed=False)))
@@ -304,6 +314,8 @@ def processAuto(comID1,data1,data2):
         rplN = 0 + 4
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
+
+        outputArr1 = [checkArr[0], checkArr[1]]
 
     if comID1 == 8:
         payloadArr = flatList([comID1])
@@ -325,6 +337,8 @@ def processAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
+        outputArr1 = [checkArr[0], checkArr[1]]
+
     if comID1 == 10:
         payloadArr = flatList([comID1])
         reqArr = crcAppend(payloadArr)
@@ -332,6 +346,8 @@ def processAuto(comID1,data1,data2):
         rplN = 0 + 4
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
+
+        outputArr1 = [checkArr[0], checkArr[1]]
 
     if comID1 == 11:
         payloadArr = flatList([comID1])
@@ -346,6 +362,8 @@ def processAuto(comID1,data1,data2):
         uid1 = int.from_bytes(bytes(bytearray(rplArr[10:14])), byteorder='little', signed=False)
         uid2 = int.from_bytes(bytes(bytearray(rplArr[14:18])), byteorder='little', signed=False)
         uid3 = int.from_bytes(bytes(bytearray(rplArr[18:22])), byteorder='little', signed=False)
+
+        outputArr1 = [checkArr[0], checkArr[1], versionMajor, versionBuildNumber, uid1, uid2, uid3]
 
     return outputArr1
 

@@ -490,6 +490,7 @@ while True:
         print("\nAUTO TEST OP MODE")
         print("enter '99' to return to op mode select")
 
+        samplePeriod = 1
         runSensors = 0
         pullSensorsThr.start()
 

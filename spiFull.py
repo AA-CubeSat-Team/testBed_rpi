@@ -208,7 +208,7 @@ global runSensors
 global samplePeriod
 global speedInp
 
-def pullSensors():              # runs in the background, but needs main inputs for .csv
+def pullSensors():             
     global runSensors
     global samplePeriod
     global fileName2
@@ -220,10 +220,10 @@ def pullSensors():              # runs in the background, but needs main inputs 
             # pull power via I2C
             outputArr2 = flatList([rwaStatusArr])
             csvAdd(fileName2, outputArr2)
-            print("sensors active")
+            print("sensors running")
             time.sleep(samplePeriod)
         if runSensors == 0:
-            print("sensors inactive")
+            print("sensors stopped")
             time.sleep(samplePeriod)
 
     return 
@@ -556,6 +556,9 @@ while True:
                     processAuto(6, speedInp, 0)
                     print("speedInp: ", speedInp)
                     time.sleep(2)
+
+                runSensors = 0
+                print("test complete")
                 
 
 

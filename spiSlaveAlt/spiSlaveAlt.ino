@@ -134,7 +134,7 @@ void loop (void){
       }
     }
     
-    genReply(reqArrCRC_T[0]);                // need to pass entire array at some point
+    genReply(reqArrCRC_T[0]);                
     yy = 0;
 
     Serial.print("reqArrCRC_XF: ");
@@ -168,10 +168,10 @@ void genReply(byte id){
   // GENERATE REPLY --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
                        
   // sets reply array contents
-  byte rplArr1T[] = {id,1};      
-  byte rplArr2T[] = {id,126,4,4};
-  byte rplArr3T[] = {id,126,5,5};
-  byte rplArr4T[] = {id,126,6,6};
+  byte rplArr1_T[] = {id,1};      
+  byte rplArr2_T[] = {id,1,125};
+  byte rplArr3_T[] = {id,1};
+  byte rplArr4_T[] = {id,126,6,6};
 
   // resets rplArr arrays
   for (int jj = 0; jj < sizeof(rplArr_T); jj++){
@@ -194,20 +194,20 @@ void genReply(byte id){
   int rplLen_T;
   switch(id) {
     case 1 :
-      memcpy(rplArr_T, rplArr1T, sizeof(rplArr1T));
-      rplLen_T = sizeof(rplArr1T);    // length is set for each type of reply
+      memcpy(rplArr_T, rplArr1_T, sizeof(rplArr1_T));
+      rplLen_T = sizeof(rplArr1_T);    // length is set for each type of reply
       break;
     case 2 :
-      memcpy(rplArr_T, rplArr2T, sizeof(rplArr2T));
-      rplLen_T = sizeof(rplArr2T);
+      memcpy(rplArr_T, rplArr2_T, sizeof(rplArr2_T));
+      rplLen_T = sizeof(rplArr2_T);
       break;
     case 3 :
-      memcpy(rplArr_T, rplArr3T, sizeof(rplArr3T));
-      rplLen_T = sizeof(rplArr3T);
+      memcpy(rplArr_T, rplArr3_T, sizeof(rplArr3_T));
+      rplLen_T = sizeof(rplArr3_T);
       break;
     case 4 :
-      memcpy(rplArr_T, rplArr4T, sizeof(rplArr4T));
-      rplLen_T = sizeof(rplArr4T);
+      memcpy(rplArr_T, rplArr4_T, sizeof(rplArr4_T));
+      rplLen_T = sizeof(rplArr4_T);
       break;
   }   
 
@@ -231,27 +231,27 @@ void genReply(byte id){
     rplArrCRC_T[rplLen_T] = crcSplit[1];
     rplArrCRC_T[rplLen_T+1] = crcSplit[0];
   }
-
+    
   // runs XOR process to add escape bytes to reply array
   ee = 0;
   ff = 0;                                                  
   for (int tt = 0; tt < rplLenCRC_T; tt++){        
-    if (rplArrCRC_T[tt] != 125){
+    if (rplArrCRC_T[tt] != 0x7d){
       rplArrCRC_D[tt+ee] = rplArrCRC_T[tt];
     }
-    if (rplArr_T[tt] == 125){
-      rplArrCRC_D[tt+ee] = 125;
-      rplArrCRC_D[tt+ee+1] = rplArr_T[tt]^0x20;
+    if (rplArrCRC_T[tt] == 0x7d){
+      rplArrCRC_D[tt+ee] = 0x7d;
+      rplArrCRC_D[tt+ee+1] = rplArrCRC_T[tt]^0x20;
       ee++;
     }
   } 
   int rplLenCRC_D = rplLenCRC_T + ee;                                           
   for (int dd = 0; dd < rplLenCRC_D; dd++){
-    if (rplArrCRC_D[dd] != 126){
+    if (rplArrCRC_D[dd] != 0x7e){
       rplArrCRC_X[dd+ff] = rplArrCRC_D[dd];
     }
-    if (rplArrCRC_D[dd] == 126){   
-      rplArrCRC_X[dd+ff] = 125;
+    if (rplArrCRC_D[dd] == 0x7e){   
+      rplArrCRC_X[dd+ff] = 0x7d;
       rplArrCRC_X[dd+ff+1] = rplArrCRC_D[dd]^0x20;
       ff++;
     }

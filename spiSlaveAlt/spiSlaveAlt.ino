@@ -1,12 +1,16 @@
 #include<SPI.h>  
 
-volatile byte reqArrX[16] = { };
-byte reqArrT[16] = { };  
+// max length of rplArrCRC_XF = 2*(rplLen_T + 2) + 2
+volatile byte reqArrCRC_XF[16] = { };
+byte reqArrCRC_X[16] = { };
+byte reqArrCRC_T[16] = { };  
 int qq;      
-byte rplArrT[16] = { }; 
-byte rplArrD[16] = { };
-byte rplArrX[16] = { }; 
-int rplLenT;
+byte rplArr_T[16] = { }; 
+byte rplArrCRC_T[16] = { };
+byte rplArrCRC_D[16] = { };
+byte rplArrCRC_X[16] = { };
+byte rplArrCRC_XF[16] = { };
+int rplLen_T;
 int ee;
 int ff;
 volatile byte reqB_new;
@@ -76,29 +80,29 @@ ISR (SPI_STC_vect){
   reqB_new = SPDR;
 
   if ( (reqB_old == 126) && (reqB_new == 126) ){      // master querying reply   
-    if (yy < (rplLenT + ee + ff + 1)){
-      SPDR = rplArrX[yy];
+    if (yy < (rplLen_T + 2 + ee + ff + 1)){
+      SPDR = rplArrCRC_XF[yy];
       yy++;
     }
-    if (yy >= (rplLenT + ee + ff + 1)){
+    if (yy >= (rplLen_T + 2 + ee + ff + 1)){
       SPDR = 126;
     }
   }
   if ( (reqB_old == 126) && (reqB_new != 126) ){      // beginning of request
-    reqArrX[kk] = reqB_old;
+    reqArrCRC_XF[kk] = reqB_old;
     kk++;
-    reqArrX[kk] = reqB_new;
+    reqArrCRC_XF[kk] = reqB_new;
     kk++;
     SPDR = 126;
   }
   if ( (reqB_old != 126) && (reqB_new != 126) ){      // during request
-    reqArrX[kk] = reqB_new;
+    reqArrCRC_XF[kk] = reqB_new;
     kk++;
     SPDR = 126;
   }
   if ( (reqB_old != 126) && (reqB_new == 126) ){      // end of request
     SPI.detachInterrupt();   
-    reqArrX[kk] = reqB_new;
+    reqArrCRC_XF[kk] = reqB_new;
     kk++;       
     flag = 1;
   }
@@ -111,46 +115,41 @@ void loop (void){
   if (flag == 1){
     
     qq = 0;
-    int reqLenX = kk;
-    for (int xx = 0; xx < reqLenX; xx++){
-      if (reqArrX[xx+qq] != 125){
-        reqArrT[xx] = reqArrX[xx+qq];
+    int reqLenCRC_XF = kk;
+
+    // copies request array to new array without flags at front and back
+    for (int ff = 0; ff < (reqLenCRC_XF - 1); ff++){
+      reqArrCRC_X[ff] = reqArrCRC_XF[ff+1];
+    }
+    int reqLenCRC_X = reqLenCRC_XF - 2;
+
+    // runs XOR process to remove escape bytes from request array
+    for (int xx = 0; xx < reqLenCRC_X; xx++){
+      if (reqArrCRC_X[xx+qq] != 0x7d){
+        reqArrCRC_T[xx] = reqArrCRC_X[xx+qq];
       }
-      if (reqArrX[xx+qq] == 125){
-        reqArrT[xx] = reqArrX[xx+qq+1]^0x20;
+      if (reqArrCRC_X[xx+qq] == 0x7d){
+        reqArrCRC_T[xx] = reqArrCRC_X[xx+qq+1]^0x20;
         qq++;
       }
     }
     
-    genReply(reqArrT[1]);                // need to pass entire array at some point
+    genReply(reqArrCRC_T[1]);                // need to pass entire array at some point
     yy = 0;
-        
-    Serial.print("reqX: ");
-    for (int jj = 0; jj < sizeof(reqArrX); jj++){
-      Serial.print(reqArrX[jj]);
+
+    Serial.print("reqArrCRC_XF: ");
+    for (int jj = 0; jj < sizeof(reqArrCRC_XF); jj++){
+      Serial.print(reqArrCRC_XF[jj], HEX);
       Serial.print(" ");
-      reqArrX[jj] = 0;
     }
-    Serial.println();
-    Serial.print("reqT: ");
-    for (int jj = 0; jj < sizeof(reqArrT); jj++){
-      Serial.print(reqArrT[jj]);
-      Serial.print(" ");
-      reqArrT[jj] = 0;
-    }
-    Serial.println();
-    Serial.print("rplT: ");
-    for (int jj = 0; jj < sizeof(rplArrT); jj++){
-      Serial.print(rplArrT[jj]);
+    Serial.println();    
+    Serial.print("rplArrCRC_XF: ");
+    for (int jj = 0; jj < sizeof(rplArrCRC_XF); jj++){
+      Serial.print(rplArrCRC_XF[jj], HEX);
       Serial.print(" ");
     }
     Serial.println();
-    Serial.print("rplX: ");
-    for (int jj = 0; jj < sizeof(rplArrX); jj++){
-      Serial.print(rplArrX[jj]);
-      Serial.print(" ");
-    }
-    Serial.println();
+    delay(100000);
 
     SPDR = 0;
     flag = false;
@@ -164,90 +163,106 @@ void loop (void){
 }
 
 
-void genReply(byte id){                       // want to build XOR functionality into genReply to deliver
-  byte rplArr1T[6] = {id,126,125,3};       //    final reply array to SPI interrupt sequence
-  byte rplArr2T[6] = {id,126,4,4};
-  byte rplArr3T[6] = {id,126,5,5};
-  byte rplArr4T[6] = {id,126,6,6};
-
-
-  for (int jj = 0; jj < sizeof(rplArrT); jj++){
-    rplArrT[jj] = 0;
-  }
-  for (int jj = 0; jj < sizeof(rplArrX); jj++){
-    rplArrX[jj] = 0;
-  }
-
-      
-  switch(id) {
-    case 1 :
-      memcpy(rplArrT, rplArr1T, sizeof(rplArr1T));
-      rplLenT = sizeof(rplArr1T);
-      break;
-    case 2 :
-      memcpy(rplArrT, rplArr2T, sizeof(rplArr2T));
-      rplLenT = sizeof(rplArr2T);
-      break;
-    case 3 :
-      memcpy(rplArrT, rplArr3T, sizeof(rplArr3T));
-      rplLenT = sizeof(rplArr3T);
-      break;
-    case 4 :
-      memcpy(rplArrT, rplArr4T, sizeof(rplArr4T));
-      rplLenT = sizeof(rplArr4T);
-      break;
-  }                                                 
-
-  unsigned int crcValue = 0xFFFF;
-  for (int iterByte = 0; iterByte < sizeof(testArr); iterByte++){ 
-    crcValue = ((crcValue << 8) ^ crcTable[((crcValue >> 8) ^ testArr[iterByte]) & 0x00FF]);
-  }
-  unsigned int crcSplit[] = {crcValue >> 8, crcValue & 0xFF};
-
-  int ss = 0;
-  for (int cc = 0; cc < sizeof(testArrCRC); cc++){
-    if (cc < sizeof(testArr)){
-      testArrCRC[cc] = testArr[cc];
-    }
-    if (cc >= sizeof(testArr)){
-      testArrCRC[cc] = crcSplit[ss];
-      ss++;
-    }
-  }
+void genReply(byte id){ 
 
   
-  // know length of rplArrT, don't know length of rplArrX (max = 2*rplLenT)
-  // want to start by creating a rplArrT
-  // want to end by handing rplArrX to SPI mechanism
+  // GENERATE REPLY --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+                       
+  // sets reply array contents
+  byte rplArr1T[] = {id,3,5,7};      
+  byte rplArr2T[] = {id,126,4,4};
+  byte rplArr3T[] = {id,126,5,5};
+  byte rplArr4T[] = {id,126,6,6};
 
-  // byte rplArrT[16] = { }; 
-  // byte rplArrD[16] = { };
-  // byte rplArrX[16] = { };   these lengths never change, rplLenT=6 allows XOR mechanism to find contents within 16
+  // resets rplArr arrays
+  for (int jj = 0; jj < sizeof(rplArr_T); jj++){
+    rplArr_T[jj] = 0;
+  }
+  for (int jj = 0; jj < sizeof(rplArrCRC_T); jj++){
+    rplArrCRC_T[jj] = 0;
+  }
+  for (int jj = 0; jj < sizeof(rplArrCRC_D); jj++){
+    rplArrCRC_D[jj] = 0;
+  }
+  for (int jj = 0; jj < sizeof(rplArrCRC_X); jj++){
+    rplArrCRC_X[jj] = 0;
+  }
+  for (int jj = 0; jj < sizeof(rplArrCRC_XF); jj++){
+    rplArrCRC_XF[jj] = 0;
+  }
 
+  // copies reply array contents to standard rplArr_T   
+  switch(id) {
+    case 1 :
+      memcpy(rplArr_T, rplArr1T, sizeof(rplArr1T));
+      rplLen_T = sizeof(rplArr1T);    // length is set for each type of reply
+      break;
+    case 2 :
+      memcpy(rplArr_T, rplArr2T, sizeof(rplArr2T));
+      rplLen_T = sizeof(rplArr2T);
+      break;
+    case 3 :
+      memcpy(rplArr_T, rplArr3T, sizeof(rplArr3T));
+      rplLen_T = sizeof(rplArr3T);
+      break;
+    case 4 :
+      memcpy(rplArr_T, rplArr4T, sizeof(rplArr4T));
+      rplLen_T = sizeof(rplArr4T);
+      break;
+  }   
+
+
+  // PROCESS REPLY --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+                                              
+  // runs CRC algorithm on rplArr_T, adds CRC bytes on to end
+  unsigned int crcValue;
+  crcValue = 0xFFFF;
+  for (int iterByte = 0; iterByte < rplLen_T; iterByte++){ 
+    crcValue = ((crcValue << 8) ^ crcTable[((crcValue >> 8) ^ rplArr_T[iterByte]) & 0x00FF]);
+  }
+  unsigned int crcSplit[] = {crcValue >> 8, crcValue & 0xFF};
+  int rplLenCRC_T = rplLen_T + 2;
+  
+  int ss = 0;
+  for (int cc = 0; cc < rplLenCRC_T; cc++){
+    if (cc < rplLen_T){
+      rplArrCRC_T[cc] = rplArr_T[cc];
+    }
+    rplArrCRC_T[rplLen_T] = crcSplit[1];
+    rplArrCRC_T[rplLen_T+1] = crcSplit[0];
+  }
+
+  // runs XOR process to add escape bytes to reply array
   ee = 0;
   ff = 0;                                                  
-  for (int tt = 0; tt < rplLenT; tt++){        
-    if (rplArrT[tt] != 125){
-      rplArrD[tt+ee] = rplArrT[tt];
+  for (int tt = 0; tt < rplLenCRC_T; tt++){        
+    if (rplArrCRC_T[tt] != 125){
+      rplArrCRC_D[tt+ee] = rplArrCRC_T[tt];
     }
-    if (rplArrT[tt] == 125){
-      rplArrD[tt+ee] = 125;
-      rplArrD[tt+ee+1] = rplArrT[tt]^0x20;
+    if (rplArr_T[tt] == 125){
+      rplArrCRC_D[tt+ee] = 125;
+      rplArrCRC_D[tt+ee+1] = rplArr_T[tt]^0x20;
       ee++;
     }
-  }                                            
-  for (int dd = 0; dd < (rplLenT+ee); dd++){
-    if ( (dd != 0) || (dd != rplLenT+ee-1) || (rplArrD[dd] != 126) ){
-      rplArrX[dd+ff] = rplArrD[dd];
+  } 
+  int rplLenCRC_D = rplLenCRC_T + ee;                                           
+  for (int dd = 0; dd < rplLenCRC_D; dd++){
+    if (rplArrCRC_D[dd] != 126){
+      rplArrCRC_X[dd+ff] = rplArrCRC_D[dd];
     }
-    if ( (dd != 0) && (dd != rplLenT+ee-1) && (rplArrD[dd] == 126) ){   
-      rplArrX[dd+ff] = 125;
-      rplArrX[dd+ff+1] = rplArrD[dd]^0x20;
+    if (rplArrCRC_D[dd] == 126){   
+      rplArrCRC_X[dd+ff] = 125;
+      rplArrCRC_X[dd+ff+1] = rplArrCRC_D[dd]^0x20;
       ff++;
     }
   }
-  
-  // rplArrX is still length 16, but its contents take up rplLenT + ff + ee, rest thru end are zeros
-  // since rplArrX length is known at runtime, can use variable int to cut off SPI reply transmission
-  // init array lengths can all be as long as you want, because extra elements will be cut off in reply transmission
+  int rplLenCRC_X = rplLenCRC_D + ff;
+
+  // copies reply array to new array with flags at front and back
+  rplArrCRC_XF[0] = 0x7e;
+  rplArrCRC_XF[rplLenCRC_X+1] = 0x7e;
+  for (ff = 0; ff < rplLenCRC_X; ff++){
+    rplArrCRC_XF[ff+1] = rplArrCRC_X[ff];
+  }
+  int rplLenCRC_XF = rplLenCRC_X + 2;
 }

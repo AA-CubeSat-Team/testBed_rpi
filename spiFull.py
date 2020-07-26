@@ -206,27 +206,81 @@ def spiTransfer(reqArr1,rplN1):
 
 global runSensors
 global samplePeriod
-global speedInp
 
 def pullSensors():             
     global runSensors
     global samplePeriod
     global fileName2
+    global lastResetStatus2
+    global nominalState
 
     while True:
-        if runSensors == 1:
-            rwaStatusArr = processAuto(4, 0, 0)
-            # tempArr = processAuto(8, 0, 0)
-            # pull power via I2C
-            outputArr2 = flatList([rwaStatusArr])
-            csvAdd(fileName2, outputArr2)
-            print("sensor pull")
-            time.sleep(samplePeriod)
         if runSensors == 0:
             continue
 
+        if runSensors == 1:
+            rwStatusArr = processAuto(4, 0, 0)
+            lastResetStatusArr = processAuto(2, 0, 0)
+            rwState2 = rwStatusArr[4]
+            lastResetStatus2 = lastResetStatusArr[2]
+
+            if rwState2 == 0:
+                nominalState = False
+                fixIssue(1)
+            if lastResetStatus2 != 6 and lastResetStatus2 != 7:
+                nominalState = False
+                fixIssue(2)          
+
+        if runSensors == 2:
+            rwStatusArr = processAuto(4, 0, 0)
+            lastResetStatusArr = processAuto(2, 0, 0)
+
+            rwState2 = rwStatusArr[4]
+            lastResetStatus2 = lastResetStatusArr[2]
+
+            if rwState2 == 0:
+                nominalState = False
+                fixIssue(1)
+            if lastResetStatus2 != 6 and lastResetStatus2 != 7:
+                nominalState = False
+                fixIssue(2)
+            
+            # tempArr = processAuto(8, 0, 0)
+            # pull INA219 power sensor via I2C
+
+            outputArr2 = flatList([rwStatusArr])
+            csvAdd(fileName2, outputArr2)
+            print("sensor pull")
+
+        time.sleep(samplePeriod)
+        
+
     return 
 pullSensorsThr = threading.Thread(target = pullSensors)
+
+
+def fixIssue(runIssue):
+    global nominalState
+
+    if runIssue == 1:
+            print("issue found")
+            print("error state")
+
+            processAuto(5, 0, 0)
+
+            rwStatusArr = processAuto(4, 0, 0)
+            if rwStatusArr[4] != 0:
+                nominalState = True
+                print("rw init success")
+            if rwStatusArr[4] == 0:
+                print("rw init failed")      
+            
+    if runIssue == 2:
+            print("issue found")
+            print("last reset status: ", lastResetStatus2)
+           
+
+
 
 
 # SPI AUTO MECHANISM
@@ -273,10 +327,10 @@ def processAuto(comID1,data1,data2):
 
         currSpeed = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
         refSpeed = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=True)
-        state = rplArr[10]
+        rwState = rplArr[10]
         clcModeS = rplArr[11]
 
-        outputArr1 = [checkArr[0], checkArr[1], currSpeed, refSpeed, state, clcModeS]
+        outputArr1 = [checkArr[0], checkArr[1], currSpeed, refSpeed, rwState, clcModeS]
 
     if comID1 == 5:
         payloadArr = flatList([comID1])
@@ -325,9 +379,9 @@ def processAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
-        temp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
+        mcuTemp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
 
-        outputArr1 = [checkArr[0], checkArr[1], temp]
+        outputArr1 = [checkArr[0], checkArr[1], mcuTemp]
 
     if comID1 == 9:
         payloadArr = flatList([comID1])
@@ -337,7 +391,35 @@ def processAuto(comID1,data1,data2):
         rplArr = spiTransfer(reqArr,rplN)
         checkArr = autoResults(reqArr, rplArr, rplN)
 
-        outputArr1 = [checkArr[0], checkArr[1]]
+        lastResetStatus = rplArr[2]
+        mcuTemp = int.from_bytes(bytes(bytearray(rplArr[3:7])), byteorder='little', signed=True)
+        rwState = rplArr[7]
+        rwClcMode = rplArr[8]
+        rwCurrSpeed = int.from_bytes(bytes(bytearray(rplArr[9:13])), byteorder='little', signed=True)
+        rwRefSpeed = int.from_bytes(bytes(bytearray(rplArr[13:17])), byteorder='little', signed=True)
+        numOfInvalidCrcPackets = int.from_bytes(bytes(bytearray(rplArr[17:21])), byteorder='little', signed=False)
+        numOfInvalidLenPackets = int.from_bytes(bytes(bytearray(rplArr[21:25])), byteorder='little', signed=False)
+        numOfInvalidCmdPackets = int.from_bytes(bytes(bytearray(rplArr[25:29])), byteorder='little', signed=False)
+        numOfCmdExecutedRequests = int.from_bytes(bytes(bytearray(rplArr[29:33])), byteorder='little', signed=False)
+        numOfCmdReplies = int.from_bytes(bytes(bytearray(rplArr[33:37])), byteorder='little', signed=False)
+        uartNumOfBytesWritten = int.from_bytes(bytes(bytearray(rplArr[37:41])), byteorder='little', signed=False)
+        uartNumOfBytesRead = int.from_bytes(bytes(bytearray(rplArr[41:45])), byteorder='little', signed=False)
+        uartNumOfParityErrors = int.from_bytes(bytes(bytearray(rplArr[45:49])), byteorder='little', signed=False)
+        uartNumOfNoiseErrors = int.from_bytes(bytes(bytearray(rplArr[49:53])), byteorder='little', signed=False)
+        uartNumOfFrameErrors = int.from_bytes(bytes(bytearray(rplArr[53:57])), byteorder='little', signed=False)
+        uartNumOfRegisterOverrunErrors = int.from_bytes(bytes(bytearray(rplArr[57:61])), byteorder='little', signed=False)
+        uartTotalNumOfErrors = int.from_bytes(bytes(bytearray(rplArr[61:65])), byteorder='little', signed=False)
+        spiNumOfBytesWritten = int.from_bytes(bytes(bytearray(rplArr[65:69])), byteorder='little', signed=False)
+        spiNumOfBytesRead = int.from_bytes(bytes(bytearray(rplArr[69:73])), byteorder='little', signed=False)
+        spiNumOfRegisterOverrunErrors = int.from_bytes(bytes(bytearray(rplArr[73:77])), byteorder='little', signed=False)
+        spiTotalNumOfErrors = int.from_bytes(bytes(bytearray(rplArr[77:81])), byteorder='little', signed=False)
+
+        outputArrA = [checkArr[0], checkArr[1], lastResetStatus, mcuTemp, rwState, rwClcMode, rwCurrSpeed, rwRefSpeed]
+        outputArrB = [numOfInvalidCrcPackets, numOfInvalidLenPackets, numOfInvalidCmdPackets, numOfCmdExecutedRequests, numOfCmdReplies]
+        outputArrC = [uartNumOfBytesWritten, uartNumOfBytesRead, uartNumOfParityErrors, uartNumOfNoiseErrors, uartNumOfFrameErrors, uartNumOfRegisterOverrunErrors, uartTotalNumOfErrors]
+        outputArrD = [spiNumOfBytesWritten, spiNumOfBytesRead, spiNumOfRegisterOverrunErrors, spiTotalNumOfErrors]
+
+        outputArr1 = flatList([outputArrA, outputArrB, outputArrC, outputArrD])
 
     if comID1 == 10:
         payloadArr = flatList([comID1])
@@ -458,8 +540,8 @@ def processUser(comID1):
         rplArr = spiTransfer(reqArr,rplN)
         userResults(reqArr, rplArr, rplN)
 
-        temp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
-        print("\ntemp: ", temp)
+        mcuTemp = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
+        print("\nmcu temp: ", mcuTemp)
 
     if comID1 == 9:
         payloadArr = flatList([comID1])
@@ -468,6 +550,39 @@ def processUser(comID1):
         rplN = 79 + 4
         rplArr = spiTransfer(reqArr,rplN)
         userResults(reqArr, rplArr, rplN)
+
+        lastResetStatus = rplArr[2]
+        print("\nlast reset status: ", lastResetStatus)
+        mcuTemp = int.from_bytes(bytes(bytearray(rplArr[3:7])), byteorder='little', signed=True)
+        print("mcu temp: ", mcuTemp)
+        rwState = rplArr[7]
+        print("rw state: ", rwState)
+        rwClcMode = rplArr[8]
+        print("rw clc mode: ", rwClcMode)
+        rwCurrSpeed = int.from_bytes(bytes(bytearray(rplArr[9:13])), byteorder='little', signed=True)
+        print("rw curr speed: ", rwCurrSpeed)        
+        rwRefSpeed = int.from_bytes(bytes(bytearray(rplArr[13:17])), byteorder='little', signed=True)
+        numOfInvalidCrcPackets = int.from_bytes(bytes(bytearray(rplArr[17:21])), byteorder='little', signed=False)
+        print("rw ref speed: ", rwRefSpeed) 
+        numOfInvalidLenPackets = int.from_bytes(bytes(bytearray(rplArr[21:25])), byteorder='little', signed=False)
+        numOfInvalidCmdPackets = int.from_bytes(bytes(bytearray(rplArr[25:29])), byteorder='little', signed=False)
+        numOfCmdExecutedRequests = int.from_bytes(bytes(bytearray(rplArr[29:33])), byteorder='little', signed=False)
+        numOfCmdReplies = int.from_bytes(bytes(bytearray(rplArr[33:37])), byteorder='little', signed=False)
+        uartNumOfBytesWritten = int.from_bytes(bytes(bytearray(rplArr[37:41])), byteorder='little', signed=False)
+        uartNumOfBytesRead = int.from_bytes(bytes(bytearray(rplArr[41:45])), byteorder='little', signed=False)
+        uartNumOfParityErrors = int.from_bytes(bytes(bytearray(rplArr[45:49])), byteorder='little', signed=False)
+        uartNumOfNoiseErrors = int.from_bytes(bytes(bytearray(rplArr[49:53])), byteorder='little', signed=False)
+        uartNumOfFrameErrors = int.from_bytes(bytes(bytearray(rplArr[53:57])), byteorder='little', signed=False)
+        uartNumOfRegisterOverrunErrors = int.from_bytes(bytes(bytearray(rplArr[57:61])), byteorder='little', signed=False)
+        uartTotalNumOfErrors = int.from_bytes(bytes(bytearray(rplArr[61:65])), byteorder='little', signed=False)
+        spiNumOfBytesWritten = int.from_bytes(bytes(bytearray(rplArr[65:69])), byteorder='little', signed=False)
+        print("num of bytes written: ", spiNumOfBytesWritten) 
+        spiNumOfBytesRead = int.from_bytes(bytes(bytearray(rplArr[69:73])), byteorder='little', signed=False)
+        print("num of bytes read: ", spiNumOfBytesRead) 
+        spiNumOfRegisterOverrunErrors = int.from_bytes(bytes(bytearray(rplArr[73:77])), byteorder='little', signed=False)
+        print("num of register overrun errors: ", spiNumOfRegisterOverrunErrors) 
+        spiTotalNumOfErrors = int.from_bytes(bytes(bytearray(rplArr[77:81])), byteorder='little', signed=False)
+        print("num of total errors: ", spiTotalNumOfErrors) 
 
     if comID1 == 10:
         payloadArr = flatList([comID1])
@@ -551,15 +666,22 @@ while True:
                 runSensors = 1
 
                 for speedInp in range(10000, 70000, 5000):
-                    processAuto(6, speedInp, 0)
-                    print("speedInp: ", speedInp)
-                    time.sleep(1)
-                print("max speed")
+                    if nominalState = False:
+                        print("nominalState: ", nominalState)
 
-                for speedInp in range(70000, 10000, -5000):
-                    processAuto(6, speedInp, 0)
-                    print("speedInp: ", speedInp)
-                    time.sleep(1)
+                    if nominalState = True:
+                        processAuto(6, speedInp, 0)
+                        print("speedInp: ", speedInp)
+                        time.sleep(1)
+
+                for speedInp in range(65000, 5000, -5000):
+                    if nominalState = False:
+                        print("nominalState: ", nominalState)
+
+                    if nominalState = True:
+                        processAuto(6, speedInp, 0)
+                        print("speedInp: ", speedInp)
+                        time.sleep(1)
 
                 runSensors = 0
                 print("test complete")

@@ -666,19 +666,19 @@ while True:
                 runSensors = 1
 
                 for speedInp in range(10000, 70000, 5000):
-                    if nominalState = False:
+                    if nominalState == False:
                         print("nominalState: ", nominalState)
 
-                    if nominalState = True:
+                    if nominalState == True:
                         processAuto(6, speedInp, 0)
                         print("speedInp: ", speedInp)
                         time.sleep(1)
 
                 for speedInp in range(65000, 5000, -5000):
-                    if nominalState = False:
+                    if nominalState == False:
                         print("nominalState: ", nominalState)
 
-                    if nominalState = True:
+                    if nominalState == True:
                         processAuto(6, speedInp, 0)
                         print("speedInp: ", speedInp)
                         time.sleep(1)

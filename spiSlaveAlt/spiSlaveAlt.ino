@@ -10,7 +10,7 @@ byte rplArrCRC_T[16] = { };
 byte rplArrCRC_D[16] = { };
 byte rplArrCRC_X[16] = { };
 byte rplArrCRC_XF[16] = { };
-int rplLen_T;
+int rplLenCRC_XF;
 int ee;
 int ff;
 volatile byte reqB_new;
@@ -80,11 +80,11 @@ ISR (SPI_STC_vect){
   reqB_new = SPDR;
 
   if ( (reqB_old == 126) && (reqB_new == 126) ){      // master querying reply   
-    if (yy < (rplLen_T + 2 + ee + ff + 1)){
+    if (yy < rplLenCRC_XF){
       SPDR = rplArrCRC_XF[yy];
       yy++;
     }
-    if (yy >= (rplLen_T + 2 + ee + ff + 1)){
+    if (yy >= rplLenCRC_XF){
       SPDR = 126;
     }
   }
@@ -134,7 +134,7 @@ void loop (void){
       }
     }
     
-    genReply(reqArrCRC_T[1]);                // need to pass entire array at some point
+    genReply(reqArrCRC_T[0]);                // need to pass entire array at some point
     yy = 0;
 
     Serial.print("reqArrCRC_XF: ");
@@ -169,7 +169,7 @@ void genReply(byte id){
   // GENERATE REPLY --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
                        
   // sets reply array contents
-  byte rplArr1T[] = {id,3,5,7};      
+  byte rplArr1T[] = {id,1};      
   byte rplArr2T[] = {id,126,4,4};
   byte rplArr3T[] = {id,126,5,5};
   byte rplArr4T[] = {id,126,6,6};
@@ -192,6 +192,7 @@ void genReply(byte id){
   }
 
   // copies reply array contents to standard rplArr_T   
+  int rplLen_T;
   switch(id) {
     case 1 :
       memcpy(rplArr_T, rplArr1T, sizeof(rplArr1T));
@@ -264,5 +265,5 @@ void genReply(byte id){
   for (ff = 0; ff < rplLenCRC_X; ff++){
     rplArrCRC_XF[ff+1] = rplArrCRC_X[ff];
   }
-  int rplLenCRC_XF = rplLenCRC_X + 2;
+  rplLenCRC_XF = rplLenCRC_X + 2;
 }

@@ -149,7 +149,6 @@ void loop (void){
       Serial.print(" ");
     }
     Serial.println();
-    delay(100000);
 
     SPDR = 0;
     flag = false;

@@ -197,8 +197,6 @@ def spiTransfer(reqArr1,rplN1):
     time.sleep(0.100)                           # waits 100 ms for RWA to process
        
     rplArrX = spi.xfer2(msrEmpArr)
-    print("rplArrX:", [hex(x) for x in rplArrX])
-
     rplArrH = xorSwitch(rplArrX, "rplMode")   
     rplArr1 = rplArrH[(0+2):(rplN1+2)] 
 

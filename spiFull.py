@@ -240,9 +240,9 @@ def pullSensors():
             continue
 
         if runSensors == 1:
-            spiWait()
+            #spiWait()
             rwStatusArr = processAuto(4, 0, 0)
-            spiWait()
+            #spiWait()
             lastResetStatusArr = processAuto(2, 0, 0)
             rwState2 = rwStatusArr[4]
             lastResetStatus2 = lastResetStatusArr[2]
@@ -256,9 +256,9 @@ def pullSensors():
 
         if runSensors == 2:
             print("sensor pull")
-            spiWait()
+            #spiWait()
             rwStatusArr = processAuto(4, 0, 0)
-            spiWait()
+            #spiWait()
             lastResetStatusArr = processAuto(2, 0, 0)
             print("lastResetStatusArr: ",lastResetStatusArr)
 
@@ -294,10 +294,10 @@ def fixIssue(runIssue):
             print("issue found")
             print("error state")
 
-            spiWait()
+            #spiWait()
             processAuto(5, 0, 0)
 
-            spiWait()
+            #spiWait()
             rwStatusArr = processAuto(4, 0, 0)
             if rwStatusArr[4] != 0:
                 nominalState = True
@@ -312,6 +312,8 @@ def fixIssue(runIssue):
 
 # SPI AUTO MECHANISM
 def processAuto(comID1,data1,data2):
+    spiWait()
+
     if comID1 == 1:
         payloadArr = flatList([comID1])
         reqArr = crcAppend(payloadArr)
@@ -700,7 +702,7 @@ while True:
 
                     if nominalState == True:
                         print("speedInp: ", speedInp)
-                        spiWait()
+                        #spiWait()
                         processAuto(6, speedInp, 0)
                         time.sleep(1)
 
@@ -710,7 +712,7 @@ while True:
 
                     if nominalState == True:
                         print("speedInp: ", speedInp)
-                        spiWait()
+
                         processAuto(6, speedInp, 0)
                         time.sleep(1)
 

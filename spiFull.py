@@ -198,7 +198,7 @@ def spiTransfer(reqArr1,rplN1):
        
     rplArrX = spi.xfer2(msrEmpArr)
     if reqArr1[0] == 2:
-        print("rplArrX: ",rplArrX)
+        print("rplArrX: ",[hex(ii) for ii in rplArrX])
     rplArrH = xorSwitch(rplArrX, "rplMode")   
     rplArr1 = rplArrH[(0+2):(rplN1+2)] 
 

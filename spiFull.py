@@ -186,23 +186,43 @@ def csvAdd(fileName1, outputArr1):
 
 
 # SPI FUNCTION
+global spiAvail
+spiAvail = True
+
 def spiTransfer(reqArr1,rplN1):
+    global spiAvail
+    spiAvail = False
+
     msrEmpArr = [0x7e] * (2*rplN1 + 3) 
 
     reqArrH = flatList([0x7e, reqArr1, 0x7e]) 
     reqArrX = xorSwitch(reqArrH, "reqMode")               
     #print("reqArrX: ",reqArrX)
+ 
     slvEmpArr = spi.xfer2(reqArrX)
 
-    time.sleep(0.010)                           # waits 100 ms for RWA to process
+    time.sleep(0.100)                           # waits 100 ms for RWA to process
        
     rplArrX = spi.xfer2(msrEmpArr)
+
     if reqArr1[0] == 2:
         print("comID=2, rplArrX: ",[hex(ii) for ii in rplArrX])
     rplArrH = xorSwitch(rplArrX, "rplMode")   
     rplArr1 = rplArrH[(0+2):(rplN1+2)] 
 
+    spiAvail = True
     return rplArr1 
+
+
+def spiWait():
+    global spiAvail
+
+    while True:
+        if spiAvail == True:
+            return
+        if spiAvail == False:
+            continue
+    return
 
 
 global runSensors
@@ -220,7 +240,9 @@ def pullSensors():
             continue
 
         if runSensors == 1:
+            spiWait()
             rwStatusArr = processAuto(4, 0, 0)
+            spiWait()
             lastResetStatusArr = processAuto(2, 0, 0)
             rwState2 = rwStatusArr[4]
             lastResetStatus2 = lastResetStatusArr[2]
@@ -234,7 +256,9 @@ def pullSensors():
 
         if runSensors == 2:
             print("sensor pull")
+            spiWait()
             rwStatusArr = processAuto(4, 0, 0)
+            spiWait()
             lastResetStatusArr = processAuto(2, 0, 0)
             print("lastResetStatusArr: ",lastResetStatusArr)
 
@@ -270,8 +294,10 @@ def fixIssue(runIssue):
             print("issue found")
             print("error state")
 
+            spiWait()
             processAuto(5, 0, 0)
 
+            spiWait()
             rwStatusArr = processAuto(4, 0, 0)
             if rwStatusArr[4] != 0:
                 nominalState = True

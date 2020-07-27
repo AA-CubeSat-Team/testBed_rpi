@@ -233,6 +233,7 @@ def pullSensors():
         if runSensors == 2:
             rwStatusArr = processAuto(4, 0, 0)
             lastResetStatusArr = processAuto(2, 0, 0)
+            print("lastResetStatusArr: ",lastResetStatusArr)
 
             rwState2 = rwStatusArr[4]
             lastResetStatus2 = lastResetStatusArr[2]
@@ -253,12 +254,13 @@ def pullSensors():
 
         time.sleep(samplePeriod)
         
-
     return 
 pullSensorsThr = threading.Thread(target = pullSensors)
 
+
 global nominalState
 nominalState = True
+
 def fixIssue(runIssue):
     global nominalState
 
@@ -279,9 +281,6 @@ def fixIssue(runIssue):
             print("issue found")
             print("last reset status: ", lastResetStatus2)
            
-
-
-
 
 # SPI AUTO MECHANISM
 def processAuto(comID1,data1,data2):
@@ -665,7 +664,7 @@ while True:
                 time0 = time.time()
 
                 samplePeriod = 1
-                runSensors = 1
+                runSensors = 2
 
                 for speedInp in range(10000, 70000, 5000):
                     if nominalState == False:

@@ -700,6 +700,7 @@ while True:
 
                     if nominalState == True:
                         print("speedInp: ", speedInp)
+                        spiWait()
                         processAuto(6, speedInp, 0)
                         time.sleep(1)
 
@@ -709,6 +710,7 @@ while True:
 
                     if nominalState == True:
                         print("speedInp: ", speedInp)
+                        spiWait()
                         processAuto(6, speedInp, 0)
                         time.sleep(1)
 

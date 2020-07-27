@@ -232,6 +232,7 @@ def pullSensors():
                 fixIssue(2)          
 
         if runSensors == 2:
+            print("sensor pull")
             rwStatusArr = processAuto(4, 0, 0)
             lastResetStatusArr = processAuto(2, 0, 0)
             print("lastResetStatusArr: ",lastResetStatusArr)
@@ -251,7 +252,6 @@ def pullSensors():
 
             outputArr2 = flatList([rwStatusArr])
             csvAdd(fileName2, outputArr2)
-            print("sensor pull")
 
         time.sleep(samplePeriod)
         
@@ -669,22 +669,20 @@ while True:
 
                 for speedInp in range(10000, 70000, 5000):
                     if nominalState == False:
-                        a=1
-                        ##print("nominalState: ", nominalState)
+                        print("nominalState: ", nominalState)
 
-                    if nominalState == True or nominalState == False:
-                        processAuto(6, speedInp, 0)
+                    if nominalState == True:
                         print("speedInp: ", speedInp)
+                        processAuto(6, speedInp, 0)
                         time.sleep(1)
 
                 for speedInp in range(65000, 5000, -5000):
                     if nominalState == False:
-                        a=1
-                        #print("nominalState: ", nominalState)
+                        print("nominalState: ", nominalState)
 
-                    if nominalState == True or nominalState == False:
-                        processAuto(6, speedInp, 0)
+                    if nominalState == True:
                         print("speedInp: ", speedInp)
+                        processAuto(6, speedInp, 0)
                         time.sleep(1)
 
                 runSensors = 0

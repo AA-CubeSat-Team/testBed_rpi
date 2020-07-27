@@ -194,7 +194,7 @@ def spiTransfer(reqArr1,rplN1):
     #print("reqArrX: ",reqArrX)
     slvEmpArr = spi.xfer2(reqArrX)
 
-    time.sleep(0.100)                           # waits 100 ms for RWA to process
+    time.sleep(0.010)                           # waits 100 ms for RWA to process
        
     rplArrX = spi.xfer2(msrEmpArr)
     if reqArr1[0] == 2:

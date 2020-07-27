@@ -168,7 +168,7 @@ void loop (void){
 void genRpl(byte comID1){ 
 
   // PROCESS REQUEST DATA --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-  long reqRefSpeed = 0;
+  long reqRefSpeed;
   int reqRampTime;
   byte reqClcMode;
   
@@ -200,7 +200,7 @@ void genRpl(byte comID1){
 
   // set reply values
   rplLastResetStatus = 6;
-  rplCurrSpeed = 60000;
+  rplCurrSpeed = 0.95 * reqRefSpeed;
   rplRefSpeed = reqRefSpeed;
   rplRwState = 4;
   rplClcMode = 1;

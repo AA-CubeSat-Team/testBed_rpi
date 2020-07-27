@@ -257,7 +257,8 @@ def pullSensors():
     return 
 pullSensorsThr = threading.Thread(target = pullSensors)
 
-
+global nominalState
+nominalState = True
 def fixIssue(runIssue):
     global nominalState
 

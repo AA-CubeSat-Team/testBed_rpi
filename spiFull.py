@@ -668,7 +668,7 @@ while True:
                 samplePeriod = 1.05
                 runSensors = 2
 
-                for speedInp in range(10000, 50000, 5000):
+                for speedInp in range(10000, 70000, 5000):
                     if nominalState == False:
                         print("nominalState: ", nominalState)
 
@@ -677,7 +677,7 @@ while True:
                         processAuto(6, speedInp, 0)
                         time.sleep(1)
 
-                for speedInp in range(45000, 5000, -5000):
+                for speedInp in range(65000, 5000, -5000):
                     if nominalState == False:
                         print("nominalState: ", nominalState)
 

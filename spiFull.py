@@ -197,7 +197,6 @@ def spiTransfer(reqArr1,rplN1):
 
     reqArrH = flatList([0x7e, reqArr1, 0x7e]) 
     reqArrX = xorSwitch(reqArrH, "reqMode")               
-    #print("reqArrX: ",reqArrX)
  
     slvEmpArr = spi.xfer2(reqArrX)
 
@@ -205,8 +204,6 @@ def spiTransfer(reqArr1,rplN1):
        
     rplArrX = spi.xfer2(msrEmpArr)
 
-    if reqArr1[0] == 2:
-        print("comID=2, rplArrX: ",[hex(ii) for ii in rplArrX])
     rplArrH = xorSwitch(rplArrX, "rplMode")   
     rplArr1 = rplArrH[(0+2):(rplN1+2)] 
 
@@ -256,11 +253,9 @@ def pullSensors():
 
         if runSensors == 2:
             print("sensor pull")
-            #spiWait()
             rwStatusArr = processAuto(4, 0, 0)
-            #spiWait()
             lastResetStatusArr = processAuto(2, 0, 0)
-            print("lastResetStatusArr: ",lastResetStatusArr)
+            
 
             rwState2 = rwStatusArr[4]
             lastResetStatus2 = lastResetStatusArr[2]
@@ -294,10 +289,8 @@ def fixIssue(runIssue):
             print("issue found")
             print("error state")
 
-            #spiWait()
             processAuto(5, 0, 0)
 
-            #spiWait()
             rwStatusArr = processAuto(4, 0, 0)
             if rwStatusArr[4] != 0:
                 nominalState = True
@@ -702,7 +695,6 @@ while True:
 
                     if nominalState == True:
                         print("speedInp: ", speedInp)
-                        #spiWait()
                         processAuto(6, speedInp, 0)
                         time.sleep(1)
 
@@ -712,7 +704,6 @@ while True:
 
                     if nominalState == True:
                         print("speedInp: ", speedInp)
-
                         processAuto(6, speedInp, 0)
                         time.sleep(1)
 

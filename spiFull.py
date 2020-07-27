@@ -665,7 +665,7 @@ while True:
 
                 time0 = time.time()
 
-                samplePeriod = 1
+                samplePeriod = 1.05
                 runSensors = 2
 
                 for speedInp in range(10000, 50000, 5000):

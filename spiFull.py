@@ -669,6 +669,7 @@ while True:
 
                 for speedInp in range(10000, 70000, 5000):
                     if nominalState == False:
+                        a=1
                         ##print("nominalState: ", nominalState)
 
                     if nominalState == True or nominalState == False:
@@ -678,6 +679,7 @@ while True:
 
                 for speedInp in range(65000, 5000, -5000):
                     if nominalState == False:
+                        a=1
                         #print("nominalState: ", nominalState)
 
                     if nominalState == True or nominalState == False:

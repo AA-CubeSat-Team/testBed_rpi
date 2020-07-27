@@ -2,17 +2,20 @@
 
 // max length of rplArrCRC_XF = 2*(rplLen_T + 2) + 2
 volatile byte reqArrCRC_XF[16] = { };
-byte reqArrCRC_X[16] = { };
-byte reqArrCRC_T[16] = { };  
-int qq;      
-byte rplArr_T[16] = { }; 
-byte rplArrCRC_T[16] = { };
-byte rplArrCRC_D[16] = { };
-byte rplArrCRC_X[16] = { };
-byte rplArrCRC_XF[16] = { };
+byte reqArrCRC_X[32] = { };
+unsigned long reqArrCRC_T[32] = { };  
+    
+byte rplArr_T[32] = { }; 
+byte rplArrCRC_T[32] = { };
+byte rplArrCRC_D[32] = { };
+byte rplArrCRC_X[32] = { };
+byte rplArrCRC_XF[32] = { };
 int rplLenCRC_XF;
+
+int qq;  
 int ee;
 int ff;
+
 volatile byte reqB_new;
 volatile byte reqB_old;
 volatile byte rplB;
@@ -134,7 +137,7 @@ void loop (void){
       }
     }
     
-    genReply(reqArrCRC_T[0]);                
+    genRpl(reqArrCRC_T[0]);                
     yy = 0;
 
     Serial.print("reqArrCRC_XF: ");
@@ -162,57 +165,107 @@ void loop (void){
 }
 
 
-void genReply(byte id){ 
+void genRpl(byte comID1){ 
+
+  // PROCESS REQUEST DATA --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+  long reqRefSpeed = 0;
+  int reqRampTime;
+  byte reqClcMode;
+  
+  if (comID1 == 6){
+    reqRefSpeed = (reqArrCRC_T[4] << 24) | (reqArrCRC_T[3] << 16) | (reqArrCRC_T[2] << 8) | reqArrCRC_T[1];
+    reqRampTime = (reqArrCRC_T[6] << 8) | reqArrCRC_T[5];
+  }
+  if (comID1 == 7){
+    reqClcMode = reqArrCRC_T[1];
+  }
 
   
-  // GENERATE REPLY --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-                       
-  // sets reply array contents
-  byte rplArr1_T[] = {id,1};      
-  byte rplArr2_T[] = {id,1,125};
-  byte rplArr3_T[] = {id,1};
-  byte rplArr4_T[] = {id,126,6,6};
+  // PROCESS REPLY DATA --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+  byte rplLastResetStatus;
+  long rplCurrSpeed;
+  long rplRefSpeed;
+  byte rplRwState;
+  byte rplClcMode;
+  long rplMcuTemp;
 
   // resets rplArr arrays
-  for (int jj = 0; jj < sizeof(rplArr_T); jj++){
-    rplArr_T[jj] = 0;
-  }
-  for (int jj = 0; jj < sizeof(rplArrCRC_T); jj++){
-    rplArrCRC_T[jj] = 0;
-  }
-  for (int jj = 0; jj < sizeof(rplArrCRC_D); jj++){
-    rplArrCRC_D[jj] = 0;
-  }
-  for (int jj = 0; jj < sizeof(rplArrCRC_X); jj++){
-    rplArrCRC_X[jj] = 0;
-  }
   for (int jj = 0; jj < sizeof(rplArrCRC_XF); jj++){
+    rplArr_T[jj] = 0;
+    rplArrCRC_T[jj] = 0;
+    rplArrCRC_D[jj] = 0;
+    rplArrCRC_X[jj] = 0;
     rplArrCRC_XF[jj] = 0;
   }
 
-  // copies reply array contents to standard rplArr_T   
+  // set reply values
+  rplLastResetStatus = 6;
+  rplCurrSpeed = 60000;
+  rplRefSpeed = reqRefSpeed;
+  rplRwState = 4;
+  rplClcMode = 1;
+  rplMcuTemp = 35;
+                       
+  // generates reply array contents  
   int rplLen_T;
-  switch(id) {
+  
+  rplArr_T[0] = comID1;
+  rplArr_T[1] = 1;
+  switch(comID1) {
     case 1 :
-      memcpy(rplArr_T, rplArr1_T, sizeof(rplArr1_T));
-      rplLen_T = sizeof(rplArr1_T);    // length is set for each type of reply
+      rplLen_T = 2;
       break;
     case 2 :
-      memcpy(rplArr_T, rplArr2_T, sizeof(rplArr2_T));
-      rplLen_T = sizeof(rplArr2_T);
+      rplArr_T[2] = rplLastResetStatus;
+      rplLen_T = 3;
       break;
     case 3 :
-      memcpy(rplArr_T, rplArr3_T, sizeof(rplArr3_T));
-      rplLen_T = sizeof(rplArr3_T);
+      rplLen_T = 2;
       break;
     case 4 :
-      memcpy(rplArr_T, rplArr4_T, sizeof(rplArr4_T));
-      rplLen_T = sizeof(rplArr4_T);
+      rplArr_T[2] = rplCurrSpeed & 0xFF;
+      rplArr_T[3] = (rplCurrSpeed >> 8) & 0xFF;
+      rplArr_T[4] = (rplCurrSpeed >> 16) & 0xFF;
+      rplArr_T[5] = (rplCurrSpeed >> 24) & 0xFF;
+      rplArr_T[6] = rplRefSpeed & 0xFF;
+      rplArr_T[7] = (rplRefSpeed >> 8) & 0xFF;
+      rplArr_T[8] = (rplRefSpeed >> 16) & 0xFF;
+      rplArr_T[9] = (rplRefSpeed >> 24) & 0xFF;
+      rplArr_T[10] = rplRwState;
+      rplArr_T[11] = rplClcMode;
+      rplLen_T = 12;
+      break;
+    case 5 :
+      rplLen_T = 2;
+      break;
+    case 6 :
+      rplLen_T = 2;
+      break;
+    case 7 :
+      rplLen_T = 2;
+      break;
+    case 8 :
+      rplArr_T[2] = rplMcuTemp & 0xFF;
+      rplArr_T[3] = (rplMcuTemp >> 8) & 0xFF;
+      rplArr_T[4] = (rplMcuTemp >> 16) & 0xFF;
+      rplArr_T[5] = (rplMcuTemp >> 24) & 0xFF;
+      rplLen_T = 6;
+      break;
+    case 9 :
+    
+      rplLen_T = 81;
+      break;
+    case 10 :
+      rplLen_T = 2;
+      break;
+    case 11 :
+    
+      rplLen_T = 22;
       break;
   }   
 
 
-  // PROCESS REPLY --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+  // CRC/XOR/FRAME REPLY ARRAY --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
                                               
   // runs CRC algorithm on rplArr_T, adds CRC bytes on to end
   unsigned int crcValue;

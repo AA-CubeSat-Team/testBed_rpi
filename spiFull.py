@@ -489,7 +489,7 @@ def processUser(comID1):
         currSpeed = int.from_bytes(bytes(bytearray(rplArr[2:6])), byteorder='little', signed=True)
         print("\ncurr speed: ", currSpeed)
         refSpeed = int.from_bytes(bytes(bytearray(rplArr[6:10])), byteorder='little', signed=True)
-        print("curr speed: ", refSpeed)
+        print("ref speed: ", refSpeed)
         state = rplArr[10]
         print("state: ", state)
         clcModeS = rplArr[11]

@@ -153,6 +153,13 @@ void loop (void){
     }
     Serial.println();
 
+    // resets rplArr arrays
+    for (int jj = 0; jj < sizeof(reqArrCRC_XF); jj++){
+      rplArrCRC_T[jj] = 0;
+      reqArrCRC_X[jj] = 0;
+      reqArrCRC_XF[jj] = 0;
+    }
+
     SPDR = 0;
     flag = false;
     kk = 0;

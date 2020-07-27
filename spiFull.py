@@ -636,6 +636,7 @@ while True:
 
             if testMode == 1:
                 print("\nMANUAL SPEED TEST MODE\n") 
+                nominalState = True
 
                 header = ["entry","timeGMT","timeELA (s)","CRC","exec","currSpeed (0.1 RPM)","refSpeed (0.1 RPM)","state","clcMode"]
                 fileName = "manSpeedTest"
@@ -652,6 +653,7 @@ while True:
 
             if testMode == 2:
                 print("\nSTEP SPEED TEST MODE\n")
+                nominalState = True
 
                 fileName = "stepSpeedTest"
                 header = ["entry","timeGMT","timeELA (s)","CRC","exec","currSpeed (0.1 RPM)","refSpeed (0.1 RPM)","state","clcMode"]

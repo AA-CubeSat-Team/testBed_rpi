@@ -15,7 +15,7 @@ def read():
        prin("Shunt voltage: %.3f mV", ina.shunt_voltage())
    except DeviceRangeError as e:
        # Current out of device range with specified shunt resister
-       print e
+       print(e)
 
 if __name__ == "__main__":
    read()

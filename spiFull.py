@@ -237,9 +237,7 @@ def pullSensors():
             continue
 
         if runSensors == 1:
-            #spiWait()
             rwStatusArr = processAuto(4, 0, 0)
-            #spiWait()
             lastResetStatusArr = processAuto(2, 0, 0)
             rwState2 = rwStatusArr[4]
             lastResetStatus2 = lastResetStatusArr[2]

@@ -7,7 +7,7 @@ global samplePeriod
 global speedInp
 
 
-def pullSensors():
+def pullSensors():              # runs in the background, but needs main inputs for .csv
     global runSensors
     global samplePeriod
     global speedInp

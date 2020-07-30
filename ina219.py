@@ -1,21 +1,10 @@
-#!/usr/bin/env python
 
-from ina219 import INA219
-from ina219 import DeviceRangeError
+import board
+import busio
+import adafruit_ina219
 
-SHUNT_OHMS = 0.1
+i2c = busio.I2C(board.SCL, board.SDA) sensor = adafruit_ina219.INA219(i2c)
 
-def read():
-   ina = INA219(SHUNT_OHMS)
-   ina.configure()
-   print("Bus Voltage: %.3f V", ina.voltage())
-   try:
-       print("Bus Current: %.3f mA", ina.current())
-       prin("Power: %.3f mW", ina.power())
-       prin("Shunt voltage: %.3f mV", ina.shunt_voltage())
-   except DeviceRangeError as e:
-       # Current out of device range with specified shunt resister
-       print(e)
-
-if __name__ == "__main__":
-   read()
+print("Bus Voltage: {} V".format(ina219.bus_voltage)) 
+print("Shunt Voltage: {} mV".format(ina219.shunt_voltage / 1000)) 
+print("Current: {} mA".format(ina219.current))

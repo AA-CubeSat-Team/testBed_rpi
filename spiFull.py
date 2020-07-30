@@ -7,6 +7,10 @@ import time
 import spidev
 import csv 
 import threading
+import board
+import busio
+import adafruit_ina219 
+
 
 # SPI INITIALIZATION
 bus = 0
@@ -18,6 +22,11 @@ spi.open(bus, device)       # opens connection on specified bus, device
 
 spi.max_speed_hz = 250000   # sets master freq at 250 kHz, must be (150:300) kHz for RWA
 spi.mode = 0                # sets SPI mode to 0 (look up online)
+
+
+# INA219 INITIALIZATION
+i2c = busio.I2C(board.SCL, board.SDA) 
+ina219 = adafruit_ina219.INA219(i2c)
 
 
 # CRC FUNCTION
@@ -254,7 +263,6 @@ def pullSensors():
             rwStatusArr = processAuto(4, 0, 0)
             lastResetStatusArr = processAuto(2, 0, 0)
             
-
             rwState2 = rwStatusArr[4]
             lastResetStatus2 = lastResetStatusArr[2]
 
@@ -266,9 +274,16 @@ def pullSensors():
                 fixIssue(2)
             
             # tempArr = processAuto(8, 0, 0)
-            # pull INA219 power sensor via I2C
 
-            outputArr2 = flatList([rwStatusArr])
+            voltage = ina219.bus_voltage
+            voltage = round(voltage, 3)
+            current = ina219.current
+            current = round(current, 3)
+            power = voltage * current
+            power = round(power, 3)
+            elecArr = [voltage, current, power]
+
+            outputArr2 = flatList([rwStatusArr, elecArr])
             csvAdd(fileName2, outputArr2)
 
         time.sleep(samplePeriod)
@@ -676,7 +691,7 @@ while True:
                 nominalState = True
 
                 fileName = "stepSpeedTest"
-                header = ["entry","timeGMT","timeELA (s)","CRC","exec","currSpeed (0.1 RPM)","refSpeed (0.1 RPM)","state","clcMode"]
+                header = ["entry","timeGMT","timeELA (s)","CRC","exec","currSpeed (0.1 RPM)","refSpeed (0.1 RPM)","state","clcMode","voltage (V)","current (mA)","power (mW)"]
                 csvStart(fileName, header)
 
                 global fileName2

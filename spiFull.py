@@ -234,6 +234,7 @@ def spiWait():
 global runSensors
 global samplePeriod
 
+
 def pullSensors():             
     global runSensors
     global samplePeriod
@@ -281,9 +282,9 @@ def pullSensors():
             current = round(current, 3)
             power = voltage * current
             power = round(power, 3)
-            elecArr = [voltage, current, power]
+            ina219Arr = [voltage, current, power]
 
-            outputArr2 = flatList([rwStatusArr, elecArr])
+            outputArr2 = flatList([rwStatusArr, ina219Arr])
             csvAdd(fileName2, outputArr2)
 
         time.sleep(samplePeriod)
@@ -295,7 +296,7 @@ pullSensorsThr = threading.Thread(target = pullSensors)
 global nominalState
 nominalState = True
 
-def fixIssue(runIssue):
+def fixIssue(runIssue):                                     # will need to be adjusted to fit CDH error processes
     global nominalState
 
     if runIssue == 1:
@@ -314,7 +315,17 @@ def fixIssue(runIssue):
     if runIssue == 2:
             print("issue found")
             print("last reset status: ", lastResetStatus2)
-           
+
+            processAuto(3, 0, 0)
+            print("cleared last reset status")
+
+            gLRS = processAuto(2, 0, 0)
+            if gLRS[2] == 6 or gLRS[2] == 7:
+                nominalState = True
+                print("cleared last reset status")
+            if gLRS[2] != 6 and gLRS[2] != 7:
+                print("failed to clear last reset status")
+
 
 # SPI AUTO MECHANISM
 def processAuto(comID1,data1,data2):
@@ -650,6 +661,11 @@ def processUser(comID1):
     
 
 # MAIN --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+gLRS = processAuto(2, 0, 0)
+print("last reset status: ",gLRS[2])
+processAuto(3, 0, 0)
+print("cleared last reset status")
+
 while True: 
     opMode = input("\nenter an operating mode:\n1 - auto test\n2 - user input\n3 - full manual\n\n")
     opMode = int(opMode)
@@ -677,13 +693,25 @@ while True:
                 fileName = "manSpeedTest"
                 csvStart(fileName, header)
                 
+                global fileName2
+                fileName2 = fileName
+
                 time0 = time.time()
 
-                while True:
-                    speedInp = input("enter a speed [-65000:65000, 0.1 RPM]:\n")
-                    speedInp = int(speedInp)
-                    processAuto(6,speedInp,0)
+                samplePeriod = 0.5
+                runSensors = 2
 
+                while True:
+                    if nominalState == False:
+                        print("nominalState: ", nominalState)
+                        break
+
+                    if nominalState == True:
+                        speedInp = input("enter a speed [-65000:65000, 0.1 RPM]:\n")
+                        speedInp = int(speedInp)
+                        processAuto(6,speedInp,0)
+
+                runSensors = 0
                 print("test complete")
 
             if testMode == 2:
@@ -699,12 +727,13 @@ while True:
 
                 time0 = time.time()
 
-                samplePeriod = 0.49
+                samplePeriod = 0.5
                 runSensors = 2
 
                 for speedInp in range(10000, 70000, 5000):
                     if nominalState == False:
                         print("nominalState: ", nominalState)
+                        break
 
                     if nominalState == True:
                         print("speedInp: ", speedInp)
@@ -714,6 +743,7 @@ while True:
                 for speedInp in range(65000, 5000, -5000):
                     if nominalState == False:
                         print("nominalState: ", nominalState)
+                        break
 
                     if nominalState == True:
                         print("speedInp: ", speedInp)
@@ -723,6 +753,39 @@ while True:
                 runSensors = 0
                 print("test complete")
                 
+            if testMode == 3:
+                print("\nMINIMUM RAMP TIME TEST MODE\n")
+                nominalState = True
+
+                fileName = "minRampTimeTest"
+                header = ["entry","timeGMT","timeELA (s)","CRC","exec","currSpeed (0.1 RPM)","refSpeed (0.1 RPM)","state","clcMode","voltage (V)","current (mA)","power (mW)"]
+                csvStart(fileName, header)
+
+                global fileName2
+                fileName2 = fileName
+
+                time0 = time.time()
+
+                samplePeriod = 0.1
+                runSensors = 2
+
+                baseSpeed = 10000
+
+                for inpSpeed in [10500, 12500, 15000, 20000, 30000, 40000, 50000, 60000, 65000]:
+                    if nominalState == False:
+                        print("nominalState: ", nominalState)
+                        break
+
+                    if nominalState == True:
+                        processAuto(6, baseSpeed)
+                        print("baseSpeed: ", baseSpeed)
+                        time.sleep(5)
+                        processAuto(6, inpSpeed, 0)
+                        print("inpSpeed: ", inpSpeed)
+                        time.sleep(5)
+
+                runSensors = 0
+                print("test complete")
 
 
     if opMode == 2:

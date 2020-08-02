@@ -164,6 +164,8 @@ def xorSwitch(arr, mode):
 
 
 # CSV INITIALIZATION
+global fileName2
+
 def csvStart(fileName1, header1):
     global qq
     qq = 0
@@ -693,7 +695,6 @@ while True:
                 fileName = "manSpeedTest"
                 csvStart(fileName, header)
                 
-                global fileName2
                 fileName2 = fileName
 
                 time0 = time.time()
@@ -722,7 +723,6 @@ while True:
                 header = ["entry","timeGMT","timeELA (s)","CRC","exec","currSpeed (0.1 RPM)","refSpeed (0.1 RPM)","state","clcMode","voltage (V)","current (mA)","power (mW)"]
                 csvStart(fileName, header)
 
-                global fileName2
                 fileName2 = fileName
 
                 time0 = time.time()
@@ -761,7 +761,6 @@ while True:
                 header = ["entry","timeGMT","timeELA (s)","CRC","exec","currSpeed (0.1 RPM)","refSpeed (0.1 RPM)","state","clcMode","voltage (V)","current (mA)","power (mW)"]
                 csvStart(fileName, header)
 
-                global fileName2
                 fileName2 = fileName
 
                 time0 = time.time()

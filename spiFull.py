@@ -681,7 +681,7 @@ while True:
         pullSensorsThr.start()
 
         while True: 
-            testMode = input("\nenter a test mode:\n1 - manual speed\n2 - step speed\n\n")
+            testMode = input("\nenter a test mode:\n1 - manual speed\n2 - step speed\n3 - minimum ramp time\n\n")
             testMode = int(testMode)
 
             if testMode == 99:
@@ -776,7 +776,7 @@ while True:
                         break
 
                     if nominalState == True:
-                        processAuto(6, baseSpeed)
+                        processAuto(6, baseSpeed, 0)
                         print("baseSpeed: ", baseSpeed)
                         time.sleep(5)
                         processAuto(6, inpSpeed, 0)

@@ -803,7 +803,7 @@ while True:
 
                 baseSpeed = 10000
 
-                for rampTime1 in [0, 10, 10^2, 10^3, 10^4]
+                for rampTime1 in [0, 10, 10^2, 10^3, 10^4]:
                     if nominalState == False:
                         print("nominalState: ", nominalState)
                         break

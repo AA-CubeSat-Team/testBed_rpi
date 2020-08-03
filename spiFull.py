@@ -786,6 +786,42 @@ while True:
                 runSensors = 0
                 print("test complete")
 
+            if testMode == 4:
+                print("\nZERO CROSSING TEST MODE\n")
+                nominalState = True
+
+                fileName = "zeroCrossTest"
+                header = ["entry","timeGMT","timeELA (s)","CRC","exec","currSpeed (0.1 RPM)","refSpeed (0.1 RPM)","state","clcMode","voltage (V)","current (mA)","power (mW)"]
+                csvStart(fileName, header)
+
+                fileName2 = fileName
+
+                time0 = time.time()
+
+                samplePeriod = 0.1
+                runSensors = 2
+
+                baseSpeed = 10000
+
+                for rampTime1 in [0, 10, 10^2, 10^3, 10^4]
+                    if nominalState == False:
+                        print("nominalState: ", nominalState)
+                        break
+
+                    if nominalState == True:
+                        processAuto(6, baseSpeed, rampTime1)
+                        print("pos baseSpeed: ", baseSpeed)
+                        print("ramp time: ", rampTime1)
+                        time.sleep((rampTime1*10^-3) + 3)
+
+                        processAuto(6, -1*baseSpeed, rampTime1)
+                        print("neg baseSpeed: ", -1*baseSpeed)
+                        print("ramp time: ", rampTime1)
+                        time.sleep((rampTime1*10^-3) + 3)
+
+                runSensors = 0
+                print("test complete")
+
 
     if opMode == 2:
         print("\nUSER INPUT OP MODE")
